@@ -93,7 +93,37 @@
   const upcoming = fixtures;
 
   
+const time = f.date ? new Date(f.date).toLocaleTimeString("fr-FR", {
+  hour: "2-digit",
+  minute: "2-digit"
+}) : "--:--";
 
+return `
+<tr>
+  <td colspan="3">
+    <article class="match-card">
+      <div class="match-league">${league.name || ""}</div>
+      <div class="match-time">${time} · ${status}</div>
+      <div class="match-teams">
+        <strong>${home}</strong>
+        <span>vs</span>
+        <strong>${away}</strong>
+      </div>
+      <button class="analyse-btn" data-fixture-id="${f.id}">
+        Analyser
+      </button>
+    </article>
+  </td>
+</tr>`;
+}).join("");
+
+container.querySelectorAll(".analyse-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    const card = button.closest(".match-card");
+    const teams = card.querySelector(".match-teams")?.innerText || "";
+    alert("Analyse : " + teams);
+  });
+});
     if (!upcoming.length) {
       container.innerHTML = '<p class="muted">Aucun match trouvé pour aujourd’hui.</p>';
       return;
