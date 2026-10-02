@@ -89,13 +89,16 @@
 
     if (!res.ok) throw new Error(data.error || "Erreur API");
 
-    const fixtures = data.response || [];
-    if (!fixtures.length) {
+    const fixtures = data.response || [];const upcoming = fixtures.filter(item => {
+  const status = item.fixture?.status?.short || "";
+  return ["NS", "TBD", "PST"].includes(status);
+});
+    if (!upcoming.length) {
       container.innerHTML = '<p class="muted">Aucun match trouvé pour aujourd’hui.</p>';
       return;
     }
 
-    container.innerHTML = fixtures.slice(0, 12).map(item => {
+    container.innerHTML = upcoming.slice(0, 12).map(item => {
       const f = item.fixture || {};
       const teams = item.teams || {};
       const league = item.league || {};
