@@ -132,7 +132,7 @@
 
 container.querySelectorAll(".analyse-btn").forEach(button => {
   button.addEventListener("click", () => {
-  button.addEventListener("click", () => {
+  
     const card = button.closest(".match-card");
     const teams = card.querySelector(".match-teams")?.innerText || "";
     alert("Analyse : " + teams);
