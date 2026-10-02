@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Horizon Football — L'analyse du football par les statistiques</title>
+<meta name="description" content="Horizon Football : statistiques, tendances, analyses de matchs et guides sur le football.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">
+  <div class="brand"><span class="ball">⚽</span><div><b>HORIZON</b><strong>FOOTBALL</strong><small>L’analyse du football par les statistiques</small></div></div>
+  <nav>
+    <a href="#matchs">Matchs du jour</a><a href="#under">Under 2.5</a><a href="#stats">Statistiques</a>
+    <a href="#analyses">Analyses</a><a href="#premium">Premium</a><a href="#guides">Guides</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <div>
+    <p class="eyebrow">HORIZON FOOTBALL</p>
+    <h1>Les statistiques avant les intuitions.</h1>
+    <p>Analyses, tendances, statistiques et méthodes pour mieux comprendre les matchs de football.</p>
+    <a class="btn" href="#matchs">Voir les matchs du jour →</a>
+  </div>
+  <div class="hero-card"><b>Notre approche</b><p>Données récentes · ligne de buts · profils défensifs · cotes · validation du signal</p></div>
+</section>
+
+<section id="matchs" class="section">
+<h2>Matchs du jour</h2>
+<div class="table-wrap"><table><thead><tr><th>Match</th><th>Compétition</th><th>Tendance</th><th>Ligne</th><th>Statut</th></tr></thead>
+<tbody>
+<tr><td>Exemple — Équipe A vs Équipe B</td><td>Championnat</td><td><span class="tag">Under 2.5</span></td><td>2.0</td><td>À analyser</td></tr>
+<tr><td>Exemple — Équipe C vs Équipe D</td><td>Championnat</td><td><span class="tag">Under 2.5</span></td><td>2.0</td><td>À contrôler</td></tr>
+</tbody></table></div>
+<p class="note">Les exemples sont des contenus de démonstration et ne constituent pas des recommandations de pari.</p>
+</section>
+
+<section id="under" class="section grid">
+<div><h2>Notre méthode Under 2.5</h2>
+<ol>
+<li>TotalCorner → Under 2.5</li><li>10 derniers matchs</li><li>Populaires → Avant-match</li>
+<li>Ligne de buts autour de 2.0</li><li>Profil défensif des deux équipes</li><li>Domicile / extérieur</li>
+<li>H2H lorsque pertinent</li><li>Cote et mouvement de cote</li><li>Validation du signal</li>
+</ol></div>
+<div class="panel"><h3>Règle de sélection</h3><p>Si les statistiques, la ligne, les profils défensifs et le marché ne sont pas cohérents, le match n'est pas retenu.</p><b>Aucun match n’est garanti.</b></div>
+</section>
+
+<section id="stats" class="section">
+<h2>Statistiques</h2><div class="cards">
+<div class="card"><b>10 derniers</b><span>Forme récente</span></div>
+<div class="card"><b>Under 2.5</b><span>Fréquence observée</span></div>
+<div class="card"><b>Défense</b><span>Buts encaissés / clean sheets</span></div>
+<div class="card"><b>xG / xGA</b><span>Quand les données sont disponibles</span></div>
+</div></section>
+
+<section id="analyses" class="section"><h2>Analyses récentes</h2>
+<div class="article-grid"><article><h3>Comment analyser une ligne 2.0 ?</h3><p>Comprendre la différence entre une ligne asiatique de 2 buts et une ligne 2.5.</p></article>
+<article><h3>Pourquoi vérifier les deux défenses ?</h3><p>Une tendance Under est plus informative lorsqu’elle est soutenue par les profils défensifs des deux équipes.</p></article>
+<article><h3>Lire une évolution de cote</h3><p>Comparer la ligne, la cote initiale et la cote actuelle avant de valider une analyse.</p></article></div></section>
+
+<section id="premium" class="section premium"><h2>Espace Premium</h2>
+<p>Analyses approfondies, suivi des sélections, statistiques supplémentaires et historique des résultats.</p>
+<button class="btn">Découvrir Premium</button>
+</section>
+
+<section id="guides" class="section"><h2>Guides</h2>
+<div class="article-grid"><article><h3>Comprendre Under / Over</h3></article><article><h3>Gérer son budget de jeu</h3></article><article><h3>Jeu responsable</h3></article></div></section>
+</main>
+
+<footer><div class="brand"><span class="ball">⚽</span><div><b>HORIZON</b><strong>FOOTBALL</strong></div></div>
+<p>Contact : abdefaisal146@gmail.com</p>
+<p>© 2026 Horizon Football · Politique de confidentialité · Conditions d’utilisation · Jeu responsable</p></footer>
+<script>
+(async function loadHorizonFixtures() {
+  const container = document.querySelector("[data-live-fixtures]");
+  if (!container) return;
+
+  const pad = n => String(n).padStart(2, "0");
+  const now = new Date();
+  const date = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+
+  container.innerHTML = '<p class="muted">Chargement des matchs du jour…</p>';
+
+  try {
+    const res = await fetch(`/api/fixtures?date=${date}&timezone=Africa/Douala`);
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Erreur API");
+
+    const fixtures = data.response || [];
+    if (!fixtures.length) {
+      container.innerHTML = '<p class="muted">Aucun match trouvé pour aujourd’hui.</p>';
+      return;
+    }
+
+    container.innerHTML = fixtures.slice(0, 12).map(item => {
+      const f = item.fixture || {};
+      const teams = item.teams || {};
+      const league = item.league || {};
+      const home = teams.home?.name || "Équipe A";
+      const away = teams.away?.name || "Équipe B";
+      const status = f.status?.short || "";
+      const time = f.date ? new Date(f.date).toLocaleTimeString("fr-FR", {
+        hour: "2-digit", minute: "2-digit"
+      }) : "--:--";
+
+      return `
+        <article class="match-card">
+          <div class="match-league">${league.name || ""}</div>
+          <div class="match-time">${time} · ${status}</div>
+          <div class="match-teams"><strong>${home}</strong><span>vs</span><strong>${away}</strong></div>
+        </article>`;
+    }).join("");
+  } catch (err) {
+    container.innerHTML =
+      '<p class="muted">Les données réelles seront disponibles dès que la clé API sera configurée sur l’hébergement.</p>';
+  }
+})();
+</script>
+</body></html>
