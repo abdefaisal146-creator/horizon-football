@@ -116,9 +116,17 @@
         <article class="match-card">
           <div class="match-league">${league.name || ""}</div>
           <div class="match-time">${time} · ${status}</div>
-          <div class="match-teams"><strong>${home}</strong><span>vs</span><strong>${away}</strong></div><button class="analyse-btn">Analyser</button>
-        </article>`;
-    }).join("");
+          <div class="match-teams"><strong>${home}</strong><span>vs</span><strong>${away}</strong></div><div class="match-teams">...</div>
+<button class="analyse-btn">Analyser</button>
+</article>`;
+      
+    }).join("");container.querySelectorAll(".analyse-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    const card = button.closest(".match-card");
+    const teams = card.querySelector(".match-teams")?.innerText || "";
+    alert("Analyse : " + teams);
+  });
+});
   } catch (err) {
     container.innerHTML =
       '<p class="muted">Les données réelles seront disponibles dès que la clé API sera configurée sur l’hébergement.</p>';
