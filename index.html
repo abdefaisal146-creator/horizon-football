@@ -135,7 +135,29 @@ container.querySelectorAll(".analyse-btn").forEach(button => {
   
     const card = button.closest(".match-card");
     const teams = card.querySelector(".match-teams")?.innerText || "";
-    alert("Analyse : " + teams);
+    const analyseBox = document.createElement("div");
+
+analyseBox.style.cssText =
+  "position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px";
+
+analyseBox.innerHTML = `
+  <div style="background:white;border-radius:16px;padding:24px;max-width:500px;width:100%;color:#111">
+    <h2>Analyse du match</h2>
+    <h3>${teams}</h3>
+    <p><strong>Méthode :</strong> TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p>
+    <p><strong>Ligne :</strong> 2.0</p>
+    <p><strong>Statut :</strong> Analyse en cours...</p>
+    <button id="closeAnalyse" style="padding:10px 18px;border:0;border-radius:8px">
+      Fermer
+    </button>
+  </div>
+`;
+
+document.body.appendChild(analyseBox);
+
+document.getElementById("closeAnalyse").onclick = () => {
+  analyseBox.remove();
+};
   });
 });
   } catch (err) {
