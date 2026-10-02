@@ -90,10 +90,8 @@
     if (!res.ok) throw new Error(data.error || "Erreur API");
 
     const fixtures = data.response || [];
-  const upcoming = fixtures.filter(item => {
-  const status = item.fixture?.status?.short || "";
-  return ["NS", "TBD", "PST"].includes(status);
-});
+  const upcoming = fixtures;
+
   
 
     if (!upcoming.length) {
