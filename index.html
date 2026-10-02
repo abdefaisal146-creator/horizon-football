@@ -107,8 +107,9 @@
       const away = teams.away?.name || "Équipe B";
       const status = f.status?.short || "";
       const time = f.date ? new Date(f.date).toLocaleTimeString("fr-FR", {
-        hour: "2-digit", minute: "2-digit"
-      }) : 
+  hour: "2-digit",
+  minute: "2-digit"
+}) : "--:--";
 
   return `
   <tr>
