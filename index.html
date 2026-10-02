@@ -117,7 +117,7 @@
           <div class="match-league">${league.name || ""}</div>
           <div class="match-time">${time} · ${status}</div>
           <div class="match-teams"><strong>${home}</strong><span>vs</span><strong>${away}</strong></div><div class="match-teams">...</div>
-<button class="analyse-btn">Analyser</button>
+<button class="analyse-btn" data-fixture-id="${f.id}">Analyser</button>
 </article>`;
       
     }).join("");container.querySelectorAll(".analyse-btn").forEach(button => {
