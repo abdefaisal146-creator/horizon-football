@@ -66,65 +66,115 @@ export default {
   const base = "https://v3.football.api-sports.io";
 
   try {
-    const fixtureRes = await fetch(
-      `${base}/fixtures?id=${encodeURIComponent(fixtureId)}`,
-      { headers }
+    async function apiGet(path) {
+      const cacheKey = new Request(
+        `https://horizon-football-cache.local${path}`
+      );
+
+      const cached = await caches.default.match(cacheKey);
+
+      if (cached) {
+        return {
+          data: await cached.json(),
+          cached: true,
+          status: 200
+        };
+      }
+
+      const response = await fetch(`${base}${path}`, { headers });
+      const data = await response.json();
+
+      const hasErrors =
+        data.errors && Object.keys(data.errors).length > 0;
+
+      if (response.ok && !hasErrors) {
+        await caches.default.put(
+          cacheKey,
+          new Response(JSON.stringify(data), {
+            headers: {
+              "content-type": "application/json",
+              "cache-control": "public, max-age=300"
+            }
+          })
+        );
+      }
+
+      return {
+        data,
+        cached: false,
+        status: response.status
+      };
+    }
+
+    const fixtureResult = await apiGet(
+      `/fixtures?id=${encodeURIComponent(fixtureId)}`
     );
 
-    const fixtureData = await fixtureRes.json();
+    const fixtureData = fixtureResult.data;
 
-    if (!fixtureRes.ok || !fixtureData.response?.length) {
+    if (!fixtureData.response?.length) {
       return Response.json(
-        { error: "Match introuvable", details: fixtureData.errors || {} },
+        {
+          error: "Match introuvable",
+          details: fixtureData.errors || {}
+        },
         { status: 404 }
       );
     }
 
     const fixture = fixtureData.response[0];
+
     const homeId = fixture.teams.home.id;
     const awayId = fixture.teams.away.id;
+
     const leagueId = fixture.league.id;
     const season = fixture.league.season;
 
-    const requests = [
-      fetch(`${base}/fixtures?team=${homeId}&last=10`, { headers }),
-      fetch(`${base}/fixtures?team=${awayId}&last=10`, { headers }),
-      fetch(`${base}/fixtures?h2h=${homeId}-${awayId}&last=10`, { headers }),
-      fetch(`${base}/odds?fixture=${fixtureId}`, { headers })
-    ];
-
-    const [homeLastRes, awayLastRes, h2hRes, oddsRes] =
-      await Promise.all(requests);
-
-    const [homeLast, awayLast, h2h, odds] =
-      await Promise.all([
-        homeLastRes.json(),
-        awayLastRes.json(),
-        h2hRes.json(),
-        oddsRes.json()
-      ]);
+    const [
+      homeResult,
+      awayResult,
+      h2hResult,
+      oddsResult
+    ] = await Promise.all([
+      apiGet(`/fixtures?team=${homeId}&last=10`),
+      apiGet(`/fixtures?team=${awayId}&last=10`),
+      apiGet(`/fixtures?h2h=${homeId}-${awayId}&last=10`),
+      apiGet(`/odds?fixture=${fixtureId}`)
+    ]);
 
     return Response.json({
       fixture,
+
       teams: {
         home: {
           id: homeId,
           name: fixture.teams.home.name,
-          last10: homeLast.response || []
+          last10: homeResult.data.response || []
         },
+
         away: {
           id: awayId,
           name: fixture.teams.away.name,
-          last10: awayLast.response || []
+          last10: awayResult.data.response || []
         }
       },
-      h2h: h2h.response || [],
-      odds: odds.response || [],
+
+      h2h: h2hResult.data.response || [],
+      odds: oddsResult.data.response || [],
+
       league: {
         id: leagueId,
         season
+      },
+
+      apiErrors: {
+        home: homeResult.data.errors || {},
+        away: awayResult.data.errors || {},
+        h2h: h2hResult.data.errors || {},
+        odds: oddsResult.data.errors || {}
       }
     });
+
   } catch (error) {
     return Response.json(
       {
@@ -134,10 +184,11 @@ export default {
       { status: 500 }
     );
   }
-    }if (url.pathname === "/api/fixtures") {
-      const date = url.searchParams.get("date");
-      const timezone =
-        url.searchParams.get("timezone") || "Africa/Douala";
+       }
+     if (url.pathname === "/api/fixtures") {
+  const date = url.searchParams.get("date");
+  const timezone =
+    url.searchParams.get("timezone") || "Africa/Douala";
 
       if (!date) {
         return Response.json(
