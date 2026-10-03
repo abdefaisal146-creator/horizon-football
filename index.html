@@ -273,8 +273,10 @@
           const odds =
             analysis.odds?.length || 0;
 
-          statusBox.innerHTML =
-            "<strong>Statut :</strong> Données récupérées." +
+          const apiErrors = analysis.apiErrors || {};
+
+statusBox.innerHTML =
+          
             "<br><br>" +
             "<strong>Match :</strong> " +
             escapeHtml(home) +
@@ -289,7 +291,16 @@
             h2h +
             " confrontations H2H<br>" +
             odds +
-            " données de cotes.";
+            " données de cotes.";const errorDetails = Object.entries(apiErrors)
+  .filter(([key, value]) => value)
+  .map(([key, value]) => key + " : " + JSON.stringify(value))
+  .join("<br>");
+
+if (errorDetails) {
+  statusBox.innerHTML +=
+    "<br><br><strong>Erreurs API :</strong><br>" +
+    escapeHtml(errorDetails);
+}
 
         } catch (error) {
 
