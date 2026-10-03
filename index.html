@@ -64,14 +64,6 @@
 <p>Analyses approfondies, suivi des sélections, statistiques supplémentaires et historique des résultats.</p>
 <button class="btn">Découvrir Premium</button>
 </section>
-
-<section id="guides" class="section"><h2>Guides</h2>
-<div class="article-grid"><article><h3>Comprendre Under / Over</h3></article><article><h3>Gérer son budget de jeu</h3></article><article><h3>Jeu responsable</h3></article></div></section>
-</main>
-
-<footer><div class="brand"><span class="ball">⚽</span><div><b>HORIZON</b><strong>FOOTBALL</strong></div></div>
-<p>Contact : abdefaisal146@gmail.com</p>
-<p>© 2026 Horizon Football · Politique de confidentialité · Conditions d’utilisation · Jeu responsable</p></footer>
 <script>
 (async function loadHorizonFixtures() {
   const container = document.querySelector("[data-live-fixtures]");
@@ -79,7 +71,7 @@
 
   const pad = n => String(n).padStart(2, "0");
   const now = new Date();
-  const date = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+  const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 
   container.innerHTML = '<p class="muted">Chargement des matchs du jour…</p>';
 
@@ -90,95 +82,87 @@
     if (!res.ok) throw new Error(data.error || "Erreur API");
 
     const fixtures = data.response || [];
-  const upcoming = fixtures;
 
-  
-const time = f.date ? new Date(f.date).toLocaleTimeString("fr-FR", {
-  hour: "2-digit",
-  minute: "2-digit"
-}) : "--:--";
-
-return `
-<tr>
-  <td colspan="3">
-    <article class="match-card">
-      <div class="match-league">${league.name || ""}</div>
-      <div class="match-time">${time} · ${status}</div>
-      <div class="match-teams">
-        <strong>${home}</strong>
-        <span>vs</span>
-        <strong>${away}</strong>
-      </div>
-      <button class="analyse-btn" data-fixture-id="${f.id}">
-        Analyser
-      </button>
-    </article>
-  </td>
-</tr>`;
-}).join("");
-
-container.querySelectorAll(".analyse-btn").forEach(button => {
-  button.addEventListener("click", () => {
-    const card = button.closest(".match-card");
-    const teams = card.querySelector(".match-teams")?.innerText || "";
-    alert("Analyse : " + teams);
-  });
-});
-    if (!upcoming.length) {
+    if (!fixtures.length) {
       container.innerHTML = '<p class="muted">Aucun match trouvé pour aujourd’hui.</p>';
       return;
     }
 
-    container.innerHTML = upcoming.slice(0, 12).map(item => {
+    container.innerHTML = fixtures.slice(0, 12).map(item => {
       const f = item.fixture || {};
       const teams = item.teams || {};
       const league = item.league || {};
+
       const home = teams.home?.name || "Équipe A";
       const away = teams.away?.name || "Équipe B";
       const status = f.status?.short || "";
-      const time = f.date ? new Date(f.date).toLocaleTimeString("fr-FR", {
-  hour: "2-digit",
-  minute: "2-digit"
-}) : "--:--";
 
-  return `
-  <tr>
-    <td colspan="3">
-      <article class="match-card">
-        <div class="match-league">${league.name || ""}</div>
-        <div class="match-time">${time} · ${status}</div>
-        <div class="match-teams">
-          <strong>${home}</strong>
-          <span>vs</span>
-          <strong>${away}</strong>
-        </div>
-        <button class="analyse-btn" data-fixture-id="${f.id}">
-          Analyser
-        </button>
-      </article>
-    </td>
-  </tr>`;
-}).join("");
+      const time = f.date
+        ? new Date(f.date).toLocaleTimeString("fr-FR", {
+            hour: "2-digit",
+            minute: "2-digit"
+          })
+        : "--:--";
 
-container.querySelectorAll(".analyse-btn").forEach(button => {
-  button.addEventListener("click", () => {
-  
-    const card = button.closest(".match-card");
-    const teams = card.querySelector(".match-teams")?.innerText || "";
-    const analyseBox = document.createElement("div");
+      return `
+        <tr>
+          <td colspan="3">
+            <article class="match-card">
+              <div class="match-league">${league.name || ""}</div>
+              <div class="match-time">${time} · ${status}</div>
 
-analyseBox.style.cssText =
-  "position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px";
+              <div class="match-teams">
+                <strong>${home}</strong>
+                <span>vs</span>
+                <strong>${away}</strong>
+              </div>
 
-analyseBox.innerHTML = `
-  <div style="background:white;border-radius:16px;padding:24px;max-width:500px;width:100%;color:#111">
-    <h2>Analyse du match</h2>
-    <h3>${teams}</h3>
-    <p><strong>Méthode :</strong> TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p>
-    <p><strong>Ligne :</strong> 2.0</p>
-    <p><strong>Statut :</strong> Analyse en cours...</p>
-    <button id="closeAnalyse" style="padding:10px 18px;border:0;border-radius:8px">
-      Fermer
+              <button class="analyse-btn" data-fixture-id="${f.id}">
+                Analyser
+              </button>
+            </article>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    container.querySelectorAll(".analyse-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        const card = button.closest(".match-card");
+        const teams = card.querySelector(".match-teams")?.innerText || "";
+
+        const analyseBox = document.createElement("div");
+
+        analyseBox.style.cssText =
+          "position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px";
+
+        analyseBox.innerHTML = `
+          <div style="background:white;border-radius:16px;padding:24px;max-width:500px;width:100%;color:#111">
+            <h2>Analyse du match</h2>
+            <h3>${teams}</h3>
+            <p><strong>Méthode :</strong> TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p>
+            <p><strong>Ligne :</strong> 2.0</p>
+            <p><strong>Statut :</strong> Analyse en cours...</p>
+            <button id="closeAnalyse" style="padding:10px 18px;border:0;border-radius:8px">
+              Fermer
+            </button>
+          </div>
+        `;
+
+        document.body.appendChild(analyseBox);
+
+        document.getElementById("closeAnalyse").onclick = () => {
+          analyseBox.remove();
+        };
+      });
+    });
+
+  } catch (err) {
+    container.innerHTML =
+      '<p class="muted">Erreur lors du chargement des matchs.</p>';
+  }
+})();
+</script>
     </button>
   </div>
 `;
