@@ -127,9 +127,17 @@
     }).join("");
 
     container.querySelectorAll(".analyse-btn").forEach(button => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
         const card = button.closest(".match-card");
         const teams = card.querySelector(".match-teams")?.innerText || "";
+        const fixtureId = button.dataset.fixtureId;
+
+const response = await fetch(`/api/analyze?id=${fixtureId}`);
+const analysis = await response.json();
+
+if (!response.ok) {
+  throw new Error(analysis.error || "Erreur d'analyse");
+}
 
         const analyseBox = document.createElement("div");
 
