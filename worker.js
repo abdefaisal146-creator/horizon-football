@@ -1,3 +1,4 @@
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -105,7 +106,74 @@ export default {
         status: response.status
       };
     }
+async function sofaSearchTeam(teamName) {
+  const url =
+    `https://www.sofascore.com/api/v1/search/all?q=${encodeURIComponent(teamName)}`;
 
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+
+  const result = (data.results || []).find(
+    item =>
+      item.type === "team" &&
+      item.entity &&
+      item.entity.sport &&
+      item.entity.sport.slug === "football"
+  );
+
+  return result ? result.entity : null;
+}
+
+async function sofaLast10(teamName) {
+  const team = await sofaSearchTeam(teamName);
+
+  if (!team || !team.id) {
+    return [];
+  }
+
+  const response = await fetch(
+    `https://www.sofascore.com/api/v1/team/${team.id}/events/last/0`
+  );
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const data = await response.json();
+
+  return (data.events || [])
+  .filter(event => event.status?.type === "finished")
+  .sort((a, b) => b.startTimestamp - a.startTimestamp)
+  .slice(0, 10)
+  .map(event => ({
+    fixture: {
+      id: event.id,
+      date: new Date(event.startTimestamp * 1000).toISOString(),
+      status: {
+        short: "FT"
+      }
+    },
+    teams: {
+      home: {
+        id: event.homeTeam?.id,
+        name: event.homeTeam?.name
+      },
+      away: {
+        id: event.awayTeam?.id,
+        name: event.awayTeam?.name
+      }
+    },
+    goals: {
+      home: event.homeScore?.current ?? null,
+      away: event.awayScore?.current ?? null
+    }
+  }));
+}
     const fixtureResult = await apiGet(
       `/fixtures?id=${encodeURIComponent(fixtureId)}`
     );
@@ -138,13 +206,19 @@ fromDateObj.setUTCDate(fromDateObj.getUTCDate() - 180);
 
 const fromDate = fromDateObj.toISOString().slice(0, 10);
 
-const homeResult = await apiGet(
-  `/fixtures?team=${homeId}&from=${fromDate}&to=${toDate}&status=FT-AET-PEN&page=1`
-);
+const homeResult = {
+  data: {
+    response: await sofaLast10(fixture.teams.home.name),
+    errors: []
+  }
+};
 
-const awayResult = await apiGet(
-  `/fixtures?team=${awayId}&from=${fromDate}&to=${toDate}&status=FT-AET-PEN&page=1`
-);
+const awayResult = {
+  data: {
+    response: await sofaLast10(fixture.teams.away.name),
+    errors: []
+  }
+};
 
 const h2hResult = await apiGet(
   `/fixtures/headtohead?h2h=${homeId}-${awayId}`
