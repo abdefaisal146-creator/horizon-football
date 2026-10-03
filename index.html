@@ -69,57 +69,98 @@
   const container = document.querySelector("[data-live-fixtures]");
   if (!container) return;
 
-  const pad = n => String(n).padStart(2, "0");
-  const now = new Date();
-  const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
-  container.innerHTML = '<p class="muted">Chargement des matchs du jour…</p>';
+  function getDoualaDate() {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Africa/Douala",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).formatToParts(new Date());
+
+    const year = parts.find(p => p.type === "year").value;
+    const month = parts.find(p => p.type === "month").value;
+    const day = parts.find(p => p.type === "day").value;
+
+    return `${year}-${month}-${day}`;
+  }
+
+  const date = getDoualaDate();
+
+  container.innerHTML =
+    '<tr><td colspan="3" class="muted">Chargement des matchs du jour…</td></tr>';
 
   try {
-    const res = await fetch(`/api/fixtures?date=${date}&timezone=Africa/Douala`);
-    const data = await res.json();
+    const response = await fetch(
+      `/api/fixtures?date=${date}&timezone=Africa/Douala`,
+      { cache: "no-store" }
+    );
 
-    if (!res.ok) throw new Error(data.error || "Erreur API");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Erreur API");
+    }
 
     const fixtures = data.response || [];
 
     if (!fixtures.length) {
-      container.innerHTML = '<p class="muted">Aucun match trouvé pour aujourd’hui.</p>';
+      container.innerHTML =
+        '<tr><td colspan="3" class="muted">Aucun match trouvé pour aujourd’hui.</td></tr>';
       return;
     }
 
-    container.innerHTML = fixtures.slice(0, 12).map(item => {
-      const f = item.fixture || {};
+    container.innerHTML = fixtures.slice(0, 20).map(item => {
+      const fixture = item.fixture || {};
       const teams = item.teams || {};
       const league = item.league || {};
 
       const home = teams.home?.name || "Équipe A";
       const away = teams.away?.name || "Équipe B";
-      const status = f.status?.short || "";
 
-      const time = f.date
-        ? new Date(f.date).toLocaleTimeString("fr-FR", {
+      const time = fixture.date
+        ? new Date(fixture.date).toLocaleTimeString("fr-FR", {
             hour: "2-digit",
-            minute: "2-digit"
+            minute: "2-digit",
+            timeZone: "Africa/Douala"
           })
         : "--:--";
+
+      const status = fixture.status?.short || "";
 
       return `
         <tr>
           <td colspan="3">
             <article class="match-card">
-              <div class="match-league">${league.name || ""}</div>
-              <div class="match-time">${time} · ${status}</div>
 
-              <div class="match-teams">
-                <strong>${home}</strong>
-                <span>vs</span>
-                <strong>${away}</strong>
+              <div class="match-league">
+                ${escapeHtml(league.name)}
               </div>
 
-              <button class="analyse-btn" data-fixture-id="${f.id}">
+              <div class="match-time">
+                ${escapeHtml(time)} · ${escapeHtml(status)}
+              </div>
+
+              <div class="match-teams">
+                <strong>${escapeHtml(home)}</strong>
+                <span>vs</span>
+                <strong>${escapeHtml(away)}</strong>
+              </div>
+
+              <button
+                class="analyse-btn"
+                data-fixture-id="${escapeHtml(fixture.id)}">
                 Analyser
               </button>
+
             </article>
           </td>
         </tr>
@@ -127,103 +168,153 @@
     }).join("");
 
     container.querySelectorAll(".analyse-btn").forEach(button => {
-  button.addEventListener("click", async () => {
-    const card = button.closest(".match-card");
-    const teams =
-      card?.querySelector(".match-teams")?.innerText || "";
-    const fixtureId = button.dataset.fixtureId;
 
-    const analyseBox = document.createElement("div");
+      button.addEventListener("click", async () => {
 
-    analyseBox.style.cssText =
-      "position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px";
+        const card = button.closest(".match-card");
+        const fixtureId = button.dataset.fixtureId;
 
-    analyseBox.innerHTML = `
-      <div style="background:white;border-radius:16px;padding:24px;max-width:500px;width:100%;color:#111">
-        <h2>Analyse du match</h2>
-        <h3>${teams}</h3>
-        <p><strong>Méthode :</strong> TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p>
-        <p><strong>Ligne :</strong> 2.0</p>
-        <p id="analysisStatus"><strong>Statut :</strong> Analyse en cours…</p>
-        <button id="closeAnalyse" style="padding:10px 18px;border:0;border-radius:8px">
-          Fermer
-        </button>
-      </div>
-    `;
+        const home =
+          card?.querySelector(".match-teams strong:first-child")?.innerText
+          || "Équipe A";
 
-    document.body.appendChild(analyseBox);
+        const away =
+          card?.querySelector(".match-teams strong:last-child")?.innerText
+          || "Équipe B";
 
-    document.getElementById("closeAnalyse").onclick = () => {
-      analyseBox.remove();
-    };
+        const analyseBox = document.createElement("div");
 
-    try {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 20000);
+        analyseBox.style.cssText =
+          "position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;";
 
-  const response = await fetch(
-    `/api/analyze?id=${encodeURIComponent(fixtureId)}`,
-    {
-      cache: "no-store",
-      signal: controller.signal
-    }
-  );
+        analyseBox.innerHTML = `
+          <div style="background:white;border-radius:16px;padding:24px;max-width:520px;width:100%;color:#111;">
 
-  clearTimeout(timeout);
+            <h2>Analyse du match</h2>
 
-  const text = await response.text();
+            <h3>
+              ${escapeHtml(home)} vs ${escapeHtml(away)}
+            </h3>
 
-  let analysis;
-  try {
-    analysis = JSON.parse(text);
-  } catch {
-    throw new Error("Réponse API invalide.");
+            <p>
+              <strong>Méthode :</strong><br>
+              TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match
+            </p>
+
+            <p>
+              <strong>Ligne :</strong> 2.0
+            </p>
+
+            <p id="analysisStatus">
+              <strong>Statut :</strong> Analyse en cours…
+            </p>
+
+            <button
+              id="closeAnalyse"
+              style="padding:10px 18px;border:0;border-radius:8px;">
+              Fermer
+            </button>
+
+          </div>
+        `;
+
+        document.body.appendChild(analyseBox);
+
+        analyseBox.querySelector("#closeAnalyse").onclick = () => {
+          analyseBox.remove();
+        };
+
+        try {
+
+          const controller = new AbortController();
+
+          const timeout = setTimeout(() => {
+            controller.abort();
+          }, 20000);
+
+          const response = await fetch(
+            `/api/analyze?id=${encodeURIComponent(fixtureId)}`,
+            {
+              cache: "no-store",
+              signal: controller.signal
+            }
+          );
+
+          clearTimeout(timeout);
+
+          const text = await response.text();
+
+          let analysis;
+
+          try {
+            analysis = JSON.parse(text);
+          } catch {
+            throw new Error("Réponse API invalide.");
+          }
+
+          if (!response.ok) {
+            throw new Error(
+              analysis.error || "Erreur d'analyse"
+            );
+          }
+
+          const statusBox =
+            analyseBox.querySelector("#analysisStatus");
+
+          const homeLast10 =
+            analysis.teams?.home?.last10?.length || 0;
+
+          const awayLast10 =
+            analysis.teams?.away?.last10?.length || 0;
+
+          const h2h =
+            analysis.h2h?.length || 0;
+
+          const odds =
+            analysis.odds?.length || 0;
+
+          statusBox.innerHTML =
+            "<strong>Statut :</strong> Données récupérées." +
+            "<br><br>" +
+            "<strong>Match :</strong> " +
+            escapeHtml(home) +
+            " vs " +
+            escapeHtml(away) +
+            "<br><br>" +
+            "<strong>Données :</strong><br>" +
+            homeLast10 +
+            " matchs récents — domicile/équipe<br>" +
+            awayLast10 +
+            " matchs récents — extérieur/équipe<br>" +
+            h2h +
+            " confrontations H2H<br>" +
+            odds +
+            " données de cotes.";
+
+        } catch (error) {
+
+          const statusBox =
+            analyseBox.querySelector("#analysisStatus");
+
+          statusBox.innerHTML =
+            "<strong>Erreur :</strong> " +
+            escapeHtml(
+              error.name === "AbortError"
+                ? "L’analyse prend trop de temps. Réessaie."
+                : error.message
+            );
+        }
+      });
+    });
+
+  } catch (error) {
+
+    container.innerHTML =
+      '<tr><td colspan="3" class="muted">Erreur : ' +
+      escapeHtml(error.message) +
+      "</td></tr>";
   }
 
-  if (!response.ok) {
-    throw new Error(
-    analysis.error || "Erreur d'analyse"
-  );
- }
-      
-  document.getElementById("analysisStatus").innerHTML =
-    "<strong>Statut :</strong> Données récupérées.<br><br>" +
-    "<strong>Match :</strong> " +
-    escapeHtml(
-      analysis.fixture?.teams?.home?.name +
-      " vs " +
-      analysis.fixture?.teams?.away?.name
-    ) +
-    "<br><br>" +
-    "<strong>Données :</strong> " +
-    (analysis.teams?.home?.last10?.length || 0) +
-    " matchs récents domicile/équipe<br>" +
-    (analysis.teams?.away?.last10?.length || 0) +
-    " matchs récents extérieur/équipe<br>" +
-    (analysis.h2h?.length || 0) +
-    " confrontations H2H<br>" +
-    (analysis.odds?.length || 0) +
-    " données de cotes.";
-} catch (error) {
-  document.getElementById("analysisStatus").innerHTML =
-    "<strong>Erreur :</strong> " +
-    escapeHtml(
-      error.name === "AbortError"
-        ? "L'analyse prend trop de temps. Réessaie."
-        : error.message
-    );
-}
-  });
-});
-          
-
-
-
-
-  } catch (err) {
-  container.innerHTML =
-    '<p class="muted">Erreur : ' + err.message + '</p>';
-}
 })();
 </script>
 
