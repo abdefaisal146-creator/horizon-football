@@ -171,21 +171,5 @@ if (!response.ok) {
   }
 })();
 </script>
-    </button>
-  </div>
-`;
-
-document.body.appendChild(analyseBox);
-
-document.getElementById("closeAnalyse").onclick = () => {
-  analyseBox.remove();
-};
-  });
-});
-  } catch (err) {
-    container.innerHTML =
-      '<p class="muted">Les données réelles seront disponibles dès que la clé API sera configurée sur l’hébergement.</p>';
-  }
-})();
-</script>
+    
 </body></html>
