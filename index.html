@@ -127,43 +127,66 @@
     }).join("");
 
     container.querySelectorAll(".analyse-btn").forEach(button => {
-      button.addEventListener("click", async () => {
-        const card = button.closest(".match-card");
-        const teams = card.querySelector(".match-teams")?.innerText || "";
-        const fixtureId = button.dataset.fixtureId;
+  button.addEventListener("click", async () => {
+    const card = button.closest(".match-card");
+    const teams =
+      card?.querySelector(".match-teams")?.innerText || "";
+    const fixtureId = button.dataset.fixtureId;
 
-const response = await fetch(`/api/analyze?id=${fixtureId}`);
-const analysis = await response.json();
+    const analyseBox = document.createElement("div");
 
-if (!response.ok) {
-  throw new Error(analysis.error || "Erreur d'analyse");
-}
+    analyseBox.style.cssText =
+      "position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px";
 
-        const analyseBox = document.createElement("div");
+    analyseBox.innerHTML = `
+      <div style="background:white;border-radius:16px;padding:24px;max-width:500px;width:100%;color:#111">
+        <h2>Analyse du match</h2>
+        <h3>${teams}</h3>
+        <p><strong>Méthode :</strong> TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p>
+        <p><strong>Ligne :</strong> 2.0</p>
+        <p id="analysisStatus"><strong>Statut :</strong> Analyse en cours…</p>
+        <button id="closeAnalyse" style="padding:10px 18px;border:0;border-radius:8px">
+          Fermer
+        </button>
+      </div>
+    `;
 
-        analyseBox.style.cssText =
-          "position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px";
+    document.body.appendChild(analyseBox);
 
-        analyseBox.innerHTML = `
-          <div style="background:white;border-radius:16px;padding:24px;max-width:500px;width:100%;color:#111">
-            <h2>Analyse du match</h2>
-            <h3>${teams}</h3>
-            <p><strong>Méthode :</strong> TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p>
-            <p><strong>Ligne :</strong> 2.0</p>
-            <p><strong>Statut :</strong> Analyse en cours...</p>
-            <button id="closeAnalyse" style="padding:10px 18px;border:0;border-radius:8px">
-              Fermer
-            </button>
-          </div>
-        `;
+    document.getElementById("closeAnalyse").onclick = () => {
+      analyseBox.remove();
+    };
 
-        document.body.appendChild(analyseBox);
+    try {
+      const response = await fetch(
+        `/api/analyze?id=${encodeURIComponent(fixtureId)}`,
+        { cache: "no-store" }
+      );
 
-        document.getElementById("closeAnalyse").onclick = () => {
-          analyseBox.remove();
-        };
-      });
-    });
+      const analysis = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          analysis.error || "Erreur d'analyse"
+        );
+      }
+
+      document.getElementById("analysisStatus").innerHTML =
+        "<strong>Statut :</strong> Données récupérées.";
+    } catch (error) {
+      document.getElementById("analysisStatus").innerHTML =
+        "<strong>Erreur :</strong> " + error.message;
+    }
+  });
+});
+          
+
+  document.body.appendChild(analyseBox);
+
+document.getElementById("closeAnalyse").onclick = () => {
+  analyseBox.remove();
+};
+
 
   } catch (err) {
   container.innerHTML =
