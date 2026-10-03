@@ -131,16 +131,36 @@ export default {
     const season = fixture.league.season;
 
     const [
-      homeResult,
-      awayResult,
-      h2hResult,
-      oddsResult
-    ] = await Promise.all([
-      apiGet(`/fixtures?team=${homeId}&last=10`),
-      apiGet(`/fixtures?team=${awayId}&last=10`),
-      apiGet(`/fixtures?h2h=${homeId}-${awayId}&last=10`),
-      apiGet(`/odds?fixture=${fixtureId}`)
-    ]);
+  homeResult,
+  awayResult,
+  h2hResult,
+  oddsResult
+] = await Promise.all([
+  apiGet(`/fixtures?team=${homeId}&season=${season}&status=FT&page=1`),
+  apiGet(`/fixtures?team=${awayId}&season=${season}&status=FT&page=1`),
+  apiGet(`/fixtures?h2h=${homeId}-${awayId}`),
+  apiGet(`/odds?fixture=${fixtureId}`)
+]);
+
+const homeLast10 = (homeResult.data.response || [])
+  .filter(match => new Date(match.fixture.date) < new Date(fixture.date))
+  .sort((a, b) =>
+    new Date(b.fixture.date) - new Date(a.fixture.date)
+  )
+  .slice(0, 10);
+
+const awayLast10 = (awayResult.data.response || [])
+  .filter(match => new Date(match.fixture.date) < new Date(fixture.date))
+  .sort((a, b) =>
+    new Date(b.fixture.date) - new Date(a.fixture.date)
+  )
+  .slice(0, 10);
+
+const h2hLast10 = (h2hResult.data.response || [])
+  .sort((a, b) =>
+    new Date(b.fixture.date) - new Date(a.fixture.date)
+  )
+  .slice(0, 10);
 
     return Response.json({
       fixture,
@@ -149,17 +169,17 @@ export default {
         home: {
           id: homeId,
           name: fixture.teams.home.name,
-          last10: homeResult.data.response || []
+          last10: homeLast10
         },
 
         away: {
           id: awayId,
           name: fixture.teams.away.name,
-          last10: awayResult.data.response || []
+          last10: awayLast10
         }
       },
 
-      h2h: h2hResult.data.response || [],
+      h2h: h2hLast10,
       odds: oddsResult.data.response || [],
 
       league: {
