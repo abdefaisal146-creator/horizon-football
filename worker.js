@@ -130,17 +130,29 @@ export default {
     const leagueId = fixture.league.id;
     const season = fixture.league.season;
 
-    const [
-  homeResult,
-  awayResult,
-  h2hResult,
-  oddsResult
-] = await Promise.all([
-  apiGet(`/fixtures?team=${homeId}&season=${season}&status=FT&page=1`),
-  apiGet(`/fixtures?team=${awayId}&season=${season}&status=FT&page=1`),
-  apiGet(`/fixtures?h2h=${homeId}-${awayId}`),
-  apiGet(`/odds?fixture=${fixtureId}`)
-]);
+    const fixtureDate = new Date(fixture.fixture.date);
+const toDate = fixture.fixture.date.slice(0, 10);
+
+const fromDateObj = new Date(fixtureDate);
+fromDateObj.setUTCDate(fromDateObj.getUTCDate() - 180);
+
+const fromDate = fromDateObj.toISOString().slice(0, 10);
+
+const homeResult = await apiGet(
+  `/fixtures?team=${homeId}&from=${fromDate}&to=${toDate}&status=FT-AET-PEN&page=1`
+);
+
+const awayResult = await apiGet(
+  `/fixtures?team=${awayId}&from=${fromDate}&to=${toDate}&status=FT-AET-PEN&page=1`
+);
+
+const h2hResult = await apiGet(
+  `/fixtures/headtohead?h2h=${homeId}-${awayId}`
+);
+
+const oddsResult = await apiGet(
+  `/odds?fixture=${fixtureId}`
+);
 
 const homeLast10 = (homeResult.data.response || [])
   .filter(match => new Date(match.fixture.date) < new Date(fixture.date))
