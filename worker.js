@@ -229,14 +229,14 @@ const oddsResult = await apiGet(
 );
 
 const homeLast10 = (homeResult.data.response || [])
-  .filter(match => new Date(match.fixture.date) < new Date(fixture.date))
+  .filter(match => new Date(match.fixture.date) < fixtureDate)
   .sort((a, b) =>
     new Date(b.fixture.date) - new Date(a.fixture.date)
   )
   .slice(0, 10);
 
 const awayLast10 = (awayResult.data.response || [])
-  .filter(match => new Date(match.fixture.date) < new Date(fixture.date))
+  .filter(match => new Date(match.fixture.date) < fixtureDate)
   .sort((a, b) =>
     new Date(b.fixture.date) - new Date(a.fixture.date)
   )
