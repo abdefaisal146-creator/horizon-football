@@ -158,25 +158,61 @@
     };
 
     try {
-      const response = await fetch(
-        `/api/analyze?id=${encodeURIComponent(fixtureId)}`,
-        { cache: "no-store" }
-      );
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000);
 
-      const analysis = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          analysis.error || "Erreur d'analyse"
-        );
-      }
-
-      document.getElementById("analysisStatus").innerHTML =
-        "<strong>Statut :</strong> Données récupérées.";
-    } catch (error) {
-      document.getElementById("analysisStatus").innerHTML =
-        "<strong>Erreur :</strong> " + error.message;
+  const response = await fetch(
+    `/api/analyze?id=${encodeURIComponent(fixtureId)}`,
+    {
+      cache: "no-store",
+      signal: controller.signal
     }
+  );
+
+  clearTimeout(timeout);
+
+  const text = await response.text();
+
+  let analysis;
+  try {
+    analysis = JSON.parse(text);
+  } catch {
+    throw new Error("Réponse API invalide.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+    analysis.error || "Erreur d'analyse"
+  );
+ }
+      
+  document.getElementById("analysisStatus").innerHTML =
+    "<strong>Statut :</strong> Données récupérées.<br><br>" +
+    "<strong>Match :</strong> " +
+    escapeHtml(
+      analysis.fixture?.teams?.home?.name +
+      " vs " +
+      analysis.fixture?.teams?.away?.name
+    ) +
+    "<br><br>" +
+    "<strong>Données :</strong> " +
+    (analysis.teams?.home?.last10?.length || 0) +
+    " matchs récents domicile/équipe<br>" +
+    (analysis.teams?.away?.last10?.length || 0) +
+    " matchs récents extérieur/équipe<br>" +
+    (analysis.h2h?.length || 0) +
+    " confrontations H2H<br>" +
+    (analysis.odds?.length || 0) +
+    " données de cotes.";
+} catch (error) {
+  document.getElementById("analysisStatus").innerHTML =
+    "<strong>Erreur :</strong> " +
+    escapeHtml(
+      error.name === "AbortError"
+        ? "L'analyse prend trop de temps. Réessaie."
+        : error.message
+    );
+}
   });
 });
           
