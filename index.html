@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Horizon Football — Les statistiques avant les intuitions</title>
 <meta name="description" content="Horizon Football : statistiques, tendances, analyses de matchs et méthode Under 2.5.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Horizon Football — Les statistiques avant les intuitions">
+<meta property="og:description" content="Sélection du jour, bilans publics et méthode Under 2.5. Aucun gain garanti. Réservé aux majeurs.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#07152f">
 <style>
 :root{--navy:#07152f;--blue:#0f2a5c;--card:#10244d;--gold:#f2b632;--white:#fff;--muted:#a9b8d6;--line:#1f3a70}
 *{box-sizing:border-box}
@@ -34,6 +40,7 @@ h2{font-size:22px;margin:0 0 14px}
 .kpi span{color:var(--muted);font-size:13px}
 .section{padding:26px 0}
 .match{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+.logo{width:22px;height:22px;object-fit:contain;vertical-align:middle;margin-right:8px;background:#fff;border-radius:50%;padding:1px}
 .lg{color:var(--muted);font-size:13px}
 .tm{display:flex;justify-content:space-between;align-items:center;margin:6px 0 10px;gap:8px}
 .teams strong{display:block}
@@ -58,6 +65,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
 .box h4{color:var(--gold);margin:16px 0 6px}
 .box ul{margin:4px 0;padding-left:18px}
 .verdict{background:var(--card);border-left:4px solid var(--gold);padding:10px 12px;border-radius:8px;margin-top:14px}
+.wa{position:fixed;right:14px;bottom:14px;z-index:60;background:#25d366;color:#05260f;font-weight:700;border-radius:999px;padding:11px 16px;box-shadow:0 4px 14px rgba(0,0,0,.4);font-size:14px}
 @media(min-width:700px){h1{font-size:40px}.kpis{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:1fr 1fr}.plans{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
@@ -149,14 +157,19 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   }
   function note(msg) { container.innerHTML = '<p class="muted">' + esc(msg) + "</p>"; }
 
+  const logoImg = x => x && x.logo ? '<img class="logo" loading="lazy" alt="" src="' + esc(x.logo) + '" onerror="this.remove()">' : "";
   function card(item) {
     const f = item.fixture || {}, t = item.teams || {}, l = item.league || {}, g = item.goals || {};
     const time = item._heure || (f.date ? new Date(f.date).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Africa/Douala"}) : "--:--");
     const code = (f.status && f.status.short) || "";
     const score = g.home != null && g.away != null ? g.home + " - " + g.away : "";
-    return '<article class="match"><div class="lg">' + esc(l.name) + (l.country ? " · " + esc(l.country) : "") + (item._ligne ? " · Ligne " + Number(item._ligne).toFixed(1) : "") + '</div>' +
-      '<div class="tm"><div class="teams"><strong>' + esc(t.home && t.home.name) + '</strong><span>vs</span><strong>' + esc(t.away && t.away.name) + '</strong></div>' +
-      '<div><div class="sc">' + esc(score) + '</div><div class="st">' + esc(time) + (code ? " · " + esc(STATUS[code] || code) : "") + '</div></div></div>' +
+    const v = f.venue || {};
+    const sub = [String(l.round || "").replace(/^Regular Season - /i, "Journée "), v.name, v.city].filter(Boolean).join(" · ");
+    const ht = item.score && item.score.halftime;
+    const htTxt = ["FT", "AET", "PEN"].includes(code) && ht && ht.home != null ? " · MT " + ht.home + "-" + ht.away : "";
+    return '<article class="match"><div class="lg">' + (l.logo ? '<img class="logo" style="width:18px;height:18px" loading="lazy" alt="" src="' + esc(l.logo) + '" onerror="this.remove()">' : "") + esc(l.name) + (l.country ? " · " + esc(l.country) : "") + (item._ligne ? " · Ligne " + Number(item._ligne).toFixed(1) : "") + '</div>' + (sub ? '<div class="lg" style="font-size:12px">' + esc(sub) + '</div>' : "") +
+      '<div class="tm"><div class="teams"><strong>' + logoImg(t.home) + esc(t.home && t.home.name) + '</strong><span>vs</span><strong>' + logoImg(t.away) + esc(t.away && t.away.name) + '</strong></div>' +
+      '<div><div class="sc">' + esc(score) + '</div><div class="st">' + esc(time) + (code ? " · " + esc(STATUS[code] || code) : "") + esc(htTxt) + '</div></div></div>' +
       '<button class="analyse-btn" data-id="' + esc(f.id) + '" data-home="' + esc(t.home && t.home.name) + '" data-away="' + esc(t.away && t.away.name) + '">Analyser</button></article>';
   }
   const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
@@ -211,6 +224,18 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     }));
     return out.slice(0, 4);
   }
+  function bestUnder(odds) {
+    const all = [];
+    (odds || []).forEach(entry => (entry.bookmakers || []).forEach(bk => {
+      const bet = (bk.bets || []).find(b => /over\/under/i.test(b.name) && !/half|1st|2nd|team|first|second/i.test(b.name));
+      const u = bet && (bet.values || []).find(x => /^under 2\.5$/i.test(String(x.value)));
+      if (u && Number(u.odd) > 1) all.push({ name: bk.name, odd: Number(u.odd) });
+    }));
+    if (!all.length) return "";
+    all.sort((a, b) => b.odd - a.odd);
+    const best = all[0], low = all[all.length - 1];
+    return "<p>Meilleure cote Under 2.5 : <b>" + best.odd.toFixed(2) + "</b> (" + esc(best.name) + ") · probabilité implicite ≈ " + Math.round(100 / best.odd) + " % (avant marge)" + (all.length > 1 ? "<br>Écart entre bookmakers : " + (best.odd - low.odd).toFixed(2) : "") + "</p>";
+  }
   function h2hHtml(list) {
     const done = (list || []).filter(m => m.goals && m.goals.home != null && m.goals.away != null);
     if (!done.length) return "<p class='muted'>Aucune confrontation trouvée.</p>";
@@ -230,7 +255,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
       html += "<p class='muted'>Indisponibles pour le moment (plan gratuit de la source de données).</p>";
     }
     html += "<h4>Face-à-face (H2H)</h4>" + h2hHtml(a.h2h);
-    html += "<h4>Cotes</h4>" + (odds.length ? "<ul>" + odds.map(o => "<li>" + esc(o) + "</li>").join("") + "</ul>" : "<p class='muted'>Aucune cote Under disponible.</p>");
+    html += "<h4>Cotes</h4>" + bestUnder(a.odds) + (odds.length ? "<ul>" + odds.map(o => "<li>" + esc(o) + "</li>").join("") + "</ul>" : "<p class='muted'>Aucune cote Under disponible.</p>");
     html += "<div class='verdict'><b>Verdict : non évalué</b><br>" + ((hs && as) ? "Calcul de la cohérence à venir." : "Données insuffisantes : les 10 derniers matchs manquent. Aucune sélection n'est forcée.") + "</div>";
     if (errs.length) html += "<h4>Remarques</h4><ul>" + errs.map(e => "<li class='muted'>" + esc(e) + "</li>").join("") + "</ul>";
     return html;
@@ -315,6 +340,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   const box = document.getElementById("bilansBox");
   const esc = v => String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
+  const logoImg = x => x && x.logo ? '<img class="logo" loading="lazy" alt="" src="' + esc(x.logo) + '" onerror="this.remove()">' : "";
   const fmtDay = d => d.split("-").reverse().join("/");
   const addDay = d => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + 1); return x.toISOString().slice(0, 10); };
   const toks = s => norm(s).split(" ").filter(w => w.length > 3);
@@ -339,6 +365,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     const keys = Object.keys(days).sort().reverse().slice(0, 7);
     if (!keys.length) { box.innerHTML = '<p class="muted">Aucune journée enregistrée pour le moment. Un match n\'est publié ici que s\'il respecte tous les critères.</p>'; return; }
     box.innerHTML = "";
+    let W = 0, L = 0, P = 0;
     for (const day of keys) {
       const list = days[day] || [];
       const fixtures = list.length ? await dayFixtures(day) : [];
@@ -354,7 +381,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
         if (it) {
           const done = ["FT", "AET", "PEN"].includes(it.fixture.status.short);
           const ft = it.score && it.score.fulltime && it.score.fulltime.home != null ? it.score.fulltime : it.goals;
-          line = esc(it.teams.home.name) + " " + (done ? ft.home + " - " + ft.away : "vs") + " " + esc(it.teams.away.name);
+          line = logoImg(it.teams.home) + esc(it.teams.home.name) + " " + (done ? ft.home + " - " + ft.away : "vs") + " " + logoImg(it.teams.away) + esc(it.teams.away.name);
           if (done && ft.home != null) {
             const total = ft.home + ft.away, ligne = Number(sel.cible || 2.5);
             if (total < ligne) { res = "Validé"; cls = "sc"; win++; }
@@ -368,11 +395,14 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
         ? "Bilan : " + win + " validé(s) · " + lost + " perdu(s)" + (push ? " · " + push + " remboursé(s)" : "") + (wait ? " · " + wait + " en attente" : "")
         : "AUCUN RETENU pour le moment";
       box.insertAdjacentHTML("beforeend", '<h3 style="color:var(--gold);margin:18px 0 8px">' + fmtDay(day) + '</h3><p class="muted">' + head + "</p>" + rows);
+      W += win; L += lost; P += push;
     }
+    if (W + L > 0) box.insertAdjacentHTML("afterbegin", '<div class="panel" style="margin-bottom:12px"><b>Bilan global (7 derniers jours)</b><br>' + W + " validé(s) · " + L + " perdu(s)" + (P ? " · " + P + " remboursé(s)" : "") + " · réussite " + Math.round(100 * W / (W + L)) + " % sur " + (W + L) + " matchs réglés</div>");
   } catch (e) {
     box.innerHTML = '<p class="muted">Bilans indisponibles pour le moment.</p>';
   }
 })();
 </script>
+<a class="wa" href="https://wa.me/14378878662?text=Bonjour%20Horizon%20Football%2C%20j%27ai%20une%20question." target="_blank" rel="noopener">💬 WhatsApp</a>
 </body>
 </html>
