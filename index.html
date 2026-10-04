@@ -3,330 +3,262 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Horizon Football — L'analyse du football par les statistiques</title>
-<meta name="description" content="Horizon Football : statistiques, tendances, analyses de matchs et guides sur le football.">
-<link rel="stylesheet" href="style.css">
+<title>Horizon Football — Les statistiques avant les intuitions</title>
+<meta name="description" content="Horizon Football : statistiques, tendances, analyses de matchs et méthode Under 2.5.">
+<style>
+:root{--navy:#07152f;--blue:#0f2a5c;--card:#10244d;--gold:#f2b632;--white:#fff;--muted:#a9b8d6;--line:#1f3a70}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gradient(180deg,var(--navy),#0a1d42 60%,var(--navy));color:var(--white);line-height:1.5}
+a{color:inherit;text-decoration:none}
+.header{position:sticky;top:0;z-index:50;background:rgba(7,21,47,.95);border-bottom:1px solid var(--line);padding:10px 16px}
+.brand{display:flex;align-items:center;gap:10px}
+.ball{font-size:28px}
+.brand b{letter-spacing:2px;font-size:18px}
+.brand strong{color:var(--gold);letter-spacing:2px;font-size:18px;margin-left:6px}
+.brand small{display:block;color:var(--muted);font-size:11px}
+nav{display:flex;gap:16px;overflow-x:auto;margin-top:8px;font-size:14px;white-space:nowrap}
+nav a{color:var(--muted);padding:4px 0}
+nav a:hover{color:var(--gold)}
+main{max-width:980px;margin:0 auto;padding:0 16px 40px}
+.hero{padding:36px 0 20px}
+.eyebrow{color:var(--gold);letter-spacing:3px;font-size:12px;margin:0}
+h1{font-size:30px;line-height:1.15;margin:8px 0 12px}
+h1 span{color:var(--gold)}
+h2{font-size:22px;margin:0 0 14px}
+.lead{color:var(--muted);max-width:620px}
+.btn{display:inline-block;background:var(--gold);color:#1a1200;font-weight:700;border:0;border-radius:10px;padding:12px 20px;cursor:pointer;font-size:15px}
+.btn[disabled]{opacity:.55;cursor:default}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:22px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi b{display:block;font-size:24px;color:var(--gold)}
+.kpi span{color:var(--muted);font-size:13px}
+.section{padding:26px 0}
+.match{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+.lg{color:var(--muted);font-size:13px}
+.tm{display:flex;justify-content:space-between;align-items:center;margin:6px 0 10px;gap:8px}
+.teams strong{display:block}
+.teams span{color:var(--muted);font-size:12px}
+.sc{font-size:20px;font-weight:700;color:var(--gold);white-space:nowrap}
+.st{font-size:12px;color:var(--muted);text-align:right}
+.analyse-btn{background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}
+.muted{color:var(--muted)}
+.grid{display:grid;gap:16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.panel h3{margin-top:0;color:var(--gold)}
+ol{padding-left:20px;margin:0}
+ol li{margin-bottom:6px}
+.flow{color:var(--gold);font-weight:600}
+.plans{display:grid;gap:12px}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center}
+.plan b{display:block;font-size:22px;color:var(--gold);margin:6px 0 12px}
+footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;color:var(--muted);font-size:13px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:flex-start;justify-content:center;z-index:100;padding:16px;overflow-y:auto}
+.box{background:var(--navy);border:1px solid var(--gold);border-radius:16px;padding:20px;max-width:560px;width:100%;margin:auto}
+.box h2{margin-top:0}
+.box h4{color:var(--gold);margin:16px 0 6px}
+.box ul{margin:4px 0;padding-left:18px}
+.verdict{background:var(--card);border-left:4px solid var(--gold);padding:10px 12px;border-radius:8px;margin-top:14px}
+@media(min-width:700px){h1{font-size:40px}.kpis{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:1fr 1fr}.plans{grid-template-columns:repeat(3,1fr)}}
+</style>
 </head>
 <body>
 <header class="header">
-  <div class="brand"><span class="ball">⚽</span><div><b>HORIZON</b><strong>FOOTBALL</strong><small>L’analyse du football par les statistiques</small></div></div>
-  <nav>
-    <a href="#matchs">Matchs du jour</a><a href="#under">Under 2.5</a><a href="#stats">Statistiques</a>
-    <a href="#analyses">Analyses</a><a href="#premium">Premium</a><a href="#guides">Guides</a>
-  </nav>
+  <div class="brand"><span class="ball">⚽</span><div><b>HORIZON</b><strong>FOOTBALL</strong><small>Les statistiques avant les intuitions</small></div></div>
+  <nav><a href="#matchs">Matchs du jour</a><a href="#under">Méthode Under 2.5</a><a href="#premium">Premium</a></nav>
 </header>
 
 <main>
 <section class="hero">
-  <div>
-    <p class="eyebrow">HORIZON FOOTBALL</p>
-    <h1>Les statistiques avant les intuitions.</h1>
-    <p>Analyses, tendances, statistiques et méthodes pour mieux comprendre les matchs de football.</p>
-    <a class="btn" href="#matchs">Voir les matchs du jour →</a>
+  <p class="eyebrow">ANALYSE FOOTBALL</p>
+  <h1>Les statistiques <span>avant les intuitions.</span></h1>
+  <p class="lead">Tendances, 10 derniers matchs, H2H, cotes et mouvement des cotes : un match n'est retenu que si tout va dans le même sens.</p>
+  <p><a class="btn" href="#matchs">Voir les matchs du jour →</a></p>
+  <div class="kpis">
+    <div class="kpi"><b id="countToday">–</b><span>Matchs aujourd'hui</span></div>
+    <div class="kpi"><b>2.0</b><span>Ligne de référence</span></div>
+    <div class="kpi"><b>10</b><span>Derniers matchs analysés</span></div>
+    <div class="kpi"><b>H2H</b><span>Face-à-face et cotes</span></div>
   </div>
-  <div class="hero-card"><b>Notre approche</b><p>Données récentes · ligne de buts · profils défensifs · cotes · validation du signal</p></div>
 </section>
 
 <section id="matchs" class="section">
-<h2>Matchs du jour</h2>
-<div class="table-wrap"><table><thead><tr><th>Match</th><th>Compétition</th><th>Tendance</th><th>Ligne</th><th>Statut</th></tr></thead>
-<tbody data-live-fixtures></tbody>
-
-
-</table></div>
-<p class="note">Les exemples sont des contenus de démonstration et ne constituent pas des recommandations de pari.</p>
+  <h2>Matchs du jour</h2>
+  <div data-live-fixtures></div>
+  <p><button id="moreBtn" class="analyse-btn" style="display:none">Afficher plus de matchs</button></p>
+  <p class="muted" style="font-size:13px">Les analyses sont informatives et ne garantissent aucun résultat.</p>
 </section>
 
 <section id="under" class="section grid">
-<div><h2>Notre méthode Under 2.5</h2>
-<ol>
-<li>TotalCorner → Under 2.5</li><li>10 derniers matchs</li><li>Populaires → Avant-match</li>
-<li>Ligne de buts autour de 2.0</li><li>Profil défensif des deux équipes</li><li>Domicile / extérieur</li>
-<li>H2H lorsque pertinent</li><li>Cote et mouvement de cote</li><li>Validation du signal</li>
-</ol></div>
-<div class="panel"><h3>Règle de sélection</h3><p>Si les statistiques, la ligne, les profils défensifs et le marché ne sont pas cohérents, le match n'est pas retenu.</p><b>Aucun match n’est garanti.</b></div>
+  <div>
+    <h2>Notre méthode Under 2.5</h2>
+    <p class="flow">TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p>
+    <ol>
+      <li>Ligne autour de 2.0</li><li>Profil défensif des deux équipes</li><li>Buts encaissés</li>
+      <li>Clean sheets</li><li>Moyenne de buts encaissés</li><li>Domicile / extérieur</li>
+      <li>xGA si disponible</li><li>10 derniers matchs</li><li>H2H si utile</li>
+      <li>Cote Under 2.5</li><li>Mouvement des cotes</li><li>Cohérence générale</li>
+    </ol>
+  </div>
+  <div class="panel">
+    <h3>Règle de sélection</h3>
+    <p>Statistiques, cote et mouvement des cotes doivent aller dans le même sens.</p>
+    <p><b>Cohérents → MATCH RETENU.<br>Contradictoires → AUCUN RETENU.</b></p>
+    <p class="muted">Aucune sélection n'est jamais forcée. Aucun match n'est garanti.</p>
+  </div>
 </section>
 
-<section id="stats" class="section">
-<h2>Statistiques</h2><div class="cards">
-<div class="card"><b>10 derniers</b><span>Forme récente</span></div>
-<div class="card"><b>Under 2.5</b><span>Fréquence observée</span></div>
-<div class="card"><b>Défense</b><span>Buts encaissés / clean sheets</span></div>
-<div class="card"><b>xG / xGA</b><span>Quand les données sont disponibles</span></div>
-</div></section>
-
-<section id="analyses" class="section"><h2>Analyses récentes</h2>
-<div class="article-grid"><article><h3>Comment analyser une ligne 2.0 ?</h3><p>Comprendre la différence entre une ligne asiatique de 2 buts et une ligne 2.5.</p></article>
-<article><h3>Pourquoi vérifier les deux défenses ?</h3><p>Une tendance Under est plus informative lorsqu’elle est soutenue par les profils défensifs des deux équipes.</p></article>
-<article><h3>Lire une évolution de cote</h3><p>Comparer la ligne, la cote initiale et la cote actuelle avant de valider une analyse.</p></article></div></section>
-
-<section id="premium" class="section premium"><h2>Espace Premium</h2>
-<p>Analyses approfondies, suivi des sélections, statistiques supplémentaires et historique des résultats.</p>
-<button class="btn">Découvrir Premium</button>
+<section id="premium" class="section">
+  <h2>Espace Premium</h2>
+  <p class="muted">Analyses approfondies, suivi des sélections, statistiques supplémentaires et historique des résultats.</p>
+  <div class="plans">
+    <div class="plan">7 jours<b>5 000 FCFA</b><button class="btn" disabled>Bientôt disponible</button></div>
+    <div class="plan">1 mois<b>15 000 FCFA</b><button class="btn" disabled>Bientôt disponible</button></div>
+    <div class="plan">1 an<b>150 000 FCFA</b><button class="btn" disabled>Bientôt disponible</button></div>
+  </div>
 </section>
+</main>
+
+<footer>Jeu responsable : le football comporte une part d'incertitude. Réservé aux majeurs. Joue avec modération.<br>© Horizon Football</footer>
+
 <script>
-(async function loadHorizonFixtures() {
+(function () {
   const container = document.querySelector("[data-live-fixtures]");
-  if (!container) return;
+  const moreBtn = document.getElementById("moreBtn");
+  const STATUS = {FT:"Terminé",AET:"Terminé (prol.)",PEN:"Tirs au but",NS:"À venir",TBD:"À confirmer",PST:"Reporté",CANC:"Annulé",HT:"Mi-temps","1H":"En cours","2H":"En cours",ET:"Prolongation",LIVE:"En cours",SUSP:"Suspendu",INT:"Interrompu",ABD:"Abandonné"};
+  let fixtures = [];
+  let shown = 0;
 
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+  function esc(v) {
+    return String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+  }
+  function doualaDate() {
+    const p = new Intl.DateTimeFormat("en-CA",{timeZone:"Africa/Douala",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+    const g = t => p.find(x => x.type === t).value;
+    return g("year") + "-" + g("month") + "-" + g("day");
+  }
+  function note(msg) { container.innerHTML = '<p class="muted">' + esc(msg) + "</p>"; }
+
+  function card(item) {
+    const f = item.fixture || {}, t = item.teams || {}, l = item.league || {}, g = item.goals || {};
+    const time = f.date ? new Date(f.date).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Africa/Douala"}) : "--:--";
+    const code = (f.status && f.status.short) || "";
+    const score = g.home != null && g.away != null ? g.home + " - " + g.away : "";
+    return '<article class="match"><div class="lg">' + esc(l.name) + (l.country ? " · " + esc(l.country) : "") + '</div>' +
+      '<div class="tm"><div class="teams"><strong>' + esc(t.home && t.home.name) + '</strong><span>vs</span><strong>' + esc(t.away && t.away.name) + '</strong></div>' +
+      '<div><div class="sc">' + esc(score) + '</div><div class="st">' + esc(time) + " · " + esc(STATUS[code] || code) + '</div></div></div>' +
+      '<button class="analyse-btn" data-id="' + esc(f.id) + '" data-home="' + esc(t.home && t.home.name) + '" data-away="' + esc(t.away && t.away.name) + '">Analyser</button></article>';
+  }
+  function showMore() {
+    const next = fixtures.slice(shown, shown + 20);
+    container.insertAdjacentHTML("beforeend", next.map(card).join(""));
+    shown += next.length;
+    moreBtn.style.display = shown < fixtures.length ? "inline-block" : "none";
   }
 
-  function getDoualaDate() {
-    const parts = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Africa/Douala",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    }).formatToParts(new Date());
-
-    const year = parts.find(p => p.type === "year").value;
-    const month = parts.find(p => p.type === "month").value;
-    const day = parts.find(p => p.type === "day").value;
-
-    return `${year}-${month}-${day}`;
+  function errLine(v) {
+    if (!v || (Array.isArray(v) && !v.length) || (typeof v === "object" && !Object.keys(v).length)) return null;
+    if (v.info) return v.info;
+    if (v.rateLimit) return "Limite de requêtes atteinte : réessaie dans une minute.";
+    if (v.odds) return v.odds;
+    return typeof v === "string" ? v : JSON.stringify(v);
   }
-
-  const date = getDoualaDate();
-
-  container.innerHTML =
-    '<tr><td colspan="3" class="muted">Chargement des matchs du jour…</td></tr>';
-
-  try {
-    const response = await fetch(
-      `/api/fixtures?date=${date}&timezone=Africa/Douala`,
-      { cache: "no-store" }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Erreur API");
-    }
-
-    const fixtures = data.response || [];
-
-    if (!fixtures.length) {
-      container.innerHTML =
-        '<tr><td colspan="3" class="muted">Aucun match trouvé pour aujourd’hui.</td></tr>';
-      return;
-    }
-
-    container.innerHTML = fixtures.slice(0, 20).map(item => {
-      const fixture = item.fixture || {};
-      const teams = item.teams || {};
-      const league = item.league || {};
-
-      const home = teams.home?.name || "Équipe A";
-      const away = teams.away?.name || "Équipe B";
-
-      const time = fixture.date
-        ? new Date(fixture.date).toLocaleTimeString("fr-FR", {
-            hour: "2-digit",
-            minute: "2-digit",
-            timeZone: "Africa/Douala"
-          })
-        : "--:--";
-
-      const status = fixture.status?.short || "";
-
-      return `
-        <tr>
-          <td colspan="3">
-            <article class="match-card">
-
-              <div class="match-league">
-                ${escapeHtml(league.name)}
-              </div>
-
-              <div class="match-time">
-                ${escapeHtml(time)} · ${escapeHtml(status)}
-              </div>
-
-              <div class="match-teams">
-                <strong>${escapeHtml(home)}</strong>
-                <span>vs</span>
-                <strong>${escapeHtml(away)}</strong>
-              </div>
-
-              <button
-                class="analyse-btn"
-                data-fixture-id="${escapeHtml(fixture.id)}">
-                Analyser
-              </button>
-
-            </article>
-          </td>
-        </tr>
-      `;
-    }).join("");
-
-    container.querySelectorAll(".analyse-btn").forEach(button => {
-
-      button.addEventListener("click", async () => {
-
-        const card = button.closest(".match-card");
-        const fixtureId = button.dataset.fixtureId;
-
-        const home =
-          card?.querySelector(".match-teams strong:first-child")?.innerText
-          || "Équipe A";
-
-        const away =
-          card?.querySelector(".match-teams strong:last-child")?.innerText
-          || "Équipe B";
-
-        const analyseBox = document.createElement("div");
-
-        analyseBox.style.cssText =
-          "position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;";
-
-        analyseBox.innerHTML = `
-          <div style="background:white;border-radius:16px;padding:24px;max-width:520px;width:100%;color:#111;">
-
-            <h2>Analyse du match</h2>
-
-            <h3>
-              ${escapeHtml(home)} vs ${escapeHtml(away)}
-            </h3>
-
-            <p>
-              <strong>Méthode :</strong><br>
-              TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match
-            </p>
-
-            <p>
-              <strong>Ligne :</strong> 2.0
-            </p>
-
-            <p id="analysisStatus">
-              <strong>Statut :</strong> Analyse en cours…
-            </p>
-
-            <button
-              id="closeAnalyse"
-              style="padding:10px 18px;border:0;border-radius:8px;">
-              Fermer
-            </button>
-
-          </div>
-        `;
-
-        document.body.appendChild(analyseBox);
-
-        analyseBox.querySelector("#closeAnalyse").onclick = () => {
-          analyseBox.remove();
-        };
-
-        try {
-
-          const controller = new AbortController();
-
-          const timeout = setTimeout(() => {
-            controller.abort();
-          }, 20000);
-
-          const response = await fetch(
-            `/api/analyze?id=${encodeURIComponent(fixtureId)}`,
-            {
-              cache: "no-store",
-              signal: controller.signal
-            }
-          );
-
-          clearTimeout(timeout);
-
-          const text = await response.text();
-
-          let analysis;
-
-          try {
-            analysis = JSON.parse(text);
-          } catch {
-            throw new Error("Réponse API invalide.");
-          }
-
-          if (!response.ok) {
-            throw new Error(
-              analysis.error || "Erreur d'analyse"
-            );
-          }
-
-          const statusBox =
-            analyseBox.querySelector("#analysisStatus");
-
-          const homeLast10 =
-            analysis.teams?.home?.last10?.length || 0;
-
-          const awayLast10 =
-            analysis.teams?.away?.last10?.length || 0;
-
-          const h2h =
-            analysis.h2h?.length || 0;
-
-          const odds =
-            analysis.odds?.length || 0;
-
-          const apiErrors = analysis.apiErrors || {};
-
-statusBox.innerHTML =
-          
-            "<br><br>" +
-            "<strong>Match :</strong> " +
-            escapeHtml(home) +
-            " vs " +
-            escapeHtml(away) +
-            "<br><br>" +
-            "<strong>Données :</strong><br>" +
-            homeLast10 +
-            " matchs récents — domicile/équipe<br>" +
-            awayLast10 +
-            " matchs récents — extérieur/équipe<br>" +
-            h2h +
-            " confrontations H2H<br>" +
-            odds +
-            " données de cotes.";const errorDetails = Object.entries(apiErrors)
-  .filter(([key, value]) => value)
-  .map(([key, value]) => key + " : " + JSON.stringify(value))
-  .join("<br>");
-
-if (errorDetails) {
-  statusBox.innerHTML +=
-    "<br><br><strong>Erreurs API :</strong><br>" +
-    escapeHtml(errorDetails);
-}
-
-        } catch (error) {
-
-          const statusBox =
-            analyseBox.querySelector("#analysisStatus");
-
-          statusBox.innerHTML =
-            "<strong>Erreur :</strong> " +
-            escapeHtml(
-              error.name === "AbortError"
-                ? "L’analyse prend trop de temps. Réessaie."
-                : error.message
-            );
-        }
-      });
+  function teamStats(team) {
+    const list = (team && team.last10) || [];
+    if (!list.length) return null;
+    let conceded = 0, clean = 0, under = 0;
+    list.forEach(m => {
+      const home = m.teams.home.id === team.id;
+      const c = home ? m.goals.away : m.goals.home;
+      const total = (m.goals.home || 0) + (m.goals.away || 0);
+      conceded += c || 0;
+      if (!c) clean++;
+      if (total <= 2) under++;
     });
-
-  } catch (error) {
-
-    container.innerHTML =
-      '<tr><td colspan="3" class="muted">Erreur : ' +
-      escapeHtml(error.message) +
-      "</td></tr>";
+    const n = list.length;
+    return "Encaissés : " + (conceded / n).toFixed(2) + " par match · Clean sheets : " + clean + "/" + n + " · Under 2.5 : " + under + "/" + n;
+  }
+  function underOdds(odds) {
+    const out = [];
+    (odds || []).forEach(entry => (entry.bookmakers || []).forEach(bk => {
+      const bet = (bk.bets || []).find(b => /over\/under/i.test(b.name) && !/half|1st|2nd|team|first|second/i.test(b.name));
+      if (!bet) return;
+      const vals = bet.values || [];
+      const u25 = vals.find(v => /^under 2\.5$/i.test(String(v.value)));
+      const u20 = vals.find(v => /^under 2(\.0)?$/i.test(String(v.value)));
+      if (u25 || u20) out.push(bk.name + " — " + (u25 ? "Under 2.5 : " + u25.odd : "") + (u25 && u20 ? " · " : "") + (u20 ? "Under 2.0 : " + u20.odd : ""));
+    }));
+    return out.slice(0, 4);
+  }
+  function h2hHtml(list) {
+    const done = (list || []).filter(m => m.goals && m.goals.home != null && m.goals.away != null);
+    if (!done.length) return "<p class='muted'>Aucune confrontation trouvée.</p>";
+    const under = done.filter(m => m.goals.home + m.goals.away <= 2).length;
+    const rows = done.slice(0, 5).map(m => "<li>" + esc(new Date(m.fixture.date).toLocaleDateString("fr-FR")) + " · " + esc(m.teams.home.name) + " " + m.goals.home + " - " + m.goals.away + " " + esc(m.teams.away.name) + "</li>").join("");
+    return "<p>Sous 2.5 buts : <b>" + under + "/" + done.length + "</b></p><ul>" + rows + "</ul>";
   }
 
+  function render(a, home, away) {
+    const hs = teamStats(a.teams && a.teams.home), as = teamStats(a.teams && a.teams.away);
+    const odds = underOdds(a.odds);
+    const errs = Object.values(a.apiErrors || {}).map(errLine).filter(Boolean);
+    let html = "<h4>10 derniers matchs</h4>";
+    if (hs || as) {
+      html += "<p><b>" + esc(home) + "</b><br>" + (hs ? esc(hs) : "indisponible") + "</p><p><b>" + esc(away) + "</b><br>" + (as ? esc(as) : "indisponible") + "</p>";
+    } else {
+      html += "<p class='muted'>Indisponibles pour le moment (plan gratuit de la source de données).</p>";
+    }
+    html += "<h4>Face-à-face (H2H)</h4>" + h2hHtml(a.h2h);
+    html += "<h4>Cotes</h4>" + (odds.length ? "<ul>" + odds.map(o => "<li>" + esc(o) + "</li>").join("") + "</ul>" : "<p class='muted'>Aucune cote Under disponible.</p>");
+    html += "<div class='verdict'><b>Verdict : non évalué</b><br>" + ((hs && as) ? "Calcul de la cohérence à venir." : "Données insuffisantes : les 10 derniers matchs manquent. Aucune sélection n'est forcée.") + "</div>";
+    if (errs.length) html += "<h4>Remarques</h4><ul>" + errs.map(e => "<li class='muted'>" + esc(e) + "</li>").join("") + "</ul>";
+    return html;
+  }
+
+  async function openAnalysis(id, home, away) {
+    const modal = document.createElement("div");
+    modal.className = "modal";
+    modal.innerHTML = '<div class="box"><h2>Analyse du match</h2><h3>' + esc(home) + " vs " + esc(away) + '</h3><p class="muted">Ligne de référence : 2.0 · TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p><div id="body"><p>Analyse en cours…</p></div><p><button class="btn" id="closeBtn">Fermer</button></p></div>';
+    document.body.appendChild(modal);
+    modal.querySelector("#closeBtn").onclick = () => modal.remove();
+    modal.addEventListener("click", e => { if (e.target === modal) modal.remove(); });
+    const body = modal.querySelector("#body");
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 25000);
+      const res = await fetch("/api/analyze?id=" + encodeURIComponent(id), { cache: "no-store", signal: ctrl.signal });
+      clearTimeout(timer);
+      const a = JSON.parse(await res.text());
+      if (!res.ok) throw new Error(a.error || "Erreur d'analyse");
+      body.innerHTML = render(a, home, away);
+    } catch (e) {
+      body.innerHTML = "<p><b>Erreur :</b> " + esc(e.name === "AbortError" ? "L'analyse prend trop de temps. Réessaie." : e.message) + "</p>";
+    }
+  }
+
+  container.addEventListener("click", e => {
+    const b = e.target.closest(".analyse-btn");
+    if (b) openAnalysis(b.dataset.id, b.dataset.home, b.dataset.away);
+  });
+  moreBtn.addEventListener("click", showMore);
+
+  (async function load() {
+    note("Chargement des matchs du jour…");
+    try {
+      const res = await fetch("/api/fixtures?date=" + doualaDate() + "&timezone=Africa/Douala", { cache: "no-store" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur API");
+      const errs = data.errors && !Array.isArray(data.errors) ? errLine(data.errors) : null;
+      if (errs) throw new Error(errs);
+      fixtures = (data.response || []).sort((x, y) => new Date(x.fixture.date) - new Date(y.fixture.date));
+      document.getElementById("countToday").textContent = fixtures.length;
+      if (!fixtures.length) return note("Aucun match trouvé pour aujourd'hui.");
+      container.innerHTML = "";
+      showMore();
+    } catch (e) {
+      note("Erreur : " + e.message);
+    }
+  })();
 })();
 </script>
-
-</body></html>
+</body>
+</html>
