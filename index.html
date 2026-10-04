@@ -64,7 +64,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
 <body>
 <header class="header">
   <div class="brand"><span class="ball">⚽</span><div><b>HORIZON</b><strong>FOOTBALL</strong><small>Les statistiques avant les intuitions</small></div></div>
-  <nav><a href="#matchs">Matchs du jour</a><a href="#under">Méthode Under 2.5</a><a href="#premium">Premium</a></nav>
+  <nav><a href="#matchs">Matchs du jour</a><a href="#bilans">Bilans</a><a href="#under">Méthode Under 2.5</a><a href="#premium">Premium</a></nav>
 </header>
 
 <main>
@@ -86,6 +86,12 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   <div data-live-fixtures></div>
   <p><button id="moreBtn" class="analyse-btn" style="display:none">Afficher plus de matchs</button></p>
   <p class="muted" style="font-size:13px">Les analyses sont informatives et ne garantissent aucun résultat.</p>
+</section>
+
+<section id="bilans" class="section">
+  <h2>Résultats &amp; bilans</h2>
+  <p class="muted">Seuls les matchs retenus par la méthode sont comptés. Chaque journée a sa propre liste, ses scores et son bilan.</p>
+  <div id="bilansBox"><p class="muted">Chargement…</p></div>
 </section>
 
 <section id="under" class="section grid">
@@ -140,13 +146,24 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
 
   function card(item) {
     const f = item.fixture || {}, t = item.teams || {}, l = item.league || {}, g = item.goals || {};
-    const time = f.date ? new Date(f.date).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Africa/Douala"}) : "--:--";
+    const time = item._heure || (f.date ? new Date(f.date).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Africa/Douala"}) : "--:--");
     const code = (f.status && f.status.short) || "";
     const score = g.home != null && g.away != null ? g.home + " - " + g.away : "";
-    return '<article class="match"><div class="lg">' + esc(l.name) + (l.country ? " · " + esc(l.country) : "") + '</div>' +
+    return '<article class="match"><div class="lg">' + esc(l.name) + (l.country ? " · " + esc(l.country) : "") + (item._ligne ? " · Ligne " + esc(item._ligne) : "") + '</div>' +
       '<div class="tm"><div class="teams"><strong>' + esc(t.home && t.home.name) + '</strong><span>vs</span><strong>' + esc(t.away && t.away.name) + '</strong></div>' +
-      '<div><div class="sc">' + esc(score) + '</div><div class="st">' + esc(time) + " · " + esc(STATUS[code] || code) + '</div></div></div>' +
+      '<div><div class="sc">' + esc(score) + '</div><div class="st">' + esc(time) + (code ? " · " + esc(STATUS[code] || code) : "") + '</div></div></div>' +
       '<button class="analyse-btn" data-id="' + esc(f.id) + '" data-home="' + esc(t.home && t.home.name) + '" data-away="' + esc(t.away && t.away.name) + '">Analyser</button></article>';
+  }
+  const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
+  const toks = s => norm(s).split(" ").filter(w => w.length > 3);
+  const overlap = (x, y) => { const ty = toks(y); return toks(x).filter(w => ty.some(z => z === w || z.startsWith(w) || w.startsWith(z))).length; };
+  function findFixture(list, hn, an) {
+    let best = null, bestScore = 0;
+    for (const f of list) {
+      const sh = overlap(hn, f.teams.home.name), sa = overlap(an, f.teams.away.name);
+      if (sh && sa && sh + sa > bestScore) { best = f; bestScore = sh + sa; }
+    }
+    return best;
   }
   function showMore() {
     const next = fixtures.slice(shown, shown + 20);
@@ -223,6 +240,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     modal.addEventListener("click", e => { if (e.target === modal) modal.remove(); });
     const body = modal.querySelector("#body");
     try {
+      if (!id) throw new Error("Match introuvable dans la source de données pour le moment. Réessaie plus tard.");
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), 25000);
       const res = await fetch("/api/analyze?id=" + encodeURIComponent(id), { cache: "no-store", signal: ctrl.signal });
@@ -243,21 +261,96 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
 
   (async function load() {
     note("Chargement des matchs du jour…");
+    let api = [], apiError = null;
     try {
       const res = await fetch("/api/fixtures?date=" + doualaDate() + "&timezone=Africa/Douala", { cache: "no-store" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur API");
       const errs = data.errors && !Array.isArray(data.errors) ? errLine(data.errors) : null;
       if (errs) throw new Error(errs);
-      fixtures = (data.response || []).sort((x, y) => new Date(x.fixture.date) - new Date(y.fixture.date));
-      document.getElementById("countToday").textContent = fixtures.length;
-      if (!fixtures.length) return note("Aucun match trouvé pour aujourd'hui.");
-      container.innerHTML = "";
-      showMore();
-    } catch (e) {
-      note("Erreur : " + e.message);
+      api = (data.response || []).sort((x, y) => new Date(x.fixture.date) - new Date(y.fixture.date));
+    } catch (e) { apiError = e.message; }
+    let mine = [];
+    try {
+      const sel = await (await fetch("/selections.json", { cache: "no-store" })).json();
+      mine = sel[doualaDate()] || [];
+    } catch (e) {}
+    if (mine.length) {
+      fixtures = mine.map(s => {
+        const p = String(s.match || "").split(/\s+vs\s+/i);
+        const f = findFixture(api, p[0], p[1]);
+        const base = f || { fixture: { id: null, date: null, status: {} }, teams: { home: { name: p[0] }, away: { name: p[1] } }, league: { name: s.competition || "" }, goals: {} };
+        return Object.assign({}, base, { _heure: s.heure, _ligne: s.ligne });
+      });
+    } else {
+      if (apiError) return note("Erreur : " + apiError);
+      fixtures = api;
     }
+    document.getElementById("countToday").textContent = fixtures.length;
+    if (!fixtures.length) return note("Aucun match trouvé pour aujourd'hui.");
+    container.innerHTML = "";
+    showMore();
   })();
+})();
+</script>
+<script>
+(async function () {
+  const box = document.getElementById("bilansBox");
+  const esc = v => String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
+  const fmtDay = d => d.split("-").reverse().join("/");
+  const toks = s => norm(s).split(" ").filter(w => w.length > 3);
+  const overlap = (x, y) => { const ty = toks(y); return toks(x).filter(w => ty.some(z => z === w || z.startsWith(w) || w.startsWith(z))).length; };
+  function findFixture(list, hn, an) {
+    let best = null, bestScore = 0;
+    for (const f of list) {
+      const sh = overlap(hn, f.teams.home.name), sa = overlap(an, f.teams.away.name);
+      if (sh && sa && sh + sa > bestScore) { best = f; bestScore = sh + sa; }
+    }
+    return best;
+  }
+  async function dayFixtures(day) {
+    try {
+      const r = await fetch("/api/fixtures?date=" + day + "&timezone=Africa/Douala");
+      const d = await r.json();
+      return d.response || [];
+    } catch (e) { return []; }
+  }
+  try {
+    const days = await (await fetch("/selections.json", { cache: "no-store" })).json();
+    const keys = Object.keys(days).sort().reverse().slice(0, 7);
+    if (!keys.length) { box.innerHTML = '<p class="muted">Aucune journée enregistrée pour le moment. Un match n\'est publié ici que s\'il respecte tous les critères.</p>'; return; }
+    box.innerHTML = "";
+    for (const day of keys) {
+      const list = (days[day] || []).filter(s => s.retenu);
+      const fixtures = list.length ? await dayFixtures(day) : [];
+      let win = 0, lost = 0, push = 0, wait = 0, rows = "";
+      for (const sel of list) {
+        const parts = String(sel.match || "").split(/\s+vs\s+/i);
+        const h = norm(parts[0]), a = norm(parts[1]);
+        const it = findFixture(fixtures, h, a);
+        let line = esc(sel.match), res = "En attente", cls = "muted";
+        if (it) {
+          const done = ["FT", "AET", "PEN"].includes(it.fixture.status.short);
+          const ft = it.score && it.score.fulltime && it.score.fulltime.home != null ? it.score.fulltime : it.goals;
+          line = esc(it.teams.home.name) + " " + (done ? ft.home + " - " + ft.away : "vs") + " " + esc(it.teams.away.name);
+          if (done && ft.home != null) {
+            const total = ft.home + ft.away, ligne = Number(sel.ligne || 2.5);
+            if (total < ligne) { res = "Validé"; cls = "sc"; win++; }
+            else if (total === ligne) { res = "Remboursé"; push++; }
+            else { res = "Perdu"; lost++; }
+          } else wait++;
+        } else wait++;
+        rows += '<div class="match"><div class="tm"><div class="teams"><strong>' + line + '</strong><span>Under ' + esc(sel.ligne || 2.5) + '</span></div><div class="' + cls + '">' + res + "</div></div></div>";
+      }
+      const head = list.length
+        ? "Bilan : " + win + " validé(s) · " + lost + " perdu(s)" + (push ? " · " + push + " remboursé(s)" : "") + (wait ? " · " + wait + " en attente" : "")
+        : "AUCUN RETENU pour le moment";
+      box.insertAdjacentHTML("beforeend", '<h3 style="color:var(--gold);margin:18px 0 8px">' + fmtDay(day) + '</h3><p class="muted">' + head + "</p>" + rows);
+    }
+  } catch (e) {
+    box.innerHTML = '<p class="muted">Bilans indisponibles pour le moment.</p>';
+  }
 })();
 </script>
 </body>
