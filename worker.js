@@ -27,16 +27,34 @@ async function apiGet(path, apiKey, ttl) {
 }
 
 // 10 derniers matchs terminés d'une équipe via API-Football (cache 6 h si succès).
-// 1re tentative : last=10. Si le plan refuse, 2e tentative : toute la saison, on garde les 10 plus récents.
-async function teamLast10(teamId, season, apiKey) {
-  const first = await apiGet(`/fixtures?team=${teamId}&last=10&status=FT`, apiKey, 21600);
+// Le plan gratuit refuse le paramètre "last". On essaie donc :
+//   1) une plage de dates (les 120 jours avant le match), 2) toute la saison.
+// Dans les deux cas on garde les 10 plus récents. Les erreurs de chaque essai sont renvoyées.
+function errText(data) {
+  const e = data && data.errors;
+  if (!e || Object.keys(e).length === 0) return null;
+  return typeof e === "string" ? e : JSON.stringify(e);
+}
+
+async function teamLast10(teamId, season, fixtureDate, apiKey) {
+  const to = fixtureDate.toISOString().slice(0, 10);
+  const fromObj = new Date(fixtureDate);
+  fromObj.setUTCDate(fromObj.getUTCDate() - 120);
+  const from = fromObj.toISOString().slice(0, 10);
+
+  const first = await apiGet(
+    `/fixtures?team=${teamId}&from=${from}&to=${to}&status=FT`,
+    apiKey,
+    21600
+  );
   if (!hasApiErrors(first.data) && (first.data.response || []).length) {
     return first;
   }
-  const errs = first.data.errors || {};
-  if (errs.rateLimit || errs.requests) {
+  const err1 = errText(first.data);
+  if (first.data.errors?.rateLimit || first.data.errors?.requests) {
     return first; // limite atteinte : inutile d'insister
   }
+
   const second = await apiGet(
     `/fixtures?team=${teamId}&season=${season}&status=FT`,
     apiKey,
@@ -45,7 +63,18 @@ async function teamLast10(teamId, season, apiKey) {
   if (!hasApiErrors(second.data) && (second.data.response || []).length) {
     return second;
   }
-  return hasApiErrors(first.data) ? first : second;
+  const err2 = errText(second.data);
+  return {
+    data: {
+      response: [],
+      errors: {
+        plageDates: err1 || "aucun match trouvé",
+        saison: err2 || "aucun match trouvé"
+      }
+    },
+    cached: false,
+    status: 200
+  };
 }
 
 function hasApiErrors(data) {
@@ -121,8 +150,8 @@ export default {
 
         // Les 4 appels partent en même temps (plus rapide qu'un après l'autre)
         const [homeResult, awayResult, h2hResult, oddsResult] = await Promise.all([
-          teamLast10(homeId, season, apiKey),
-          teamLast10(awayId, season, apiKey),
+          teamLast10(homeId, season, fixtureDate, apiKey),
+          teamLast10(awayId, season, fixtureDate, apiKey),
           apiGet(`/fixtures/headtohead?h2h=${homeId}-${awayId}`, apiKey, 86400),
           withOdds
             ? apiGet(`/odds?fixture=${fixtureId}`, apiKey, 1800)
