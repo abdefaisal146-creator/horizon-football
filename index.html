@@ -149,7 +149,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     const time = item._heure || (f.date ? new Date(f.date).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Africa/Douala"}) : "--:--");
     const code = (f.status && f.status.short) || "";
     const score = g.home != null && g.away != null ? g.home + " - " + g.away : "";
-    return '<article class="match"><div class="lg">' + esc(l.name) + (l.country ? " · " + esc(l.country) : "") + (item._ligne ? " · Ligne " + esc(item._ligne) : "") + '</div>' +
+    return '<article class="match"><div class="lg">' + esc(l.name) + (l.country ? " · " + esc(l.country) : "") + (item._ligne ? " · Ligne " + Number(item._ligne).toFixed(1) : "") + '</div>' +
       '<div class="tm"><div class="teams"><strong>' + esc(t.home && t.home.name) + '</strong><span>vs</span><strong>' + esc(t.away && t.away.name) + '</strong></div>' +
       '<div><div class="sc">' + esc(score) + '</div><div class="st">' + esc(time) + (code ? " · " + esc(STATUS[code] || code) : "") + '</div></div></div>' +
       '<button class="analyse-btn" data-id="' + esc(f.id) + '" data-home="' + esc(t.home && t.home.name) + '" data-away="' + esc(t.away && t.away.name) + '">Analyser</button></article>';
@@ -275,10 +275,22 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
       const sel = await (await fetch("/selections.json", { cache: "no-store" })).json();
       mine = sel[doualaDate()] || [];
     } catch (e) {}
+    let pool = api;
+    if (mine.length && !apiError) {
+      const parse = s => String(s.match || "").split(/\s+vs\s+/i);
+      if (mine.some(s => { const p = parse(s); return !findFixture(api, p[0], p[1]); })) {
+        try {
+          const x = new Date(doualaDate() + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + 1);
+          const r2 = await fetch("/api/fixtures?date=" + x.toISOString().slice(0, 10) + "&timezone=Africa/Douala", { cache: "no-store" });
+          const d2 = await r2.json();
+          if (r2.ok && d2.response) pool = api.concat(d2.response);
+        } catch (e) {}
+      }
+    }
     if (mine.length) {
       fixtures = mine.map(s => {
         const p = String(s.match || "").split(/\s+vs\s+/i);
-        const f = findFixture(api, p[0], p[1]);
+        const f = findFixture(pool, p[0], p[1]);
         const base = f || { fixture: { id: null, date: null, status: {} }, teams: { home: { name: p[0] }, away: { name: p[1] } }, league: { name: s.competition || "" }, goals: {} };
         return Object.assign({}, base, { _heure: s.heure, _ligne: s.ligne });
       });
@@ -299,6 +311,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   const esc = v => String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
   const fmtDay = d => d.split("-").reverse().join("/");
+  const addDay = d => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + 1); return x.toISOString().slice(0, 10); };
   const toks = s => norm(s).split(" ").filter(w => w.length > 3);
   const overlap = (x, y) => { const ty = toks(y); return toks(x).filter(w => ty.some(z => z === w || z.startsWith(w) || w.startsWith(z))).length; };
   function findFixture(list, hn, an) {
@@ -324,6 +337,9 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     for (const day of keys) {
       const list = days[day] || [];
       const fixtures = list.length ? await dayFixtures(day) : [];
+      if (list.length && list.some(s => { const p = String(s.match || "").split(/\s+vs\s+/i); return !findFixture(fixtures, norm(p[0]), norm(p[1])); })) {
+        fixtures.push(...await dayFixtures(addDay(day)));
+      }
       let win = 0, lost = 0, push = 0, wait = 0, rows = "";
       for (const sel of list) {
         const parts = String(sel.match || "").split(/\s+vs\s+/i);
