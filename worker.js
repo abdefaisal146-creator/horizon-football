@@ -1,5 +1,10 @@
 const BASE = "https://v3.football.api-sports.io";
 
+// Passe à true le jour où tu prends le plan Pro d'API-Football :
+// les 10 derniers matchs de chaque équipe seront alors récupérés.
+const PLAN_PRO = false;
+const MSG_PLAN_GRATUIT = "10 derniers matchs indisponibles avec le plan gratuit";
+
 // Appel API-Football avec cache (ttl en secondes). On ne met en cache QUE les réponses sans erreur.
 async function apiGet(path, apiKey, ttl) {
   const cacheKey = new Request(`https://horizon-football-cache.local${path}`);
@@ -26,55 +31,9 @@ async function apiGet(path, apiKey, ttl) {
   return { data, cached: false, status: response.status };
 }
 
-// 10 derniers matchs terminés d'une équipe via API-Football (cache 6 h si succès).
-// Le plan gratuit refuse le paramètre "last". On essaie donc :
-//   1) une plage de dates (les 120 jours avant le match), 2) toute la saison.
-// Dans les deux cas on garde les 10 plus récents. Les erreurs de chaque essai sont renvoyées.
-function errText(data) {
-  const e = data && data.errors;
-  if (!e || Object.keys(e).length === 0) return null;
-  return typeof e === "string" ? e : JSON.stringify(e);
-}
-
-async function teamLast10(teamId, season, fixtureDate, apiKey) {
-  const to = fixtureDate.toISOString().slice(0, 10);
-  const fromObj = new Date(fixtureDate);
-  fromObj.setUTCDate(fromObj.getUTCDate() - 120);
-  const from = fromObj.toISOString().slice(0, 10);
-
-  const first = await apiGet(
-    `/fixtures?team=${teamId}&from=${from}&to=${to}&status=FT`,
-    apiKey,
-    21600
-  );
-  if (!hasApiErrors(first.data) && (first.data.response || []).length) {
-    return first;
-  }
-  const err1 = errText(first.data);
-  if (first.data.errors?.rateLimit || first.data.errors?.requests) {
-    return first; // limite atteinte : inutile d'insister
-  }
-
-  const second = await apiGet(
-    `/fixtures?team=${teamId}&season=${season}&status=FT`,
-    apiKey,
-    21600
-  );
-  if (!hasApiErrors(second.data) && (second.data.response || []).length) {
-    return second;
-  }
-  const err2 = errText(second.data);
-  return {
-    data: {
-      response: [],
-      errors: {
-        plageDates: err1 || "aucun match trouvé",
-        saison: err2 || "aucun match trouvé"
-      }
-    },
-    cached: false,
-    status: 200
-  };
+// 10 derniers matchs terminés d'une équipe (plan Pro uniquement ; cache 6 h si succès).
+async function teamLast10(teamId, apiKey) {
+  return apiGet(`/fixtures?team=${teamId}&last=10&status=FT`, apiKey, 21600);
 }
 
 function hasApiErrors(data) {
@@ -148,10 +107,11 @@ export default {
         const season = fixture.league.season;
         const fixtureDate = new Date(fixture.fixture.date);
 
-        // Les 4 appels partent en même temps (plus rapide qu'un après l'autre)
+        // Les appels partent en même temps (plus rapide qu'un après l'autre)
+        const none = { data: { response: [], errors: { info: MSG_PLAN_GRATUIT } } };
         const [homeResult, awayResult, h2hResult, oddsResult] = await Promise.all([
-          teamLast10(homeId, season, fixtureDate, apiKey),
-          teamLast10(awayId, season, fixtureDate, apiKey),
+          PLAN_PRO ? teamLast10(homeId, apiKey) : Promise.resolve(none),
+          PLAN_PRO ? teamLast10(awayId, apiKey) : Promise.resolve(none),
           apiGet(`/fixtures/headtohead?h2h=${homeId}-${awayId}`, apiKey, 86400),
           withOdds
             ? apiGet(`/odds?fixture=${fixtureId}`, apiKey, 1800)
@@ -181,6 +141,7 @@ export default {
           h2h: h2hLast10,
           odds: oddsResult.data.response || [],
           league: { id: leagueId, season },
+          plan: PLAN_PRO ? "pro" : "gratuit",
           apiErrors: {
             home: homeResult.data.errors || {},
             away: awayResult.data.errors || {},
