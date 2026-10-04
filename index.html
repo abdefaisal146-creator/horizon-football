@@ -74,7 +74,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   <p class="lead">Tendances, 10 derniers matchs, H2H, cotes et mouvement des cotes : un match n'est retenu que si tout va dans le même sens.</p>
   <p><a class="btn" href="#matchs">Voir les matchs du jour →</a></p>
   <div class="kpis">
-    <div class="kpi"><b id="countToday">–</b><span>Matchs aujourd'hui</span></div>
+    <div class="kpi"><b id="countToday">–</b><span>Matchs sélectionnés aujourd'hui</span></div>
     <div class="kpi"><b>2.0</b><span>Ligne de référence</span></div>
     <div class="kpi"><b>10</b><span>Derniers matchs analysés</span></div>
     <div class="kpi"><b>H2H</b><span>Face-à-face et cotes</span></div>
@@ -82,7 +82,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
 </section>
 
 <section id="matchs" class="section">
-  <h2>Matchs du jour</h2>
+  <h2>Sélection du jour</h2>
   <div data-live-fixtures></div>
   <p><button id="moreBtn" class="analyse-btn" style="display:none">Afficher plus de matchs</button></p>
   <p class="muted" style="font-size:13px">Les analyses sont informatives et ne garantissent aucun résultat.</p>
@@ -90,7 +90,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
 
 <section id="bilans" class="section">
   <h2>Résultats &amp; bilans</h2>
-  <p class="muted">Seuls les matchs retenus par la méthode sont comptés. Chaque journée a sa propre liste, ses scores et son bilan.</p>
+  <p class="muted">Seuls les matchs de la sélection publiée sont comptés. Chaque journée a sa propre liste, ses scores et son bilan (résultat calculé sur Under 2.5, c'est-à-dire 2 buts ou moins).</p>
   <div id="bilansBox"><p class="muted">Chargement…</p></div>
 </section>
 
@@ -124,7 +124,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
 </section>
 </main>
 
-<footer>Jeu responsable : le football comporte une part d'incertitude. Réservé aux majeurs. Joue avec modération.<br>© Horizon Football</footer>
+<footer>Le football comporte une part d'incertitude. Réservé aux majeurs. Joue avec modération.<br><a href="jeu-responsable.html" style="color:var(--gold)">Jeu responsable</a> · <a href="confidentialite.html" style="color:var(--gold)">Confidentialité</a> · <a href="conditions.html" style="color:var(--gold)">Conditions d'utilisation</a><br>© Horizon Football</footer>
 
 <script>
 (function () {
@@ -283,8 +283,8 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
         return Object.assign({}, base, { _heure: s.heure, _ligne: s.ligne });
       });
     } else {
-      if (apiError) return note("Erreur : " + apiError);
-      fixtures = api;
+      document.getElementById("countToday").textContent = "0";
+      return note("La sélection du jour sera publiée prochainement.");
     }
     document.getElementById("countToday").textContent = fixtures.length;
     if (!fixtures.length) return note("Aucun match trouvé pour aujourd'hui.");
@@ -322,7 +322,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     if (!keys.length) { box.innerHTML = '<p class="muted">Aucune journée enregistrée pour le moment. Un match n\'est publié ici que s\'il respecte tous les critères.</p>'; return; }
     box.innerHTML = "";
     for (const day of keys) {
-      const list = (days[day] || []).filter(s => s.retenu);
+      const list = days[day] || [];
       const fixtures = list.length ? await dayFixtures(day) : [];
       let win = 0, lost = 0, push = 0, wait = 0, rows = "";
       for (const sel of list) {
@@ -335,13 +335,13 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
           const ft = it.score && it.score.fulltime && it.score.fulltime.home != null ? it.score.fulltime : it.goals;
           line = esc(it.teams.home.name) + " " + (done ? ft.home + " - " + ft.away : "vs") + " " + esc(it.teams.away.name);
           if (done && ft.home != null) {
-            const total = ft.home + ft.away, ligne = Number(sel.ligne || 2.5);
+            const total = ft.home + ft.away, ligne = Number(sel.cible || 2.5);
             if (total < ligne) { res = "Validé"; cls = "sc"; win++; }
             else if (total === ligne) { res = "Remboursé"; push++; }
             else { res = "Perdu"; lost++; }
           } else wait++;
         } else wait++;
-        rows += '<div class="match"><div class="tm"><div class="teams"><strong>' + line + '</strong><span>Under ' + esc(sel.ligne || 2.5) + '</span></div><div class="' + cls + '">' + res + "</div></div></div>";
+        rows += '<div class="match"><div class="tm"><div class="teams"><strong>' + line + '</strong><span>Under ' + esc(sel.cible || 2.5) + '</span></div><div class="' + cls + '">' + res + "</div></div></div>";
       }
       const head = list.length
         ? "Bilan : " + win + " validé(s) · " + lost + " perdu(s)" + (push ? " · " + push + " remboursé(s)" : "") + (wait ? " · " + wait + " en attente" : "")
