@@ -132,6 +132,7 @@ export default {
           .slice(0, 10);
 
         const h2hLast10 = (h2hResult.data.response || [])
+          .filter(match => new Date(match.fixture.date) < fixtureDate)
           .sort((a, b) => new Date(b.fixture.date) - new Date(a.fixture.date))
           .slice(0, 10);
 
