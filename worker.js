@@ -107,16 +107,19 @@ export default {
         const season = fixture.league.season;
         const fixtureDate = new Date(fixture.fixture.date);
 
-        // Les appels partent en même temps (plus rapide qu'un après l'autre)
+        // Appels l'un après l'autre : l'envoi simultané déclenche l'erreur "Too many requests"
+        // sur le plan gratuit, même sous la limite de 10 par minute.
         const none = { data: { response: [], errors: { info: MSG_PLAN_GRATUIT } } };
-        const [homeResult, awayResult, h2hResult, oddsResult] = await Promise.all([
-          PLAN_PRO ? teamLast10(homeId, apiKey) : Promise.resolve(none),
-          PLAN_PRO ? teamLast10(awayId, apiKey) : Promise.resolve(none),
-          apiGet(`/fixtures/headtohead?h2h=${homeId}-${awayId}`, apiKey, 86400),
-          withOdds
-            ? apiGet(`/odds?fixture=${fixtureId}`, apiKey, 1800)
-            : Promise.resolve({ data: { response: [], errors: { odds: "Cotes désactivées (odds=0)" } } })
-        ]);
+        const homeResult = PLAN_PRO ? await teamLast10(homeId, apiKey) : none;
+        const awayResult = PLAN_PRO ? await teamLast10(awayId, apiKey) : none;
+        const h2hResult = await apiGet(
+          `/fixtures/headtohead?h2h=${homeId}-${awayId}`,
+          apiKey,
+          86400
+        );
+        const oddsResult = withOdds
+          ? await apiGet(`/odds?fixture=${fixtureId}`, apiKey, 1800)
+          : { data: { response: [], errors: { odds: "Cotes désactivées (odds=0)" } } };
 
         const homeLast10 = (homeResult.data.response || [])
           .filter(match => new Date(match.fixture.date) < fixtureDate)
