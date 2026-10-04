@@ -119,17 +119,15 @@ export default {
         const season = fixture.league.season;
         const fixtureDate = new Date(fixture.fixture.date);
 
-        const homeResult = await teamLast10(homeId, season, apiKey);
-        const awayResult = await teamLast10(awayId, season, apiKey);
-
-        const h2hResult = await apiGet(
-          `/fixtures/headtohead?h2h=${homeId}-${awayId}`,
-          apiKey,
-          86400
-        );
-        const oddsResult = withOdds
-          ? await apiGet(`/odds?fixture=${fixtureId}`, apiKey, 1800)
-          : { data: { response: [], errors: { odds: "Cotes désactivées (odds=0)" } } };
+        // Les 4 appels partent en même temps (plus rapide qu'un après l'autre)
+        const [homeResult, awayResult, h2hResult, oddsResult] = await Promise.all([
+          teamLast10(homeId, season, apiKey),
+          teamLast10(awayId, season, apiKey),
+          apiGet(`/fixtures/headtohead?h2h=${homeId}-${awayId}`, apiKey, 86400),
+          withOdds
+            ? apiGet(`/odds?fixture=${fixtureId}`, apiKey, 1800)
+            : Promise.resolve({ data: { response: [], errors: { odds: "Cotes désactivées (odds=0)" } } })
+        ]);
 
         const homeLast10 = (homeResult.data.response || [])
           .filter(match => new Date(match.fixture.date) < fixtureDate)
