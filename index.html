@@ -200,7 +200,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   function render(a, home, away) {
     const hs = teamStats(a.teams && a.teams.home), as = teamStats(a.teams && a.teams.away);
     const odds = underOdds(a.odds);
-    const errs = Object.values(a.apiErrors || {}).map(errLine).filter(Boolean);
+    const errs = Array.from(new Set(Object.values(a.apiErrors || {}).map(errLine).filter(Boolean)));
     let html = "<h4>10 derniers matchs</h4>";
     if (hs || as) {
       html += "<p><b>" + esc(home) + "</b><br>" + (hs ? esc(hs) : "indisponible") + "</p><p><b>" + esc(away) + "</b><br>" + (as ? esc(as) : "indisponible") + "</p>";
