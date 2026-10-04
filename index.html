@@ -66,6 +66,17 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
 .box ul{margin:4px 0;padding-left:18px}
 .verdict{background:var(--card);border-left:4px solid var(--gold);padding:10px 12px;border-radius:8px;margin-top:14px}
 .wa{position:fixed;right:14px;bottom:14px;z-index:60;background:#25d366;color:#05260f;font-weight:700;border-radius:999px;padding:11px 16px;box-shadow:0 4px 14px rgba(0,0,0,.4);font-size:14px}
+.hero-wrap{position:relative;border-radius:20px;padding:30px 18px;margin:16px 0 0;background:radial-gradient(circle at 85% 0%,rgba(242,182,50,.28),transparent 45%),radial-gradient(circle at 0% 100%,rgba(30,90,200,.5),transparent 55%),linear-gradient(135deg,#0c2a66,#07152f);border:1px solid var(--line);overflow:hidden}
+.hero-wrap:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 58px,rgba(255,255,255,.035) 58px 60px);pointer-events:none}
+.hero-wrap>*{position:relative;z-index:1}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.badge{background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px;color:#dbe6ff}
+.btn2{display:inline-block;border:1px solid var(--gold);color:var(--gold);font-weight:700;border-radius:10px;padding:11px 18px;margin-left:8px}
+.feat{display:grid;gap:10px;margin:18px 0}
+.feat div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;color:var(--muted);font-size:14px}
+.feat b{display:block;color:var(--gold);font-size:16px;margin-bottom:4px}
+.plan.pop{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+@media(min-width:700px){.feat{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:700px){h1{font-size:40px}.kpis{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:1fr 1fr}.plans{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
@@ -76,18 +87,21 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
 </header>
 
 <main>
-<section class="hero">
+<section class="hero"><div class="hero-wrap">
   <p class="eyebrow">ANALYSE FOOTBALL</p>
   <h1>Les statistiques <span>avant les intuitions.</span></h1>
   <p class="lead">Tendances, 10 derniers matchs, H2H, cotes et mouvement des cotes : un match n'est retenu que si tout va dans le même sens.</p>
-  <p><a class="btn" href="#matchs">Voir les matchs du jour →</a></p>
+  <div class="badges"><span class="badge">📊 Statistiques</span><span class="badge">🆚 H2H</span><span class="badge">💰 Cotes Under 2.5</span><span class="badge">📅 Bilans publics</span></div>
+  <p><a class="btn" href="#matchs">Voir la sélection du jour →</a><a class="btn2" href="#bilans">Voir les bilans</a></p>
   <div class="kpis">
     <div class="kpi"><b id="countToday">–</b><span>Matchs sélectionnés aujourd'hui</span></div>
     <div class="kpi"><b>2.0</b><span>Ligne de référence</span></div>
     <div class="kpi"><b>10</b><span>Derniers matchs analysés</span></div>
     <div class="kpi"><b>H2H</b><span>Face-à-face et cotes</span></div>
   </div>
-</section>
+</div></section>
+<div class="feat"><div><b>🎯 Une sélection courte</b>Quelques matchs par jour, pas des centaines.</div><div><b>📈 Des bilans publics</b>Chaque journée a ses scores et ses résultats.</div><div><b>🛑 Jamais forcé</b>Si tout n'est pas cohérent : AUCUN RETENU.</div></div>
+
 
 <section id="matchs" class="section">
   <h2>Sélection du jour</h2>
@@ -128,7 +142,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   <p class="muted" style="font-size:13px">Aucun gain n'est garanti. Réservé aux majeurs.</p>
   <div class="plans">
     <div class="plan">7 jours<b>5 000 FCFA</b><a class="btn" href="https://wa.me/14378878662?text=Bonjour%20Horizon%20Football%2C%20je%20veux%20le%20Premium%207%20jours%20%285%20000%20FCFA%29." target="_blank" rel="noopener">Commander sur WhatsApp</a></div>
-    <div class="plan">1 mois<b>15 000 FCFA</b><a class="btn" href="https://wa.me/14378878662?text=Bonjour%20Horizon%20Football%2C%20je%20veux%20le%20Premium%201%20mois%20%2815%20000%20FCFA%29." target="_blank" rel="noopener">Commander sur WhatsApp</a></div>
+    <div class="plan pop"><small style="color:var(--gold)">⭐ Recommandé</small><br>1 mois<b>15 000 FCFA</b><a class="btn" href="https://wa.me/14378878662?text=Bonjour%20Horizon%20Football%2C%20je%20veux%20le%20Premium%201%20mois%20%2815%20000%20FCFA%29." target="_blank" rel="noopener">Commander sur WhatsApp</a></div>
     <div class="plan">1 an<b>150 000 FCFA</b><a class="btn" href="https://wa.me/14378878662?text=Bonjour%20Horizon%20Football%2C%20je%20veux%20le%20Premium%201%20an%20%28150%20000%20FCFA%29." target="_blank" rel="noopener">Commander sur WhatsApp</a></div>
   </div>
   <div class="panel" style="margin-top:14px"><h3>Moyens de paiement</h3>
