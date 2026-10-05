@@ -4,74 +4,89 @@
    "match": "Shooting Stars vs Nasarawa United",
    "competition": "Nigéria - Premier League",
    "heure": "16:00",
-   "ligne": 2.0,
-   "retenu": false
+   "ligne": 2.0
   },
   {
    "match": "Inter Lagos vs Katsina Utd",
    "competition": "Nigéria - Premier League",
    "heure": "16:00",
-   "ligne": 2.0,
-   "retenu": false
+   "ligne": 2.0
   },
   {
    "match": "KAC Kenitra vs US Yacoub El Mansour",
    "competition": "Maroc - GNF 2",
-   "heure": "17:00",
-   "retenu": false
+   "heure": "17:00"
   },
   {
    "match": "CSD Amatitlan vs Coatepeque FC",
    "competition": "Guatemala - Primera Division",
    "heure": "18:00",
-   "ligne": 2.0,
-   "retenu": false
+   "ligne": 2.0
   },
   {
    "match": "Chacarita Juniors vs Patronato Parana",
    "competition": "Argentine - Nacional B",
    "heure": "19:30",
-   "ligne": 2.0,
-   "retenu": false
+   "ligne": 2.0
   },
   {
    "match": "CA Alvarado vs Defensores de Belgrano VR",
    "competition": "Argentine - Torneo A",
    "heure": "19:30",
-   "ligne": 2.0,
-   "retenu": false
+   "ligne": 2.0
   },
   {
    "match": "CA Guemes vs CA Colegiales",
    "competition": "Argentine - Nacional B",
    "heure": "21:00",
-   "ligne": 2.0,
-   "retenu": false
+   "ligne": 2.0
   },
   {
    "match": "Talleres Cordoba vs Belgrano",
    "competition": "Argentine - Liga Profesional",
-   "heure": "21:00",
-   "retenu": false
+   "heure": "21:00"
   },
   {
    "match": "Argentinos Jrs vs Tigre",
    "competition": "Argentine - Liga Profesional",
    "heure": "23:15",
-   "ligne": 2.0,
-   "retenu": false
+   "ligne": 2.0
   },
   {
    "match": "Racing Club de Montevideo vs Penarol",
    "competition": "Uruguay - Clausura",
    "heure": "23:30",
-   "ligne": 2.0,
-   "retenu": false
+   "ligne": 2.0
   },
   {
    "match": "CA Independiente de la Chorrera vs CD Arabe Unido",
-   "competition": "Panama - LPF",
-   "retenu": false
+   "competition": "Panama - LPF"
+  }
+ ],
+ "2026-10-05": [
+  {
+   "match": "El Porvenir vs Canuelas FC",
+   "competition": "Argentine - Primera C Metropolitana",
+   "heure": "19:00",
+   "ligne": 1.75
+  },
+  {
+   "match": "Lujan vs General Lamadrid",
+   "competition": "Argentine - Primera C Metropolitana",
+   "heure": "19:00",
+   "ligne": 2.0
+  },
+  {
+   "match": "Deportivo Paraguayo vs Club Mercedes",
+   "competition": "Argentine - Primera C Metropolitana",
+   "heure": "19:00",
+   "ligne": 1.75
+  },
+  {
+   "match": "Sportivo Barracas vs Leones de Rosario",
+   "competition": "Argentine - Primera C Metropolitana",
+   "heure": "19:00",
+   "ligne": 1.75
   }
  ]
 }
