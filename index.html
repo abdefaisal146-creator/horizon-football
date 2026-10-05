@@ -435,7 +435,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
         if (it) {
           const done = ["FT", "AET", "PEN"].includes(it.fixture.status.short);
           const ft = it.score && it.score.fulltime && it.score.fulltime.home != null ? it.score.fulltime : it.goals;
-          line = logoImg(it.teams.home) + esc(it.teams.home.name) + " " + (done || ["1H", "2H", "ET", "LIVE", "HT", "BT"].includes(it.fixture.status.short) ? ft.home + " - " + ft.away : "vs") + " " + logoImg(it.teams.away) + esc(it.teams.away.name);
+          line = logoImg(it.teams.home) + esc(it.teams.home.name) + ' <span style="white-space:nowrap;color:var(--gold)">' + (done || ["1H", "2H", "ET", "LIVE", "HT", "BT"].includes(it.fixture.status.short) ? ft.home + " - " + ft.away : "vs") + "</span> " + logoImg(it.teams.away) + esc(it.teams.away.name);
           if (done && ft.home != null) {
             const total = ft.home + ft.away, ligne = Number(sel.cible || 2.5);
             if (total < ligne) { res = "Validé"; cls = "sc"; win++; }
