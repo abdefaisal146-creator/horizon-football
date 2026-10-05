@@ -76,6 +76,10 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
 .feat div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;color:var(--muted);font-size:14px}
 .feat b{display:block;color:var(--gold);font-size:16px;margin-bottom:4px}
 .plan.pop{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.feat div,.panel,.plan{animation:fadeUp .6s ease both}
+@media(prefers-reduced-motion:reduce){.feat div,.panel,.plan{animation:none}}
+.step{color:var(--gold);font-weight:700;font-size:13px;letter-spacing:1px}
 @media(min-width:700px){.feat{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:700px){h1{font-size:40px}.kpis{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:1fr 1fr}.plans{grid-template-columns:repeat(3,1fr)}}
 </style>
@@ -115,6 +119,11 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   <h2>Résultats &amp; bilans</h2>
   <p class="muted">Seuls les matchs de la sélection publiée sont comptés. Chaque journée a sa propre liste, ses scores et son bilan (résultat calculé sur Under 2.5, c'est-à-dire 2 buts ou moins).</p>
   <div id="bilansBox"><p class="muted">Chargement…</p></div>
+</section>
+
+<section class="section">
+  <h2>Comment ça marche</h2>
+  <div class="feat"><div><span class="step">ÉTAPE 1</span><b>🔎 On repère</b>Les tendances Under 2.5, avec une ligne de buts autour de 2.0.</div><div><span class="step">ÉTAPE 2</span><b>🧪 On contrôle</b>10 derniers matchs, défenses, H2H, cotes et mouvement des cotes.</div><div><span class="step">ÉTAPE 3</span><b>✅ On publie</b>Seuls les matchs cohérents sont retenus. Sinon : AUCUN RETENU.</div></div>
 </section>
 
 <section id="under" class="section grid">
