@@ -171,6 +171,20 @@ export default {
       }
     }
 
+    if (url.pathname === "/api/live") {
+      const ids = (url.searchParams.get("ids") || "").split(",").map(s => s.trim()).filter(s => /^\d+$/.test(s)).slice(0, 20);
+      if (!ids.length) {
+        return Response.json({ error: "Missing ids" }, { status: 400 });
+      }
+      const apiKey = env.API_FOOTBALL_KEY;
+      if (!apiKey) {
+        return Response.json({ error: "API_FOOTBALL_KEY is not configured" }, { status: 500 });
+      }
+      // 1 seule requête pour tous les matchs suivis, gardée 5 minutes (quota du plan gratuit)
+      const result = await apiGet(`/fixtures?ids=${ids.join("-")}&timezone=Africa/Douala`, apiKey, 300);
+      return jsonResponse(result.data, result.status);
+    }
+
     if (url.pathname === "/api/fixtures") {
       const date = url.searchParams.get("date");
       const timezone = url.searchParams.get("timezone") || "Africa/Douala";
@@ -184,7 +198,8 @@ export default {
       const result = await apiGet(
         `/fixtures?date=${encodeURIComponent(date)}&timezone=${encodeURIComponent(timezone)}`,
         apiKey,
-        3600
+        // un jour passé ne change plus : on le garde 24 h (économie de requêtes)
+        date < new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Douala" }).format(new Date()) ? 86400 : 3600
       );
       return jsonResponse(result.data, result.status);
     }
