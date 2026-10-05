@@ -194,7 +194,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     return '<article class="match" data-fid="' + esc(f.id) + '"><div class="lg">' + (l.logo ? '<img class="logo" style="width:18px;height:18px" loading="lazy" alt="" src="' + esc(l.logo) + '" onerror="this.remove()">' : "") + esc(l.name) + (l.country ? " · " + esc(l.country) : "") + (item._ligne ? " · Ligne " + Number(item._ligne).toFixed(1) : "") + '</div>' + (sub ? '<div class="lg" style="font-size:12px">' + esc(sub) + '</div>' : "") +
       '<div class="tm"><div class="teams"><strong>' + logoImg(t.home) + esc(t.home && t.home.name) + '</strong><span>vs</span><strong>' + logoImg(t.away) + esc(t.away && t.away.name) + '</strong></div>' +
       '<div><div class="sc">' + esc(score) + '</div><div class="st">' + esc(time) + (code ? " · " + esc(statusText(code, f.status && f.status.elapsed)) : "") + esc(htTxt) + '</div></div></div>' +
-      '<button class="analyse-btn" data-id="' + esc(f.id) + '" data-home="' + esc(t.home && t.home.name) + '" data-away="' + esc(t.away && t.away.name) + '">Analyser</button></article>';
+      '<button class="analyse-btn" data-id="' + esc(f.id) + '" data-hid="' + esc(t.home && t.home.id) + '" data-aid="' + esc(t.away && t.away.id) + '" data-date="' + esc(f.date) + '" data-home="' + esc(t.home && t.home.name) + '" data-away="' + esc(t.away && t.away.name) + '">Analyser</button></article>';
   }
   const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
   const toks = s => norm(s).split(" ").filter(w => w.length > 3);
@@ -292,9 +292,11 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     const hs = teamStats(a.teams && a.teams.home), as = teamStats(a.teams && a.teams.away);
     const odds = underOdds(a.odds);
     const errs = Array.from(new Set(Object.values(a.apiErrors || {}).map(errLine).filter(Boolean))).filter(e => !/plan gratuit/i.test(e));
+    const failed = x => x && ((Array.isArray(x) && x.length) || (typeof x === "object" && Object.keys(x).length));
+    const eh = a.apiErrors || {};
     let html = "<div class='verdict'><b>Match de la sélection du jour</b><br>Retenu selon la méthode Horizon Football. Aucun gain n'est garanti. Réservé aux majeurs.</div>";
-    html += "<h4>Marché : cotes Under</h4>" + (bestUnder(a.odds) || "") + (odds.length ? "<ul>" + odds.map(o => "<li>" + esc(o) + "</li>").join("") + "</ul>" : "<p class='muted'>Cotes pas encore disponibles pour ce match.</p>");
-    html += "<h4>Face-à-face (H2H)</h4>" + h2hHtml(a.h2h);
+    html += "<h4>Marché : cotes Under</h4>" + (bestUnder(a.odds) || "") + (odds.length ? "<ul>" + odds.map(o => "<li>" + esc(o) + "</li>").join("") + "</ul>" : (failed(eh.odds) ? "<p class='muted'>Cotes momentanément indisponibles. Réessaie dans une minute.</p>" : "<p class='muted'>Cotes pas encore disponibles pour ce match.</p>"));
+    html += "<h4>Face-à-face (H2H)</h4>" + (failed(eh.h2h) ? "<p class='muted'>Face-à-face momentanément indisponible. Réessaie dans une minute.</p>" : h2hHtml(a.h2h));
     html += "<h4>Forme récente (10 derniers matchs)</h4>";
     if (hs || as) {
       html += "<p><b>" + esc(home) + "</b><br>" + (hs ? esc(hs) : "indisponible") + "</p><p><b>" + esc(away) + "</b><br>" + (as ? esc(as) : "indisponible") + "</p>";
@@ -305,7 +307,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     return html;
   }
 
-  async function openAnalysis(id, home, away) {
+  async function openAnalysis(id, home, away, extra) {
     const modal = document.createElement("div");
     modal.className = "modal";
     modal.innerHTML = '<div class="box"><h2>Analyse du match</h2><h3>' + esc(home) + " vs " + esc(away) + '</h3><p class="muted">Ligne de référence : 2.0 · TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p><div id="body"><p>Analyse en cours…</p></div><p><button class="btn" id="closeBtn">Fermer</button></p></div>';
@@ -317,40 +319,41 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
       if (!id) { body.innerHTML = "<p class='muted'>Les données détaillées de ce match (cotes, face-à-face) ne sont pas disponibles pour le moment. Réessaie plus tard.</p>"; return; }
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), 25000);
-      const res = await fetch("/api/analyze?id=" + encodeURIComponent(id), { cache: "no-store", signal: ctrl.signal });
+      const res = await fetch("/api/analyze?id=" + encodeURIComponent(id) + (extra && extra.hid && extra.aid && extra.date ? "&h=" + encodeURIComponent(extra.hid) + "&a=" + encodeURIComponent(extra.aid) + "&d=" + encodeURIComponent(extra.date) + "&hn=" + encodeURIComponent(home) + "&an=" + encodeURIComponent(away) : ""), { cache: "no-store", signal: ctrl.signal });
       clearTimeout(timer);
       const a = JSON.parse(await res.text());
       if (!res.ok) throw new Error(a.error || "Erreur d'analyse");
       body.innerHTML = render(a, home, away);
     } catch (e) {
-      body.innerHTML = "<p><b>Erreur :</b> " + esc(e.name === "AbortError" ? "L'analyse prend trop de temps. Réessaie." : e.message) + "</p>";
+      body.innerHTML = "<p><b>Erreur :</b> " + esc(e.name === "AbortError" ? "L'analyse prend trop de temps. Réessaie." : (e.message === "Failed to fetch" ? "Connexion impossible pour le moment. Réessaie dans un instant." : e.message)) + "</p>";
     }
   }
 
   container.addEventListener("click", e => {
     const b = e.target.closest(".analyse-btn");
-    if (b) openAnalysis(b.dataset.id, b.dataset.home, b.dataset.away);
+    if (b) openAnalysis(b.dataset.id, b.dataset.home, b.dataset.away, b.dataset);
   });
   moreBtn.addEventListener("click", showMore);
 
   (async function load() {
     note("Chargement des matchs du jour…");
-    let api = [], apiError = null;
-    try {
-      const res = await fetch("/api/fixtures?date=" + doualaDate() + "&timezone=Africa/Douala", { cache: "no-store" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Erreur API");
-      const errs = data.errors && !Array.isArray(data.errors) ? errLine(data.errors) : null;
-      if (errs) throw new Error(errs);
-      api = (data.response || []).sort((x, y) => new Date(x.fixture.date) - new Date(y.fixture.date));
-    } catch (e) { apiError = e.message; }
     let mine = [];
     try {
       const sel = await (await fetch("/selections.json", { cache: "no-store" })).json();
       mine = sel[doualaDate()] || [];
     } catch (e) {}
     const wanted = mine.map(s => s.id).filter(Boolean);
-    if (wanted.some(id => !api.some(x => x.fixture.id === id))) {
+    const byIds = mine.length > 0 && wanted.length === mine.length;
+    let api = [], apiError = null;
+    try {
+      const res = await fetch(byIds ? "/api/live?ids=" + wanted.slice(0, 20).join(",") : "/api/fixtures?date=" + doualaDate() + "&timezone=Africa/Douala", { cache: "no-store" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur API");
+      const errs = data.errors && !Array.isArray(data.errors) ? errLine(data.errors) : null;
+      if (errs) throw new Error(errs);
+      api = (data.response || []).sort((x, y) => new Date(x.fixture.date) - new Date(y.fixture.date));
+    } catch (e) { apiError = e.message; }
+    if (!byIds && wanted.some(id => !api.some(x => x.fixture.id === id))) {
       try {
         const r = await fetch("/api/live?ids=" + wanted.slice(0, 20).join(","), { cache: "no-store" });
         const d = await r.json();
@@ -360,7 +363,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     let pool = api;
     if (mine.length && !apiError) {
       const parse = s => String(s.match || "").split(/\s+vs\s+/i);
-      if (mine.some(s => { const p = parse(s); return !findFixture(api, p[0], p[1]); })) {
+      if (mine.some(s => { const p = parse(s); return !(s.id && api.some(x => x.fixture.id === s.id)) && !findFixture(api, p[0], p[1]); })) {
         try {
           const x = new Date(doualaDate() + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + 1);
           const r2 = await fetch("/api/fixtures?date=" + x.toISOString().slice(0, 10) + "&timezone=Africa/Douala", { cache: "no-store" });
