@@ -12,10 +12,16 @@ async function apiGet(path, apiKey, ttl) {
   if (cached) {
     return { data: await cached.json(), cached: true, status: 200 };
   }
-  const response = await fetch(`${BASE}${path}`, {
+  let response = await fetch(`${BASE}${path}`, {
     headers: { "x-apisports-key": apiKey }
   });
-  const data = await response.json();
+  let data = await response.json();
+  // limite par minute : une seule nouvelle tentative après une courte pause
+  if (data.errors && (data.errors.rateLimit || data.errors.requests) && !data.errors.requests) {
+    await new Promise(r => setTimeout(r, 1500));
+    response = await fetch(`${BASE}${path}`, { headers: { "x-apisports-key": apiKey } });
+    data = await response.json();
+  }
   const hasErrors = data.errors && Object.keys(data.errors).length > 0;
   if (response.ok && !hasErrors) {
     await caches.default.put(
@@ -81,6 +87,16 @@ export default {
       const withOdds = url.searchParams.get("odds") !== "0";
 
       try {
+        const qh = url.searchParams.get("h"), qa = url.searchParams.get("a"), qd = url.searchParams.get("d");
+        let fixture;
+        if (/^\d+$/.test(qh || "") && /^\d+$/.test(qa || "") && qd && !isNaN(new Date(qd))) {
+          // le site fournit déjà les équipes et la date : on économise une requête
+          fixture = {
+            fixture: { id: Number(fixtureId), date: qd },
+            teams: { home: { id: Number(qh), name: url.searchParams.get("hn") || "" }, away: { id: Number(qa), name: url.searchParams.get("an") || "" } },
+            league: { id: 0, season: 0 }
+          };
+        } else {
         const fixtureResult = await apiGet(
           `/fixtures?id=${encodeURIComponent(fixtureId)}`,
           apiKey,
@@ -100,7 +116,8 @@ export default {
           );
         }
 
-        const fixture = fixtureData.response[0];
+        fixture = fixtureData.response[0];
+        }
         const homeId = fixture.teams.home.id;
         const awayId = fixture.teams.away.id;
         const leagueId = fixture.league.id;
