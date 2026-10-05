@@ -349,6 +349,14 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
       const sel = await (await fetch("/selections.json", { cache: "no-store" })).json();
       mine = sel[doualaDate()] || [];
     } catch (e) {}
+    const wanted = mine.map(s => s.id).filter(Boolean);
+    if (wanted.some(id => !api.some(x => x.fixture.id === id))) {
+      try {
+        const r = await fetch("/api/live?ids=" + wanted.slice(0, 20).join(","), { cache: "no-store" });
+        const d = await r.json();
+        if (r.ok && d.response) api = api.concat(d.response);
+      } catch (e) {}
+    }
     let pool = api;
     if (mine.length && !apiError) {
       const parse = s => String(s.match || "").split(/\s+vs\s+/i);
@@ -364,7 +372,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     if (mine.length) {
       fixtures = mine.map(s => {
         const p = String(s.match || "").split(/\s+vs\s+/i);
-        const f = findFixture(pool, p[0], p[1]);
+        const f = (s.id && pool.find(x => x.fixture.id === s.id)) || findFixture(pool, p[0], p[1]);
         const base = f || { fixture: { id: null, date: null, status: {} }, teams: { home: { name: p[0] }, away: { name: p[1] } }, league: { name: s.competition || "" }, goals: {} };
         return Object.assign({}, base, { _heure: s.heure, _ligne: s.ligne });
       });
