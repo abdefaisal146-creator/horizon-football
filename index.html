@@ -107,7 +107,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   <h2>Sélection du jour</h2>
   <div data-live-fixtures></div>
   <p><button id="moreBtn" class="analyse-btn" style="display:none">Afficher plus de matchs</button></p>
-  <p class="muted" style="font-size:13px">Les analyses sont informatives et ne garantissent aucun résultat.</p>
+  <p class="muted" style="font-size:13px">Les analyses sont informatives. Aucun gain n'est garanti. Réservé aux majeurs.</p>
   <p id="liveNote" class="muted" style="font-size:12px"></p>
 </section>
 
@@ -132,7 +132,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     <h3>Règle de sélection</h3>
     <p>Statistiques, cote et mouvement des cotes doivent aller dans le même sens.</p>
     <p><b>Cohérents → MATCH RETENU.<br>Contradictoires → AUCUN RETENU.</b></p>
-    <p class="muted">Aucune sélection n'est jamais forcée. Aucun match n'est garanti.</p>
+    <p class="muted">Aucune sélection n'est jamais forcée. Aucun gain n'est garanti. Réservé aux majeurs.</p>
   </div>
 </section>
 
@@ -282,16 +282,16 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   function render(a, home, away) {
     const hs = teamStats(a.teams && a.teams.home), as = teamStats(a.teams && a.teams.away);
     const odds = underOdds(a.odds);
-    const errs = Array.from(new Set(Object.values(a.apiErrors || {}).map(errLine).filter(Boolean)));
-    let html = "<h4>10 derniers matchs</h4>";
+    const errs = Array.from(new Set(Object.values(a.apiErrors || {}).map(errLine).filter(Boolean))).filter(e => !/plan gratuit/i.test(e));
+    let html = "<div class='verdict'><b>Match de la sélection du jour</b><br>Retenu selon la méthode Horizon Football. Aucun gain n'est garanti. Réservé aux majeurs.</div>";
+    html += "<h4>Marché : cotes Under</h4>" + (bestUnder(a.odds) || "") + (odds.length ? "<ul>" + odds.map(o => "<li>" + esc(o) + "</li>").join("") + "</ul>" : "<p class='muted'>Cotes pas encore disponibles pour ce match.</p>");
+    html += "<h4>Face-à-face (H2H)</h4>" + h2hHtml(a.h2h);
+    html += "<h4>Forme récente (10 derniers matchs)</h4>";
     if (hs || as) {
       html += "<p><b>" + esc(home) + "</b><br>" + (hs ? esc(hs) : "indisponible") + "</p><p><b>" + esc(away) + "</b><br>" + (as ? esc(as) : "indisponible") + "</p>";
     } else {
-      html += "<p class='muted'>Indisponibles pour le moment (plan gratuit de la source de données).</p>";
+      html += "<p class='muted'>Les statistiques détaillées des 10 derniers matchs arrivent bientôt dans l'analyse.</p>";
     }
-    html += "<h4>Face-à-face (H2H)</h4>" + h2hHtml(a.h2h);
-    html += "<h4>Cotes</h4>" + bestUnder(a.odds) + (odds.length ? "<ul>" + odds.map(o => "<li>" + esc(o) + "</li>").join("") + "</ul>" : "<p class='muted'>Aucune cote Under disponible.</p>");
-    html += "<div class='verdict'><b>Verdict : non évalué</b><br>" + ((hs && as) ? "Calcul de la cohérence à venir." : "Données insuffisantes : les 10 derniers matchs manquent. Aucune sélection n'est forcée.") + "</div>";
     if (errs.length) html += "<h4>Remarques</h4><ul>" + errs.map(e => "<li class='muted'>" + esc(e) + "</li>").join("") + "</ul>";
     return html;
   }
