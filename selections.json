@@ -65,32 +65,48 @@
  ],
  "2026-10-05": [
   {
-   "match": "El Porvenir vs Canuelas FC",
-   "competition": "Argentine - Primera C Metropolitana",
-   "heure": "19:00",
-   "ligne": 1.75,
-   "id": 1500142
-  },
-  {
-   "match": "Lujan vs General Lamadrid",
-   "competition": "Argentine - Primera C Metropolitana",
-   "heure": "19:00",
-   "ligne": 2.0,
-   "id": 1500139
-  },
-  {
    "match": "Deportivo Paraguayo vs Club Mercedes",
    "competition": "Argentine - Primera C Metropolitana",
    "heure": "19:00",
    "ligne": 1.75,
-   "id": 1500141
+   "id": 1500141,
+   "hcp": "+0.25",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
   },
   {
    "match": "Sportivo Barracas vs Leones de Rosario",
    "competition": "Argentine - Primera C Metropolitana",
    "heure": "19:00",
    "ligne": 1.75,
-   "id": 1500192
+   "id": 1500192,
+   "hcp": "0.0",
+   "lc": "7.5",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "El Porvenir vs Cañuelas FC",
+   "competition": "Argentine - Primera C Metropolitana",
+   "heure": "19:00",
+   "ligne": 1.75,
+   "id": 1500142,
+   "hcp": "+0.25",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Luján vs General Lamadrid",
+   "competition": "Argentine - Primera C Metropolitana",
+   "heure": "19:00",
+   "ligne": 2.0,
+   "id": 1500139,
+   "hcp": "-0.75",
+   "lc": "7.5",
+   "lc2": "3.5",
+   "lb2": "0.75"
   }
  ]
 }
