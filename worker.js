@@ -24,12 +24,13 @@ async function apiGet(path, apiKey, ttl) {
   }
   const hasErrors = data.errors && Object.keys(data.errors).length > 0;
   if (response.ok && !hasErrors) {
+    const seconds = typeof ttl === "function" ? ttl(data) : ttl;
     await caches.default.put(
       cacheKey,
       new Response(JSON.stringify(data), {
         headers: {
           "content-type": "application/json",
-          "cache-control": `public, max-age=${ttl}`
+          "cache-control": `public, max-age=${seconds}`
         }
       })
     );
@@ -215,8 +216,15 @@ export default {
       const result = await apiGet(
         `/fixtures?date=${encodeURIComponent(date)}&timezone=${encodeURIComponent(timezone)}`,
         apiKey,
-        // un jour passé ne change plus : on le garde 24 h (économie de requêtes)
-        date < new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Douala" }).format(new Date()) ? 86400 : 3600
+        // un jour passé dont tous les matchs sont terminés est archivé 30 jours
+        // (le plan gratuit ne redonne plus les anciens jours)
+        data => {
+          const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Douala" }).format(new Date());
+          if (date >= today) return 3600;
+          const done = ["FT", "AET", "PEN", "CANC", "PST", "ABD", "AWD", "WO"];
+          const pending = (data.response || []).some(m => !done.includes(m.fixture && m.fixture.status && m.fixture.status.short));
+          return pending ? 600 : 2592000;
+        }
       );
       return jsonResponse(result.data, result.status);
     }
