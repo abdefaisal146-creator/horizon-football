@@ -4,63 +4,107 @@
    "match": "Shooting Stars vs Nasarawa United",
    "competition": "Nigéria - Premier League",
    "heure": "16:00",
-   "ligne": 2.0
+   "ligne": 2.0,
+   "fin": [
+    0,
+    0
+   ]
   },
   {
    "match": "Inter Lagos vs Katsina Utd",
    "competition": "Nigéria - Premier League",
    "heure": "16:00",
-   "ligne": 2.0
+   "ligne": 2.0,
+   "fin": [
+    1,
+    1
+   ]
   },
   {
    "match": "KAC Kenitra vs US Yacoub El Mansour",
    "competition": "Maroc - GNF 2",
-   "heure": "17:00"
+   "heure": "17:00",
+   "fin": [
+    0,
+    1
+   ]
   },
   {
    "match": "CSD Amatitlan vs Coatepeque FC",
    "competition": "Guatemala - Primera Division",
    "heure": "18:00",
-   "ligne": 2.0
+   "ligne": 2.0,
+   "fin": [
+    0,
+    3
+   ]
   },
   {
    "match": "Chacarita Juniors vs Patronato Parana",
    "competition": "Argentine - Nacional B",
    "heure": "19:30",
-   "ligne": 2.0
+   "ligne": 2.0,
+   "fin": [
+    1,
+    0
+   ]
   },
   {
    "match": "CA Alvarado vs Defensores de Belgrano VR",
    "competition": "Argentine - Torneo A",
    "heure": "19:30",
-   "ligne": 2.0
+   "ligne": 2.0,
+   "fin": [
+    2,
+    0
+   ]
   },
   {
    "match": "CA Guemes vs CA Colegiales",
    "competition": "Argentine - Nacional B",
    "heure": "21:00",
-   "ligne": 2.0
+   "ligne": 2.0,
+   "fin": [
+    0,
+    1
+   ]
   },
   {
    "match": "Talleres Cordoba vs Belgrano",
    "competition": "Argentine - Liga Profesional",
-   "heure": "21:00"
+   "heure": "21:00",
+   "fin": [
+    0,
+    1
+   ]
   },
   {
    "match": "Argentinos Jrs vs Tigre",
    "competition": "Argentine - Liga Profesional",
    "heure": "23:15",
-   "ligne": 2.0
+   "ligne": 2.0,
+   "fin": [
+    2,
+    1
+   ]
   },
   {
    "match": "Racing Club de Montevideo vs Penarol",
    "competition": "Uruguay - Clausura",
    "heure": "23:30",
-   "ligne": 2.0
+   "ligne": 2.0,
+   "fin": [
+    0,
+    1
+   ]
   },
   {
    "match": "CA Independiente de la Chorrera vs CD Arabe Unido",
-   "competition": "Panama - LPF"
+   "competition": "Panama - LPF",
+   "fin": [
+    1,
+    1
+   ]
   }
  ],
  "2026-10-05": [
@@ -73,7 +117,11 @@
    "hcp": "+0.25",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    1,
+    1
+   ]
   },
   {
    "match": "Sportivo Barracas vs Leones de Rosario",
@@ -84,7 +132,11 @@
    "hcp": "0.0",
    "lc": "7.5",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    0,
+    2
+   ]
   },
   {
    "match": "El Porvenir vs Cañuelas FC",
@@ -95,7 +147,11 @@
    "hcp": "+0.25",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    1,
+    1
+   ]
   },
   {
    "match": "Luján vs General Lamadrid",
@@ -106,7 +162,11 @@
    "hcp": "-0.75",
    "lc": "7.5",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    1,
+    0
+   ]
   }
  ],
  "2026-10-07": [
