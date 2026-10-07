@@ -528,6 +528,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
   const esc = v => String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
   const logoImg = x => x && x.logo ? '<img class="logo" loading="lazy" alt="" src="' + esc(x.logo) + '" onerror="this.remove()">' : "";
+  const todayStr = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Douala" }).format(new Date());
   const fmtDay = d => d.split("-").reverse().join("/");
   const addDay = d => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + 1); return x.toISOString().slice(0, 10); };
   const toks = s => norm(s).split(" ").filter(w => w.length > 3);
@@ -555,13 +556,14 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     let W = 0, L = 0, P = 0;
     for (const day of keys) {
       const list = days[day] || [];
-      const fixtures = list.length ? await dayFixtures(day) : [];
-      if (list.length && list.some(s => { const p = String(s.match || "").split(/\s+vs\s+/i); return !findFixture(fixtures, norm(p[0]), norm(p[1])); })) {
+      const need = list.filter(s => !s.fin);
+      const fixtures = need.length ? await dayFixtures(day) : [];
+      if (need.length && need.some(s => { const p = String(s.match || "").split(/\s+vs\s+/i); return !findFixture(fixtures, norm(p[0]), norm(p[1])); })) {
         fixtures.push(...await dayFixtures(addDay(day)));
       }
       const liveMap = {};
-      if (list.length) {
-        const pend = list.map(s => { const p = String(s.match || "").split(/\s+vs\s+/i); const f = findFixture(fixtures, norm(p[0]), norm(p[1])); if (!f) return null; const st = f.fixture.status.short; return (["1H", "2H", "ET", "LIVE", "HT", "BT", "INT", "SUSP"].includes(st) || (["NS", "TBD"].includes(st) && new Date(f.fixture.date).getTime() - Date.now() < 15 * 60000)) ? f.fixture.id : null; }).filter(Boolean);
+      if (need.length) {
+        const pend = need.map(s => { const p = String(s.match || "").split(/\s+vs\s+/i); const f = findFixture(fixtures, norm(p[0]), norm(p[1])); if (!f) return null; const st = f.fixture.status.short; return (["1H", "2H", "ET", "LIVE", "HT", "BT", "INT", "SUSP"].includes(st) || (["NS", "TBD"].includes(st) && new Date(f.fixture.date).getTime() - Date.now() < 15 * 60000)) ? f.fixture.id : null; }).filter(Boolean);
         if (pend.length) {
           try {
             const r = await fetch("/api/live?ids=" + Array.from(new Set(pend)).slice(0, 20).join(","), { cache: "no-store" });
@@ -573,6 +575,14 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
       let win = 0, lost = 0, push = 0, wait = 0, rows = "";
       for (const sel of list) {
         const parts = String(sel.match || "").split(/\s+vs\s+/i);
+        if (sel.fin) {
+          // résultat final enregistré dans le fichier : pas besoin d'interroger la source de données
+          const fh = Number(sel.fin[0]), fa = Number(sel.fin[1]), total = fh + fa, lg = Number(sel.cible || 2.5);
+          let r2 = "Perdu", c2 = "muted";
+          if (total < lg) { r2 = "Validé"; c2 = "sc"; win++; } else if (total === lg) { r2 = "Remboursé"; push++; } else lost++;
+          rows += '<div class="match"><div class="tm"><div class="teams"><strong>' + esc(parts[0]) + ' <span style="white-space:nowrap;color:var(--gold)">' + fh + " - " + fa + "</span> " + esc(parts[1]) + "</strong><span>Under " + esc(sel.cible || 2.5) + '</span></div><div class="' + c2 + '">' + r2 + "</div></div></div>";
+          continue;
+        }
         const h = norm(parts[0]), a = norm(parts[1]);
         const it0 = findFixture(fixtures, h, a);
         const it = it0 && liveMap[it0.fixture.id] || it0;
@@ -591,7 +601,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
             const c = it.fixture.status.short;
             if (["1H", "2H", "ET", "LIVE", "HT", "BT"].includes(c)) { res = "🔴 " + (c === "HT" ? "Mi-temps" : (it.fixture.status.elapsed || "") + "'"); cls = "sc"; }
           }
-        } else wait++;
+        } else { wait++; if (day < todayStr) res = "Score indisponible"; }
         rows += '<div class="match"><div class="tm"><div class="teams"><strong>' + line + '</strong><span>Under ' + esc(sel.cible || 2.5) + '</span></div><div class="' + cls + '">' + res + "</div></div></div>";
       }
       const head = list.length
