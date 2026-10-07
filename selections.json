@@ -108,5 +108,57 @@
    "lc2": "3.5",
    "lb2": "0.75"
   }
+ ],
+ "2026-10-07": [
+  {
+   "match": "ES D'Agboville vs OFC Adiake",
+   "competition": "Côte d'Ivoire - Premier Division",
+   "heure": "16:30",
+   "ligne": 2.0,
+   "hcp": "-0.5",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "CS Constantine vs US Biskra",
+   "competition": "Algérie - 1re Division",
+   "heure": "18:00",
+   "ligne": 1.75,
+   "hcp": "-0.75",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Ceramica Cleopatra vs El Masry",
+   "competition": "Égypte - Coupe de la Ligue",
+   "heure": "18:00",
+   "ligne": 2.0,
+   "hcp": "+0.25",
+   "lc": "8.5",
+   "lc2": "4.0",
+   "lb2": "0.75"
+  },
+  {
+   "match": "SOL FC Abobo vs Stade d'Abidjan",
+   "competition": "Côte d'Ivoire - Premier Division",
+   "heure": "19:00",
+   "ligne": 2.0,
+   "hcp": "+0.25",
+   "lc": "8.5",
+   "lc2": "4.0",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Estudiantes Rio Cuarto - Réserves vs Platense - Réserves",
+   "competition": "Argentine - Liga Profesional - Réserves",
+   "heure": "19:00",
+   "ligne": 2.0,
+   "hcp": "-0.5",
+   "lc": "8.5",
+   "lc2": "4.0",
+   "lb2": "0.75"
+  }
  ]
 }
