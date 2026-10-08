@@ -1,300 +1,626 @@
-{
- "2026-10-04": [
-  {
-   "match": "Shooting Stars vs Nasarawa United",
-   "competition": "Nigéria - Premier League",
-   "heure": "16:00",
-   "ligne": 2.0,
-   "fin": [
-    0,
-    0
-   ]
-  },
-  {
-   "match": "Inter Lagos vs Katsina Utd",
-   "competition": "Nigéria - Premier League",
-   "heure": "16:00",
-   "ligne": 2.0,
-   "fin": [
-    1,
-    1
-   ]
-  },
-  {
-   "match": "KAC Kenitra vs US Yacoub El Mansour",
-   "competition": "Maroc - GNF 2",
-   "heure": "17:00",
-   "fin": [
-    0,
-    1
-   ]
-  },
-  {
-   "match": "CSD Amatitlan vs Coatepeque FC",
-   "competition": "Guatemala - Primera Division",
-   "heure": "18:00",
-   "ligne": 2.0,
-   "fin": [
-    0,
-    3
-   ]
-  },
-  {
-   "match": "Chacarita Juniors vs Patronato Parana",
-   "competition": "Argentine - Nacional B",
-   "heure": "19:30",
-   "ligne": 2.0,
-   "fin": [
-    1,
-    0
-   ]
-  },
-  {
-   "match": "CA Alvarado vs Defensores de Belgrano VR",
-   "competition": "Argentine - Torneo A",
-   "heure": "19:30",
-   "ligne": 2.0,
-   "fin": [
-    2,
-    0
-   ]
-  },
-  {
-   "match": "CA Guemes vs CA Colegiales",
-   "competition": "Argentine - Nacional B",
-   "heure": "21:00",
-   "ligne": 2.0,
-   "fin": [
-    0,
-    1
-   ]
-  },
-  {
-   "match": "Talleres Cordoba vs Belgrano",
-   "competition": "Argentine - Liga Profesional",
-   "heure": "21:00",
-   "fin": [
-    0,
-    1
-   ]
-  },
-  {
-   "match": "Argentinos Jrs vs Tigre",
-   "competition": "Argentine - Liga Profesional",
-   "heure": "23:15",
-   "ligne": 2.0,
-   "fin": [
-    2,
-    1
-   ]
-  },
-  {
-   "match": "Racing Club de Montevideo vs Penarol",
-   "competition": "Uruguay - Clausura",
-   "heure": "23:30",
-   "ligne": 2.0,
-   "fin": [
-    0,
-    1
-   ]
-  },
-  {
-   "match": "CA Independiente de la Chorrera vs CD Arabe Unido",
-   "competition": "Panama - LPF",
-   "fin": [
-    1,
-    1
-   ]
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Horizon Football — Les statistiques avant les intuitions</title>
+<meta name="description" content="Horizon Football : statistiques, tendances, analyses de matchs et méthode Under 2.5.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Horizon Football — Les statistiques avant les intuitions">
+<meta property="og:description" content="Sélection du jour, bilans publics et méthode Under 2.5. Aucun gain garanti. Réservé aux majeurs.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#07152f">
+<style>
+:root{--navy:#07152f;--blue:#0f2a5c;--card:#10244d;--gold:#f2b632;--white:#fff;--muted:#a9b8d6;--line:#1f3a70}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gradient(180deg,var(--navy),#0a1d42 60%,var(--navy));color:var(--white);line-height:1.5}
+a{color:inherit;text-decoration:none}
+.header{position:sticky;top:0;z-index:50;background:rgba(7,21,47,.95);border-bottom:1px solid var(--line);padding:10px 16px}
+.brand{display:flex;align-items:center;gap:10px}
+.ball{font-size:28px}
+.brand b{letter-spacing:2px;font-size:18px}
+.brand strong{color:var(--gold);letter-spacing:2px;font-size:18px;margin-left:6px}
+.brand small{display:block;color:var(--muted);font-size:11px}
+nav{display:flex;gap:16px;overflow-x:auto;margin-top:8px;font-size:14px;white-space:nowrap}
+nav a{color:var(--muted);padding:4px 0}
+nav a:hover{color:var(--gold)}
+main{max-width:980px;margin:0 auto;padding:0 16px 40px}
+.hero{padding:36px 0 20px}
+.eyebrow{color:var(--gold);letter-spacing:3px;font-size:12px;margin:0}
+h1{font-size:30px;line-height:1.15;margin:8px 0 12px}
+h1 span{color:var(--gold)}
+h2{font-size:22px;margin:0 0 14px}
+.lead{color:var(--muted);max-width:620px}
+.btn{display:inline-block;background:var(--gold);color:#1a1200;font-weight:700;border:0;border-radius:10px;padding:12px 20px;cursor:pointer;font-size:15px}
+.btn[disabled]{opacity:.55;cursor:default}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:22px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi b{display:block;font-size:24px;color:var(--gold)}
+.kpi span{color:var(--muted);font-size:13px}
+.section{padding:26px 0}
+.match{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+.logo{width:22px;height:22px;object-fit:contain;vertical-align:middle;margin-right:8px;background:#fff;border-radius:50%;padding:1px}
+.lg{color:var(--muted);font-size:13px}
+.tm{display:flex;justify-content:space-between;align-items:center;margin:6px 0 10px;gap:8px}
+.teams strong{display:block}
+.teams span{color:var(--muted);font-size:12px}
+.sc{font-size:20px;font-weight:700;color:var(--gold);white-space:nowrap}
+.st{font-size:12px;color:var(--muted);text-align:right}
+.analyse-btn{background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}
+.muted{color:var(--muted)}
+.grid{display:grid;gap:16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.panel h3{margin-top:0;color:var(--gold)}
+ol{padding-left:20px;margin:0}
+ol li{margin-bottom:6px}
+.flow{color:var(--gold);font-weight:600}
+.plans{display:grid;gap:12px}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center}
+.plan b{display:block;font-size:22px;color:var(--gold);margin:6px 0 12px}
+footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;color:var(--muted);font-size:13px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:flex-start;justify-content:center;z-index:100;padding:16px;overflow-y:auto}
+.box{background:var(--navy);border:1px solid var(--gold);border-radius:16px;padding:20px;max-width:560px;width:100%;margin:auto}
+.box h2{margin-top:0}
+.box h4{color:var(--gold);margin:16px 0 6px}
+.box ul{margin:4px 0;padding-left:18px}
+.verdict{background:var(--card);border-left:4px solid var(--gold);padding:10px 12px;border-radius:8px;margin-top:14px}
+.wa{position:fixed;right:14px;bottom:14px;z-index:60;background:#25d366;color:#05260f;font-weight:700;border-radius:999px;padding:11px 16px;box-shadow:0 4px 14px rgba(0,0,0,.4);font-size:14px}
+.hero-wrap{position:relative;border-radius:20px;padding:30px 18px;margin:16px 0 0;background:radial-gradient(circle at 85% 0%,rgba(242,182,50,.28),transparent 45%),radial-gradient(circle at 0% 100%,rgba(30,90,200,.5),transparent 55%),linear-gradient(135deg,#0c2a66,#07152f);border:1px solid var(--line);overflow:hidden}
+.hero-wrap:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 58px,rgba(255,255,255,.035) 58px 60px);pointer-events:none}
+.hero-wrap>*{position:relative;z-index:1}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.badge{background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px;color:#dbe6ff}
+.btn2{display:inline-block;border:1px solid var(--gold);color:var(--gold);font-weight:700;border-radius:10px;padding:11px 18px;margin-left:8px}
+.feat{display:grid;gap:10px;margin:18px 0}
+.feat div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;color:var(--muted);font-size:14px}
+.feat b{display:block;color:var(--gold);font-size:16px;margin-bottom:4px}
+.plan.pop{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.feat div,.panel,.plan{animation:fadeUp .6s ease both}
+@media(prefers-reduced-motion:reduce){.feat div,.panel,.plan{animation:none}}
+.step{color:var(--gold);font-weight:700;font-size:13px;letter-spacing:1px}
+.mbanner{background:linear-gradient(90deg,#b8860b,#f2b632 50%,#b8860b);color:#1a1200;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;font-weight:800;margin-bottom:12px;flex-wrap:wrap;gap:6px}
+.mbanner span.t{font-size:20px;letter-spacing:.5px}
+.mcard{background:linear-gradient(180deg,#0f2a5c,#0a1f47);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden;position:relative}
+.mhead{display:flex;align-items:center;gap:8px;background:#12336f;padding:8px 12px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding-right:56px}
+.mrank{position:absolute;top:0;right:0;background:var(--gold);color:#1a1200;font-weight:800;padding:6px 14px 6px 18px;border-bottom-left-radius:12px;font-size:13px}
+.mbody{display:flex;gap:10px;padding:10px 12px 12px}
+.mtime{background:#07152f;border:1px solid var(--line);border-radius:10px;min-width:68px;text-align:center;padding:8px 6px;display:flex;flex-direction:column;justify-content:center}
+.mtime small{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1px}
+.mtime b{color:var(--gold);font-size:21px}
+.mmain{flex:1;min-width:0}
+.mteams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;text-align:center}
+.mteam{display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;font-size:13px;line-height:1.2}
+.mlogo{width:38px;height:38px;object-fit:contain;background:#fff;border-radius:50%;padding:2px}
+.mscore{background:#07152f;border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:19px;font-weight:800;white-space:nowrap}
+.mst{font-size:11px;color:var(--muted);margin-top:4px;text-align:center}
+.mstats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.mstat{background:#0b2150;border-radius:8px;padding:6px 4px;text-align:center;font-size:11px;color:var(--muted)}
+.mstat b{display:block;color:#fff;font-size:15px}
+.mstat i{color:#ff9a3c;font-style:normal;margin-left:6px}
+.socrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.socbtn{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;padding:5px 14px 5px 5px;font-weight:700;font-size:14px;color:#fff}
+.soc{width:28px;height:28px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
+.soc svg{width:22px;height:22px}
+@media(min-width:700px){.feat{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:700px){h1{font-size:40px}.kpis{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:1fr 1fr}.plans{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand"><span class="ball">⚽</span><div><b>HORIZON</b><strong>FOOTBALL</strong><small>Les statistiques avant les intuitions</small></div></div>
+  <nav><a href="#matchs">Matchs du jour</a><a href="#bilans">Bilans</a><a href="#under">Méthode Under 2.5</a><a href="#premium">Premium</a><a href="guides.html">Guides</a></nav>
+</header>
+
+<main>
+<section class="hero"><div class="hero-wrap">
+  <p class="eyebrow">ANALYSE FOOTBALL</p>
+  <h1>Les statistiques <span>avant les intuitions.</span></h1>
+  <p class="lead">Tendances, 10 derniers matchs, H2H, cotes et mouvement des cotes : un match n'est retenu que si tout va dans le même sens.</p>
+  <div class="badges"><span class="badge">📊 Statistiques</span><span class="badge">🆚 H2H</span><span class="badge">💰 Cotes Under 2.5</span><span class="badge">📅 Bilans publics</span></div>
+  <p><a class="btn" href="#matchs">Voir la sélection du jour →</a><a class="btn2" href="#bilans">Voir les bilans</a></p>
+  <div class="socrow"><a class="socbtn" href="https://t.me/HorizonFootballOfficiel" target="_blank" rel="noopener"><span class="soc"><svg viewBox="0 0 24 24" fill="#229ED9" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></span>Canal Telegram</a><a class="socbtn" href="https://www.tiktok.com/@horizonfootba3" target="_blank" rel="noopener"><span class="soc"><svg viewBox="0 0 24 24" fill="#000" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></span>TikTok</a></div>
+  <div class="kpis">
+    <div class="kpi"><b id="countToday">–</b><span>Matchs sélectionnés aujourd'hui</span></div>
+    <div class="kpi"><b>2.0</b><span>Ligne de référence</span></div>
+    <div class="kpi"><b>10</b><span>Derniers matchs analysés</span></div>
+    <div class="kpi"><b>H2H</b><span>Face-à-face et cotes</span></div>
+  </div>
+</div></section>
+<div class="feat"><div><b>🎯 Une sélection courte</b>Quelques matchs par jour, pas des centaines.</div><div><b>📈 Des bilans publics</b>Chaque journée a ses scores et ses résultats.</div><div><b>🛑 Jamais forcé</b>Si tout n'est pas cohérent : AUCUN RETENU.</div></div>
+
+
+<section id="matchs" class="section">
+  <div class="mbanner"><span class="t">⚽ MATCHS À SURVEILLER</span><span>AUJOURD'HUI · <span id="todayLabel"></span></span></div>
+  <p><button id="shareBtn" class="analyse-btn" style="display:none;padding:10px 16px">📤 Partager l'image du jour</button></p>
+  <div data-live-fixtures></div>
+  <p><button id="moreBtn" class="analyse-btn" style="display:none">Afficher plus de matchs</button></p>
+  <p class="muted" style="font-size:13px">Les analyses sont informatives. Aucun gain n'est garanti. Réservé aux majeurs.</p>
+  <p id="liveNote" class="muted" style="font-size:12px"></p>
+</section>
+
+<section id="bilans" class="section">
+  <h2>Résultats &amp; bilans</h2>
+  <p class="muted">Seuls les matchs de la sélection publiée sont comptés. Chaque journée a sa propre liste, ses scores et son bilan (résultat calculé sur Under 2.5, c'est-à-dire 2 buts ou moins).</p>
+  <div id="bilansBox"><p class="muted">Chargement…</p></div>
+</section>
+
+<section class="section">
+  <h2>Comment ça marche</h2>
+  <div class="feat"><div><span class="step">ÉTAPE 1</span><b>🔎 On repère</b>Les tendances Under 2.5, avec une ligne de buts autour de 2.0.</div><div><span class="step">ÉTAPE 2</span><b>🧪 On contrôle</b>10 derniers matchs, défenses, H2H, cotes et mouvement des cotes.</div><div><span class="step">ÉTAPE 3</span><b>✅ On publie</b>Seuls les matchs cohérents sont retenus. Sinon : AUCUN RETENU.</div></div>
+</section>
+
+<section id="under" class="section grid">
+  <div>
+    <h2>Notre méthode Under 2.5</h2>
+    <p class="flow">TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p>
+    <ol>
+      <li>Ligne autour de 2.0</li><li>Profil défensif des deux équipes</li><li>Buts encaissés</li>
+      <li>Clean sheets</li><li>Moyenne de buts encaissés</li><li>Domicile / extérieur</li>
+      <li>xGA si disponible</li><li>10 derniers matchs</li><li>H2H si utile</li>
+      <li>Cote Under 2.5</li><li>Mouvement des cotes</li><li>Cohérence générale</li>
+    </ol>
+  </div>
+  <div class="panel">
+    <h3>Règle de sélection</h3>
+    <p>Statistiques, cote et mouvement des cotes doivent aller dans le même sens.</p>
+    <p><b>Cohérents → MATCH RETENU.<br>Contradictoires → AUCUN RETENU.</b></p>
+    <p class="muted">Aucune sélection n'est jamais forcée. Aucun gain n'est garanti. Réservé aux majeurs.</p>
+  </div>
+</section>
+
+<section id="premium" class="section">
+  <h2>Espace Premium</h2>
+  <p class="muted">Ce que contient le Premium :</p>
+  <ul class="muted"><li>L'analyse détaillée de chaque match de la sélection (ligne, H2H, cotes Under, verdict)</li><li>Une alerte dès que la sélection du jour est prête</li><li>L'accès à un groupe privé</li><li>L'historique complet des résultats</li></ul>
+  <p class="muted" style="font-size:13px">Aucun gain n'est garanti. Réservé aux majeurs.</p>
+  <div class="plans">
+    <div class="plan">7 jours<b>5 000 FCFA</b><a class="btn" href="https://wa.me/14378878662?text=Bonjour%20Horizon%20Football%2C%20je%20veux%20le%20Premium%207%20jours%20%285%20000%20FCFA%29." target="_blank" rel="noopener">Commander sur WhatsApp</a></div>
+    <div class="plan pop"><small style="color:var(--gold)">⭐ Recommandé</small><br>1 mois<b>15 000 FCFA</b><a class="btn" href="https://wa.me/14378878662?text=Bonjour%20Horizon%20Football%2C%20je%20veux%20le%20Premium%201%20mois%20%2815%20000%20FCFA%29." target="_blank" rel="noopener">Commander sur WhatsApp</a></div>
+    <div class="plan">1 an<b>150 000 FCFA</b><a class="btn" href="https://wa.me/14378878662?text=Bonjour%20Horizon%20Football%2C%20je%20veux%20le%20Premium%201%20an%20%28150%20000%20FCFA%29." target="_blank" rel="noopener">Commander sur WhatsApp</a></div>
+  </div>
+  <div class="panel" style="margin-top:14px"><h3>Moyens de paiement</h3>
+    <ul><li>✅ <b>Orange Money</b> : disponible</li><li>✅ <b>MTN Mobile Money</b> : disponible</li><li>✅ <b>Virement bancaire (IBAN)</b> : disponible sur demande, coordonnées communiquées en privé sur WhatsApp</li><li>⏳ <b>PayPal</b> : bientôt disponible</li></ul>
+    <p class="muted" style="font-size:13px;margin-bottom:0">Commande sur WhatsApp : les détails de paiement te sont donnés en message privé. Après confirmation du paiement, tu reçois l'accès au groupe Premium.</p></div>
+</section>
+</main>
+
+<footer>Le football comporte une part d'incertitude. Réservé aux majeurs. Joue avec modération.<br><a href="guides.html" style="color:var(--gold)">Guides</a> · <a href="a-propos.html" style="color:var(--gold)">À propos</a> · <a href="contact.html" style="color:var(--gold)">Contact</a> · <a href="jeu-responsable.html" style="color:var(--gold)">Jeu responsable</a> · <a href="confidentialite.html" style="color:var(--gold)">Confidentialité</a> · <a href="conditions.html" style="color:var(--gold)">Conditions d'utilisation</a><br><div class="socrow" style="justify-content:center"><a class="socbtn" href="https://t.me/HorizonFootballOfficiel" target="_blank" rel="noopener"><span class="soc"><svg viewBox="0 0 24 24" fill="#229ED9" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></span>Canal Telegram</a><a class="socbtn" href="https://www.tiktok.com/@horizonfootba3" target="_blank" rel="noopener"><span class="soc"><svg viewBox="0 0 24 24" fill="#000" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></span>TikTok</a></div><br>© Horizon Football</footer>
+
+<script>
+(function () {
+  const container = document.querySelector("[data-live-fixtures]");
+  const moreBtn = document.getElementById("moreBtn");
+  const STATUS = {FT:"Terminé",AET:"Terminé (prol.)",PEN:"Tirs au but",NS:"À venir",TBD:"À confirmer",PST:"Reporté",CANC:"Annulé",HT:"Mi-temps","1H":"En cours","2H":"En cours",ET:"Prolongation",LIVE:"En cours",SUSP:"Suspendu",INT:"Interrompu",ABD:"Abandonné"};
+  let fixtures = [];
+  let shown = 0;
+
+  function esc(v) {
+    return String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
- ],
- "2026-10-05": [
-  {
-   "match": "Deportivo Paraguayo vs Club Mercedes",
-   "competition": "Argentine - Primera C Metropolitana",
-   "heure": "19:00",
-   "ligne": 1.75,
-   "id": 1500141,
-   "hcp": "+0.25",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "fin": [
-    1,
-    1
-   ]
-  },
-  {
-   "match": "Sportivo Barracas vs Leones de Rosario",
-   "competition": "Argentine - Primera C Metropolitana",
-   "heure": "19:00",
-   "ligne": 1.75,
-   "id": 1500192,
-   "hcp": "0.0",
-   "lc": "7.5",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "fin": [
-    0,
-    2
-   ]
-  },
-  {
-   "match": "El Porvenir vs Cañuelas FC",
-   "competition": "Argentine - Primera C Metropolitana",
-   "heure": "19:00",
-   "ligne": 1.75,
-   "id": 1500142,
-   "hcp": "+0.25",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "fin": [
-    1,
-    1
-   ]
-  },
-  {
-   "match": "Luján vs General Lamadrid",
-   "competition": "Argentine - Primera C Metropolitana",
-   "heure": "19:00",
-   "ligne": 2.0,
-   "id": 1500139,
-   "hcp": "-0.75",
-   "lc": "7.5",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "fin": [
-    1,
-    0
-   ]
+  function doualaDate() {
+    const p = new Intl.DateTimeFormat("en-CA",{timeZone:"Africa/Douala",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+    const g = t => p.find(x => x.type === t).value;
+    return g("year") + "-" + g("month") + "-" + g("day");
   }
- ],
- "2026-10-07": [
-  {
-   "match": "ES D'Agboville vs OFC Adiake",
-   "competition": "Côte d'Ivoire - Premier Division",
-   "heure": "16:30",
-   "ligne": 2.0,
-   "hcp": "-0.5",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "reporte": true
-  },
-  {
-   "match": "CS Constantine vs US Biskra",
-   "competition": "Algérie - 1re Division",
-   "heure": "18:00",
-   "ligne": 1.75,
-   "hcp": "-0.75",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "fin": [
-    4,
-    0
-   ]
-  },
-  {
-   "match": "Ceramica Cleopatra vs El Masry",
-   "competition": "Égypte - Coupe de la Ligue",
-   "heure": "18:00",
-   "ligne": 2.0,
-   "hcp": "+0.25",
-   "lc": "8.5",
-   "lc2": "4.0",
-   "lb2": "0.75",
-   "fin": [
-    0,
-    1
-   ]
-  },
-  {
-   "match": "SOL FC Abobo vs Stade d'Abidjan",
-   "competition": "Côte d'Ivoire - Premier Division",
-   "heure": "19:00",
-   "ligne": 2.0,
-   "hcp": "+0.25",
-   "lc": "8.5",
-   "lc2": "4.0",
-   "lb2": "0.75",
-   "reporte": true
-  },
-  {
-   "match": "Estudiantes Rio Cuarto - Réserves vs Platense - Réserves",
-   "competition": "Argentine - Liga Profesional - Réserves",
-   "heure": "19:00",
-   "ligne": 2.0,
-   "hcp": "-0.5",
-   "lc": "8.5",
-   "lc2": "4.0",
-   "lb2": "0.75",
-   "fin": [
-    2,
-    2
-   ]
+  function note(msg) { container.innerHTML = '<p class="muted">' + esc(msg) + "</p>"; }
+
+  const logoImg = x => x && x.logo ? '<img class="logo" loading="lazy" alt="" src="' + esc(x.logo) + '" onerror="this.remove()">' : "";
+  const fmtL = x => { const n = Number(x); return Number.isInteger(n) ? n.toFixed(1) : String(n); };
+  const teamHtml = x => '<div class="mteam">' + (x && x.logo ? '<img class="mlogo" loading="lazy" alt="" src="' + esc(x.logo) + '" onerror="this.remove()">' : "") + "<span>" + esc(x && x.name) + "</span></div>";
+  const statHtml = (label, v, v2) => v == null || v === "" ? "" : '<div class="mstat">' + label + "<b>" + esc(v) + (v2 != null && v2 !== "" ? "<i>" + esc(v2) + "</i>" : "") + "</b></div>";
+  function card(item) {
+    const f = item.fixture || {}, t = item.teams || {}, l = item.league || {}, g = item.goals || {};
+    const code = (f.status && f.status.short) || "";
+    const time = item._heure || (f.date ? new Date(f.date).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Douala" }) : "--:--");
+    const score = g.home != null && g.away != null && code && code !== "NS" ? g.home + " - " + g.away : "VS";
+    const ht = item.score && item.score.halftime;
+    const htTxt = ["FT", "AET", "PEN"].includes(code) && ht && ht.home != null ? " · MT " + ht.home + "-" + ht.away : "";
+    const stats = statHtml("Handicap", item._hcp) + statHtml("Ligne de corners", item._lc, item._lc2) + statHtml("Ligne de buts", item._ligne != null ? fmtL(item._ligne) : null, item._lb2);
+    const head = (l.flag ? '<img src="' + esc(l.flag) + '" alt="" style="width:20px;height:14px;border-radius:2px" onerror="this.remove()">' : "") + esc(item._comp || ((l.country ? l.country + " - " : "") + (l.name || "")));
+    return '<article class="mcard" data-fid="' + esc(f.id) + '"><div class="mhead">' + head + "</div>" + (item._rank ? '<div class="mrank">#' + item._rank + "</div>" : "") +
+      '<div class="mbody"><div class="mtime"><small>HEURE</small><b>' + esc(time) + '</b></div><div class="mmain">' +
+      '<div class="mteams">' + teamHtml(t.home) + '<div><div class="mscore">' + esc(score) + '</div><div class="mst">' + esc((code ? statusText(code, f.status && f.status.elapsed) : "") + htTxt) + "</div></div>" + teamHtml(t.away) + "</div>" +
+      (stats ? '<div class="mstats">' + stats + "</div>" : "") +
+      '<button class="analyse-btn" style="width:100%;margin-top:10px" data-id="' + esc(f.id) + '" data-hid="' + esc(t.home && t.home.id) + '" data-aid="' + esc(t.away && t.away.id) + '" data-date="' + esc(f.date) + '" data-home="' + esc(t.home && t.home.name) + '" data-away="' + esc(t.away && t.away.name) + '">Analyser</button></div></div></article>';
   }
- ],
- "2026-10-08": [
-  {
-   "match": "Pamba SC vs Geita Gold",
-   "competition": "Tanzanie - Premier League",
-   "heure": "14:15",
-   "ligne": 2.0,
-   "hcp": "0.0",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  },
-  {
-   "match": "Namungo FC vs TRA United",
-   "competition": "Tanzanie - Premier League",
-   "heure": "16:30",
-   "ligne": 2.0,
-   "hcp": "+0.25",
-   "lc": "7.5",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  },
-  {
-   "match": "UTS Rabat vs RSB Berkane",
-   "competition": "Maroc - Botola Pro",
-   "heure": "17:00",
-   "ligne": 2.0,
-   "hcp": "+0.25",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  },
-  {
-   "match": "Independiente Juniors vs Nueve de Octubre",
-   "competition": "Équateur - LigaPro - Série B",
-   "heure": "18:00",
-   "ligne": 1.75,
-   "hcp": "-0.25",
-   "lc": "7.5",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  },
-  {
-   "match": "MAS Fes vs Raja Casablanca",
-   "competition": "Maroc - Botola Pro",
-   "heure": "21:00",
-   "ligne": 2.0,
-   "hcp": "0.0",
-   "lc": "7.5",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  },
-  {
-   "match": "CD Santo Domingo vs LDU Portoviejo",
-   "competition": "Équateur - LigaPro - Série B",
-   "heure": "21:30",
-   "ligne": 1.75,
-   "hcp": "0.0",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75"
+  const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
+  const toks = s => norm(s).split(" ").filter(w => w.length > 3);
+  const overlap = (x, y) => { const ty = toks(y); return toks(x).filter(w => ty.some(z => z === w || z.startsWith(w) || w.startsWith(z))).length; };
+  function findFixture(list, hn, an) {
+    let best = null, bestScore = 0;
+    for (const f of list) {
+      const sh = overlap(hn, f.teams.home.name), sa = overlap(an, f.teams.away.name);
+      if (sh && sa && sh + sa > bestScore) { best = f; bestScore = sh + sa; }
+    }
+    return best;
   }
- ]
-}
+  const LIVE = ["1H", "2H", "ET", "LIVE"];
+  const statusText = (code, el) => LIVE.includes(code) ? "🔴 En cours" + (el ? " · " + el + "'" : "") : (STATUS[code] || code);
+  async function refreshLive() {
+    const ids = fixtures.map(x => x.fixture && x.fixture.id).filter(Boolean);
+    if (!ids.length) return;
+    try {
+      const r = await fetch("/api/live?ids=" + ids.slice(0, 20).join(","), { cache: "no-store" });
+      const d = await r.json();
+      if (!r.ok || !d.response || !d.response.length) return;
+      d.response.forEach(n => {
+        const i = fixtures.findIndex(x => x.fixture && x.fixture.id === n.fixture.id);
+        if (i < 0) return;
+        const keep = {}; Object.keys(fixtures[i]).forEach(k => { if (k[0] === "_") keep[k] = fixtures[i][k]; }); fixtures[i] = Object.assign({}, n, keep);
+        const el = container.querySelector('[data-fid="' + n.fixture.id + '"]');
+        if (el) el.outerHTML = card(fixtures[i]);
+      });
+      const note = document.getElementById("liveNote");
+      if (note) note.textContent = "Scores et minutes actualisés environ toutes les 5 minutes (dernière mise à jour : " + new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Douala" }) + ").";
+    } catch (e) {}
+  }
+  const loadImg = url => new Promise(res => {
+    if (!url) return res(null);
+    const im = new Image(); im.crossOrigin = "anonymous";
+    const t = setTimeout(() => res(null), 6000);
+    im.onload = () => { clearTimeout(t); res(im); };
+    im.onerror = () => { clearTimeout(t); res(null); };
+    im.src = url;
+  });
+  function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+  function wrapTxt(c, text, maxW) {
+    const lines = []; let cur = "";
+    String(text || "").split(" ").forEach(w => { const test = cur ? cur + " " + w : w; if (c.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; } else cur = test; });
+    if (cur) lines.push(cur);
+    return lines.slice(0, 2);
+  }
+  async function makeImage() {
+    const W = 1080, CH = 250, n = fixtures.length, F = "system-ui, Arial, sans-serif";
+    const H = Math.max(1350, 370 + n * (CH + 20) + 200);
+    const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+    const c = cv.getContext("2d");
+    const logos = await Promise.all(fixtures.map(x => Promise.all([loadImg(x.teams && x.teams.home && x.teams.home.logo), loadImg(x.teams && x.teams.away && x.teams.away.logo)])));
+    const bg = c.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, "#0c2a66"); bg.addColorStop(1, "#050d22"); c.fillStyle = bg; c.fillRect(0, 0, W, H);
+    const glow = c.createRadialGradient(900, 100, 20, 900, 100, 500); glow.addColorStop(0, "rgba(242,182,50,.28)"); glow.addColorStop(1, "rgba(242,182,50,0)"); c.fillStyle = glow; c.fillRect(0, 0, W, H);
+    c.textBaseline = "middle"; c.textAlign = "left";
+    c.font = "110px " + F; c.fillStyle = "#fff"; c.fillText("⚽", 40, 100);
+    c.font = "800 64px " + F; c.fillText("HORIZON", 180, 80); c.fillStyle = "#f2b632"; c.fillText("FOOTBALL", 180 + c.measureText("HORIZON ").width, 80);
+    c.font = "600 24px " + F; c.fillStyle = "#a9b8d6"; c.fillText("LES STATISTIQUES AVANT LES INTUITIONS", 182, 140);
+    const bn = c.createLinearGradient(40, 0, W - 40, 0); bn.addColorStop(0, "#b8860b"); bn.addColorStop(.5, "#f2b632"); bn.addColorStop(1, "#b8860b");
+    rr(c, 40, 190, W - 80, 150, 24); c.fillStyle = bn; c.fill();
+    c.textAlign = "center"; c.fillStyle = "#1a1200"; c.font = "900 60px " + F; c.fillText("MATCHS À SURVEILLER", W / 2, 245);
+    const label = new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric", timeZone: "Africa/Douala" }).toUpperCase();
+    c.font = "700 32px " + F; c.fillText("AUJOURD'HUI · " + label, W / 2, 305);
+    const drawLogo = (im, cx, cy, name) => {
+      c.save(); c.beginPath(); c.arc(cx, cy, 36, 0, Math.PI * 2); c.closePath(); c.fillStyle = "#fff"; c.fill(); c.clip();
+      if (im) c.drawImage(im, cx - 31, cy - 31, 62, 62);
+      else { c.fillStyle = "#12336f"; c.font = "800 26px " + F; c.textAlign = "center"; c.fillText(String(name || "?").trim().slice(0, 2).toUpperCase(), cx, cy); }
+      c.restore();
+    };
+    fixtures.forEach((x, i) => {
+      const y = 370 + i * (CH + 20), f = x.fixture || {}, t = x.teams || {}, l = x.league || {}, g = x.goals || {}, code = (f.status && f.status.short) || "";
+      rr(c, 40, y, W - 80, CH, 22); c.fillStyle = "#0f2a5c"; c.fill(); c.strokeStyle = "#1f3a70"; c.lineWidth = 2; c.stroke();
+      rr(c, 40, y, W - 80, 52, 22); c.fillStyle = "#12336f"; c.fill();
+      c.textAlign = "left"; c.font = "700 24px " + F; c.fillStyle = "#fff";
+      c.fillText((x._comp || ((l.country ? l.country + " - " : "") + (l.name || ""))).toUpperCase(), 70, y + 27);
+      if (x._rank) { rr(c, W - 150, y, 110, 52, 22); c.fillStyle = "#f2b632"; c.fill(); c.fillStyle = "#1a1200"; c.textAlign = "center"; c.font = "900 28px " + F; c.fillText("#" + x._rank, W - 95, y + 27); }
+      rr(c, 60, y + 66, 160, 172, 14); c.fillStyle = "#07152f"; c.fill();
+      c.textAlign = "center"; c.fillStyle = "#a9b8d6"; c.font = "700 20px " + F; c.fillText("HEURE", 140, y + 110);
+      c.fillStyle = "#f2b632"; c.font = "900 46px " + F; c.fillText(x._heure || "--:--", 140, y + 160);
+      drawLogo(logos[i][0], 285, y + 112, t.home && t.home.name);
+      drawLogo(logos[i][1], 985, y + 112, t.away && t.away.name);
+      c.font = "700 26px " + F; c.fillStyle = "#fff"; c.textAlign = "left";
+      wrapTxt(c, t.home && t.home.name, 175).forEach((ln, k, arr) => c.fillText(ln, 335, y + 112 + (k - (arr.length - 1) / 2) * 32));
+      c.textAlign = "right";
+      wrapTxt(c, t.away && t.away.name, 175).forEach((ln, k, arr) => c.fillText(ln, 935, y + 112 + (k - (arr.length - 1) / 2) * 32));
+      rr(c, 562, y + 84, 140, 56, 12); c.fillStyle = "#07152f"; c.fill();
+      c.textAlign = "center"; c.fillStyle = "#fff"; c.font = "900 36px " + F;
+      c.fillText(g.home != null && g.away != null && code && code !== "NS" ? g.home + " - " + g.away : "VS", 632, y + 113);
+      const st = ["FT", "AET", "PEN"].includes(code) ? "TERMINÉ" : (LIVE.includes(code) ? "EN DIRECT" + (f.status && f.status.elapsed ? " " + f.status.elapsed + "'" : "") : "");
+      if (st) { c.fillStyle = "#a9b8d6"; c.font = "700 20px " + F; c.fillText(st, 632, y + 156); }
+      const stats = [["HANDICAP", x._hcp, null], ["LIGNE DE CORNERS", x._lc, x._lc2], ["LIGNE DE BUTS", x._ligne != null ? fmtL(x._ligne) : null, x._lb2]].filter(s => s[1] != null && s[1] !== "");
+      const bw = 242;
+      stats.forEach((s, k) => {
+        const bx = 245 + k * (bw + 12);
+        rr(c, bx, y + 174, bw, 64, 12); c.fillStyle = "#0b2150"; c.fill();
+        c.fillStyle = "#a9b8d6"; c.font = "700 16px " + F; c.textAlign = "center"; c.fillText(s[0], bx + bw / 2, y + 191);
+        c.font = "800 28px " + F; c.fillStyle = "#fff";
+        if (s[2] != null && s[2] !== "") {
+          const w1 = c.measureText(String(s[1])).width, w2 = c.measureText(String(s[2])).width, gap = 14, x0 = bx + bw / 2 - (w1 + gap + w2) / 2;
+          c.textAlign = "left"; c.fillText(String(s[1]), x0, y + 217); c.fillStyle = "#ff9a3c"; c.fillText(String(s[2]), x0 + w1 + gap, y + 217);
+        } else c.fillText(String(s[1]), bx + bw / 2, y + 217);
+      });
+    });
+    const fy = 370 + n * (CH + 20) + 10;
+    rr(c, 40, fy, W - 80, 110, 22); c.fillStyle = "#0b2150"; c.fill(); c.strokeStyle = "#f2b632"; c.lineWidth = 2; c.stroke();
+    c.textAlign = "center"; c.fillStyle = "#fff"; c.font = "700 24px " + F; c.fillText("VOIR PLUS D'ANALYSES SUR NOTRE SITE", W / 2, fy + 38);
+    c.fillStyle = "#f2b632"; c.font = "800 30px " + F; c.fillText("horizon-football.abdefaisal146.workers.dev", W / 2, fy + 78);
+    c.fillStyle = "#a9b8d6"; c.font = "600 22px " + F; c.fillText("Aucun gain n'est garanti · Réservé aux majeurs · Joue avec modération", W / 2, fy + 150);
+    return new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(new Error("image")), "image/png"));
+  }
+  const shareBtn = document.getElementById("shareBtn");
+  if (shareBtn) shareBtn.addEventListener("click", async () => {
+    const old = shareBtn.textContent; shareBtn.disabled = true; shareBtn.textContent = "Création de l'image…";
+    try {
+      const blob = await makeImage();
+      const file = new File([blob], "horizon-football-matchs-du-jour.png", { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: "Horizon Football", text: "Matchs à surveiller. Aucun gain n'est garanti. Réservé aux majeurs." });
+      } else {
+        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
+      }
+    } catch (e) { if (e.name !== "AbortError") alert("Impossible de créer l'image pour le moment. Réessaie."); }
+    shareBtn.disabled = false; shareBtn.textContent = old;
+  });
+  function showMore() {
+    const next = fixtures.slice(shown, shown + 20);
+    container.insertAdjacentHTML("beforeend", next.map(card).join(""));
+    shown += next.length;
+    moreBtn.style.display = shown < fixtures.length ? "inline-block" : "none";
+  }
+
+  function errLine(v) {
+    if (!v || (Array.isArray(v) && !v.length) || (typeof v === "object" && !Object.keys(v).length)) return null;
+    if (v.info) return v.info;
+    if (v.rateLimit) return "Limite de requêtes atteinte : réessaie dans une minute.";
+    if (v.odds) return v.odds;
+    return typeof v === "string" ? v : JSON.stringify(v);
+  }
+  function teamStats(team) {
+    const list = (team && team.last10) || [];
+    if (!list.length) return null;
+    let conceded = 0, clean = 0, under = 0;
+    list.forEach(m => {
+      const home = m.teams.home.id === team.id;
+      const c = home ? m.goals.away : m.goals.home;
+      const total = (m.goals.home || 0) + (m.goals.away || 0);
+      conceded += c || 0;
+      if (!c) clean++;
+      if (total <= 2) under++;
+    });
+    const n = list.length;
+    return "Encaissés : " + (conceded / n).toFixed(2) + " par match · Clean sheets : " + clean + "/" + n + " · Under 2.5 : " + under + "/" + n;
+  }
+  function underOdds(odds) {
+    const out = [];
+    (odds || []).forEach(entry => (entry.bookmakers || []).forEach(bk => {
+      const bet = (bk.bets || []).find(b => /over\/under/i.test(b.name) && !/half|1st|2nd|team|first|second/i.test(b.name));
+      if (!bet) return;
+      const vals = bet.values || [];
+      const u25 = vals.find(v => /^under 2\.5$/i.test(String(v.value)));
+      const u20 = vals.find(v => /^under 2(\.0)?$/i.test(String(v.value)));
+      if (u25 || u20) out.push(bk.name + " — " + (u25 ? "Under 2.5 : " + u25.odd : "") + (u25 && u20 ? " · " : "") + (u20 ? "Under 2.0 : " + u20.odd : ""));
+    }));
+    return out.slice(0, 4);
+  }
+  function bestUnder(odds) {
+    const all = [];
+    (odds || []).forEach(entry => (entry.bookmakers || []).forEach(bk => {
+      const bet = (bk.bets || []).find(b => /over\/under/i.test(b.name) && !/half|1st|2nd|team|first|second/i.test(b.name));
+      const u = bet && (bet.values || []).find(x => /^under 2\.5$/i.test(String(x.value)));
+      if (u && Number(u.odd) > 1) all.push({ name: bk.name, odd: Number(u.odd) });
+    }));
+    if (!all.length) return "";
+    all.sort((a, b) => b.odd - a.odd);
+    const best = all[0], low = all[all.length - 1];
+    return "<p>Meilleure cote Under 2.5 : <b>" + best.odd.toFixed(2) + "</b> (" + esc(best.name) + ") · probabilité implicite ≈ " + Math.round(100 / best.odd) + " % (avant marge)" + (all.length > 1 ? "<br>Écart entre bookmakers : " + (best.odd - low.odd).toFixed(2) : "") + "</p>";
+  }
+  function h2hHtml(list) {
+    const done = (list || []).filter(m => m.goals && m.goals.home != null && m.goals.away != null);
+    if (!done.length) return "<p class='muted'>Aucune confrontation trouvée.</p>";
+    const under = done.filter(m => m.goals.home + m.goals.away <= 2).length;
+    const rows = done.slice(0, 5).map(m => "<li>" + esc(new Date(m.fixture.date).toLocaleDateString("fr-FR")) + " · " + esc(m.teams.home.name) + " " + m.goals.home + " - " + m.goals.away + " " + esc(m.teams.away.name) + "</li>").join("");
+    return "<p>Sous 2.5 buts : <b>" + under + "/" + done.length + "</b></p><ul>" + rows + "</ul>";
+  }
+
+  function render(a, home, away) {
+    const hs = teamStats(a.teams && a.teams.home), as = teamStats(a.teams && a.teams.away);
+    const odds = underOdds(a.odds);
+    const errs = Array.from(new Set(Object.values(a.apiErrors || {}).map(errLine).filter(Boolean))).filter(e => !/plan gratuit/i.test(e));
+    const failed = x => x && ((Array.isArray(x) && x.length) || (typeof x === "object" && Object.keys(x).length));
+    const eh = a.apiErrors || {};
+    let html = "<div class='verdict'><b>Match de la sélection du jour</b><br>Retenu selon la méthode Horizon Football. Aucun gain n'est garanti. Réservé aux majeurs.</div>";
+    html += "<h4>Marché : cotes Under</h4>" + (bestUnder(a.odds) || "") + (odds.length ? "<ul>" + odds.map(o => "<li>" + esc(o) + "</li>").join("") + "</ul>" : (failed(eh.odds) ? "<p class='muted'>Cotes momentanément indisponibles. Réessaie dans une minute.</p>" : "<p class='muted'>Cotes pas encore disponibles pour ce match.</p>"));
+    html += "<h4>Face-à-face (H2H)</h4>" + (failed(eh.h2h) ? "<p class='muted'>Face-à-face momentanément indisponible. Réessaie dans une minute.</p>" : h2hHtml(a.h2h));
+    html += "<h4>Forme récente (10 derniers matchs)</h4>";
+    if (hs || as) {
+      html += "<p><b>" + esc(home) + "</b><br>" + (hs ? esc(hs) : "indisponible") + "</p><p><b>" + esc(away) + "</b><br>" + (as ? esc(as) : "indisponible") + "</p>";
+    } else {
+      html += "<p class='muted'>Les statistiques détaillées des 10 derniers matchs arrivent bientôt dans l'analyse.</p>";
+    }
+    if (errs.length) html += "<h4>Remarques</h4><ul>" + errs.map(e => "<li class='muted'>" + esc(e) + "</li>").join("") + "</ul>";
+    return html;
+  }
+
+  async function openAnalysis(id, home, away, extra) {
+    const modal = document.createElement("div");
+    modal.className = "modal";
+    modal.innerHTML = '<div class="box"><h2>Analyse du match</h2><h3>' + esc(home) + " vs " + esc(away) + '</h3><p class="muted">Ligne de référence : 2.0 · TotalCorner → Tendances → Under 2.5 → 10 derniers → Avant-match</p><div id="body"><p>Analyse en cours…</p></div><p><button class="btn" id="closeBtn">Fermer</button></p></div>';
+    document.body.appendChild(modal);
+    modal.querySelector("#closeBtn").onclick = () => modal.remove();
+    modal.addEventListener("click", e => { if (e.target === modal) modal.remove(); });
+    const body = modal.querySelector("#body");
+    try {
+      if (!id) { body.innerHTML = "<p class='muted'>Les données détaillées de ce match (cotes, face-à-face) ne sont pas disponibles pour le moment. Réessaie plus tard.</p>"; return; }
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 25000);
+      const res = await fetch("/api/analyze?id=" + encodeURIComponent(id) + (extra && extra.hid && extra.aid && extra.date ? "&h=" + encodeURIComponent(extra.hid) + "&a=" + encodeURIComponent(extra.aid) + "&d=" + encodeURIComponent(extra.date) + "&hn=" + encodeURIComponent(home) + "&an=" + encodeURIComponent(away) : ""), { cache: "no-store", signal: ctrl.signal });
+      clearTimeout(timer);
+      const a = JSON.parse(await res.text());
+      if (!res.ok) throw new Error(a.error || "Erreur d'analyse");
+      body.innerHTML = render(a, home, away);
+    } catch (e) {
+      body.innerHTML = "<p><b>Erreur :</b> " + esc(e.name === "AbortError" ? "L'analyse prend trop de temps. Réessaie." : (e.message === "Failed to fetch" ? "Connexion impossible pour le moment. Réessaie dans un instant." : e.message)) + "</p>";
+    }
+  }
+
+  container.addEventListener("click", e => {
+    const b = e.target.closest(".analyse-btn");
+    if (b) openAnalysis(b.dataset.id, b.dataset.home, b.dataset.away, b.dataset);
+  });
+  moreBtn.addEventListener("click", showMore);
+
+  (async function load() {
+    note("Chargement des matchs du jour…");
+    const tl = document.getElementById("todayLabel");
+    if (tl) tl.textContent = new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric", timeZone: "Africa/Douala" }).toUpperCase();
+    let mine = [];
+    try {
+      const sel = await (await fetch("/selections.json", { cache: "no-store" })).json();
+      mine = sel[doualaDate()] || [];
+    } catch (e) {}
+    const wanted = mine.map(s => s.id).filter(Boolean);
+    const byIds = mine.length > 0 && wanted.length === mine.length;
+    let api = [], apiError = null;
+    try {
+      const res = await fetch(byIds ? "/api/live?ids=" + wanted.slice(0, 20).join(",") : "/api/fixtures?date=" + doualaDate() + "&timezone=Africa/Douala", { cache: "no-store" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur API");
+      const errs = data.errors && !Array.isArray(data.errors) ? errLine(data.errors) : null;
+      if (errs) throw new Error(errs);
+      api = (data.response || []).sort((x, y) => new Date(x.fixture.date) - new Date(y.fixture.date));
+    } catch (e) { apiError = e.message; }
+    if (!byIds && wanted.some(id => !api.some(x => x.fixture.id === id))) {
+      try {
+        const r = await fetch("/api/live?ids=" + wanted.slice(0, 20).join(","), { cache: "no-store" });
+        const d = await r.json();
+        if (r.ok && d.response) api = api.concat(d.response);
+      } catch (e) {}
+    }
+    let pool = api;
+    if (mine.length && !apiError) {
+      const parse = s => String(s.match || "").split(/\s+vs\s+/i);
+      if (mine.some(s => { const p = parse(s); return !(s.id && api.some(x => x.fixture.id === s.id)) && !findFixture(api, p[0], p[1]); })) {
+        try {
+          const x = new Date(doualaDate() + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + 1);
+          const r2 = await fetch("/api/fixtures?date=" + x.toISOString().slice(0, 10) + "&timezone=Africa/Douala", { cache: "no-store" });
+          const d2 = await r2.json();
+          if (r2.ok && d2.response) pool = api.concat(d2.response);
+        } catch (e) {}
+      }
+    }
+    if (mine.length) {
+      fixtures = mine.map((s, idx) => {
+        const p = String(s.match || "").split(/\s+vs\s+/i);
+        const f = (s.id && pool.find(x => x.fixture.id === s.id)) || findFixture(pool, p[0], p[1]);
+        const base = f || { fixture: { id: null, date: null, status: {} }, teams: { home: { name: p[0] }, away: { name: p[1] } }, league: { name: s.competition || "" }, goals: {} };
+        return Object.assign({}, base, { _heure: s.heure, _ligne: s.ligne, _rank: idx + 1, _hcp: s.hcp, _lc: s.lc, _lc2: s.lc2, _lb2: s.lb2, _comp: s.competition });
+      });
+    } else {
+      document.getElementById("countToday").textContent = "0";
+      return note("La sélection du jour sera publiée prochainement.");
+    }
+    document.getElementById("countToday").textContent = fixtures.length;
+    if (!fixtures.length) return note("Aucun match trouvé pour aujourd'hui.");
+    container.innerHTML = "";
+    showMore();
+    if (mine.length && shareBtn) shareBtn.style.display = "inline-block";
+    // On ne consomme une requête que si un match est en cours ou sur le point de commencer
+    const needsLive = x => {
+      const f = x.fixture || {}, c = f.status && f.status.short;
+      return ["1H", "2H", "ET", "LIVE", "HT", "BT", "INT", "SUSP"].includes(c) || (["NS", "TBD"].includes(c) && f.date && new Date(f.date).getTime() - Date.now() < 15 * 60000);
+    };
+    if (fixtures.some(needsLive)) refreshLive();
+    setInterval(() => { if (!document.hidden && fixtures.some(needsLive)) refreshLive(); }, 300000);
+  })();
+})();
+</script>
+<script>
+(async function () {
+  const box = document.getElementById("bilansBox");
+  const esc = v => String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
+  const logoImg = x => x && x.logo ? '<img class="logo" loading="lazy" alt="" src="' + esc(x.logo) + '" onerror="this.remove()">' : "";
+  const todayStr = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Douala" }).format(new Date());
+  const fmtDay = d => d.split("-").reverse().join("/");
+  const addDay = d => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + 1); return x.toISOString().slice(0, 10); };
+  const toks = s => norm(s).split(" ").filter(w => w.length > 3);
+  const overlap = (x, y) => { const ty = toks(y); return toks(x).filter(w => ty.some(z => z === w || z.startsWith(w) || w.startsWith(z))).length; };
+  function findFixture(list, hn, an) {
+    let best = null, bestScore = 0;
+    for (const f of list) {
+      const sh = overlap(hn, f.teams.home.name), sa = overlap(an, f.teams.away.name);
+      if (sh && sa && sh + sa > bestScore) { best = f; bestScore = sh + sa; }
+    }
+    return best;
+  }
+  async function dayFixtures(day) {
+    try {
+      const r = await fetch("/api/fixtures?date=" + day + "&timezone=Africa/Douala");
+      const d = await r.json();
+      return d.response || [];
+    } catch (e) { return []; }
+  }
+  try {
+    const days = await (await fetch("/selections.json", { cache: "no-store" })).json();
+    const keys = Object.keys(days).sort().reverse().slice(0, 7);
+    if (!keys.length) { box.innerHTML = '<p class="muted">Aucune journée enregistrée pour le moment. Un match n\'est publié ici que s\'il respecte tous les critères.</p>'; return; }
+    box.innerHTML = "";
+    let W = 0, L = 0, P = 0;
+    for (const day of keys) {
+      const list = days[day] || [];
+      const need = list.filter(s => !s.fin && !s.reporte);
+      const nRep = list.filter(s => s.reporte).length;
+      const fixtures = need.length ? await dayFixtures(day) : [];
+      if (need.length && need.some(s => { const p = String(s.match || "").split(/\s+vs\s+/i); return !findFixture(fixtures, norm(p[0]), norm(p[1])); })) {
+        fixtures.push(...await dayFixtures(addDay(day)));
+      }
+      const liveMap = {};
+      if (need.length) {
+        const pend = need.map(s => { const p = String(s.match || "").split(/\s+vs\s+/i); const f = findFixture(fixtures, norm(p[0]), norm(p[1])); if (!f) return null; const st = f.fixture.status.short; return (["1H", "2H", "ET", "LIVE", "HT", "BT", "INT", "SUSP"].includes(st) || (["NS", "TBD"].includes(st) && new Date(f.fixture.date).getTime() - Date.now() < 15 * 60000)) ? f.fixture.id : null; }).filter(Boolean);
+        if (pend.length) {
+          try {
+            const r = await fetch("/api/live?ids=" + Array.from(new Set(pend)).slice(0, 20).join(","), { cache: "no-store" });
+            const d = await r.json();
+            (d.response || []).forEach(n => { liveMap[n.fixture.id] = n; });
+          } catch (e) {}
+        }
+      }
+      let win = 0, lost = 0, push = 0, wait = 0, rows = "";
+      for (const sel of list) {
+        const parts = String(sel.match || "").split(/\s+vs\s+/i);
+        if (sel.reporte) {
+          rows += '<div class="match"><div class="tm"><div class="teams"><strong>' + esc(parts[0]) + ' <span style="color:var(--muted)">vs</span> ' + esc(parts[1]) + "</strong><span>Match reporté : non compté</span></div><div class=\"muted\">Reporté</div></div></div>";
+          continue;
+        }
+        if (sel.fin) {
+          // résultat final enregistré dans le fichier : pas besoin d'interroger la source de données
+          const fh = Number(sel.fin[0]), fa = Number(sel.fin[1]), total = fh + fa, lg = Number(sel.cible || 2.5);
+          let r2 = "Perdu", c2 = "muted";
+          if (total < lg) { r2 = "Validé"; c2 = "sc"; win++; } else if (total === lg) { r2 = "Remboursé"; push++; } else lost++;
+          rows += '<div class="match"><div class="tm"><div class="teams"><strong>' + esc(parts[0]) + ' <span style="white-space:nowrap;color:var(--gold)">' + fh + " - " + fa + "</span> " + esc(parts[1]) + "</strong><span>Under " + esc(sel.cible || 2.5) + '</span></div><div class="' + c2 + '">' + r2 + "</div></div></div>";
+          continue;
+        }
+        const h = norm(parts[0]), a = norm(parts[1]);
+        const it0 = findFixture(fixtures, h, a);
+        const it = it0 && liveMap[it0.fixture.id] || it0;
+        let line = esc(sel.match), res = "En attente", cls = "muted";
+        if (it) {
+          const done = ["FT", "AET", "PEN"].includes(it.fixture.status.short);
+          const ft = it.score && it.score.fulltime && it.score.fulltime.home != null ? it.score.fulltime : it.goals;
+          line = logoImg(it.teams.home) + esc(it.teams.home.name) + ' <span style="white-space:nowrap;color:var(--gold)">' + (done || ["1H", "2H", "ET", "LIVE", "HT", "BT"].includes(it.fixture.status.short) ? ft.home + " - " + ft.away : "vs") + "</span> " + logoImg(it.teams.away) + esc(it.teams.away.name);
+          if (done && ft.home != null) {
+            const total = ft.home + ft.away, ligne = Number(sel.cible || 2.5);
+            if (total < ligne) { res = "Validé"; cls = "sc"; win++; }
+            else if (total === ligne) { res = "Remboursé"; push++; }
+            else { res = "Perdu"; lost++; }
+          } else {
+            wait++;
+            const c = it.fixture.status.short;
+            if (["1H", "2H", "ET", "LIVE", "HT", "BT"].includes(c)) { res = "🔴 " + (c === "HT" ? "Mi-temps" : (it.fixture.status.elapsed || "") + "'"); cls = "sc"; }
+          }
+        } else { wait++; if (day < todayStr) res = "Score indisponible"; }
+        rows += '<div class="match"><div class="tm"><div class="teams"><strong>' + line + '</strong><span>Under ' + esc(sel.cible || 2.5) + '</span></div><div class="' + cls + '">' + res + "</div></div></div>";
+      }
+      const head = list.length
+        ? "Bilan : " + win + " validé(s) · " + lost + " perdu(s)" + (push ? " · " + push + " remboursé(s)" : "") + (nRep ? " · " + nRep + " reporté(s)" : "") + (wait ? " · " + wait + " en attente" : "")
+        : "AUCUN RETENU pour le moment";
+      box.insertAdjacentHTML("beforeend", '<h3 style="color:var(--gold);margin:18px 0 8px">' + fmtDay(day) + '</h3><p class="muted">' + head + "</p>" + rows);
+      W += win; L += lost; P += push;
+    }
+    if (W + L > 0) box.insertAdjacentHTML("afterbegin", '<div class="panel" style="margin-bottom:12px"><b>Bilan global (7 derniers jours)</b><br>' + W + " validé(s) · " + L + " perdu(s)" + (P ? " · " + P + " remboursé(s)" : "") + " · réussite " + Math.round(100 * W / (W + L)) + " % sur " + (W + L) + " matchs réglés</div>");
+  } catch (e) {
+    box.innerHTML = '<p class="muted">Bilans indisponibles pour le moment.</p>';
+  }
+})();
+</script>
+<a class="wa" href="https://wa.me/14378878662?text=Bonjour%20Horizon%20Football%2C%20j%27ai%20une%20question." target="_blank" rel="noopener">💬 WhatsApp</a>
+</body>
+</html>
