@@ -178,7 +178,8 @@
    "hcp": "-0.5",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "reporte": true
   },
   {
    "match": "CS Constantine vs US Biskra",
@@ -188,7 +189,11 @@
    "hcp": "-0.75",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    4,
+    0
+   ]
   },
   {
    "match": "Ceramica Cleopatra vs El Masry",
@@ -198,7 +203,11 @@
    "hcp": "+0.25",
    "lc": "8.5",
    "lc2": "4.0",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    0,
+    1
+   ]
   },
   {
    "match": "SOL FC Abobo vs Stade d'Abidjan",
@@ -208,7 +217,8 @@
    "hcp": "+0.25",
    "lc": "8.5",
    "lc2": "4.0",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "reporte": true
   },
   {
    "match": "Estudiantes Rio Cuarto - Réserves vs Platense - Réserves",
@@ -218,7 +228,11 @@
    "hcp": "-0.5",
    "lc": "8.5",
    "lc2": "4.0",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    2,
+    2
+   ]
   }
  ],
  "2026-10-08": [
