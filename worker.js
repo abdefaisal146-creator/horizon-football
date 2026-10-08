@@ -203,6 +203,52 @@ export default {
       return jsonResponse(result.data, result.status);
     }
 
+    if (url.pathname === "/api/find") {
+      // Recherche légère : ne renvoie que les matchs du jour dont une équipe contient un des mots demandés
+      const date = url.searchParams.get("date");
+      const words = (url.searchParams.get("q") || "").split(",").map(s => s.trim()).filter(Boolean);
+      if (!date || !words.length) {
+        return Response.json({ error: "Missing date or q" }, { status: 400 });
+      }
+      const apiKey = env.API_FOOTBALL_KEY;
+      if (!apiKey) {
+        return Response.json({ error: "API_FOOTBALL_KEY is not configured" }, { status: 500 });
+      }
+      const plain = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      const result = await apiGet(
+        `/fixtures?date=${encodeURIComponent(date)}&timezone=Africa/Douala`,
+        apiKey,
+        data => {
+          const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Douala" }).format(new Date());
+          if (date >= today) return 3600;
+          const done = ["FT", "AET", "PEN", "CANC", "PST", "ABD", "AWD", "WO"];
+          const pending = (data.response || []).some(m => !done.includes(m.fixture && m.fixture.status && m.fixture.status.short));
+          return pending ? 600 : 2592000;
+        }
+      );
+      if (hasApiErrors(result.data)) {
+        return Response.json({ errors: result.data.errors }, { status: 200, headers: { "cache-control": "no-store" } });
+      }
+      const keys = words.map(plain);
+      const matches = (result.data.response || [])
+        .filter(m => { const n = plain(m.teams.home.name) + " | " + plain(m.teams.away.name); return keys.some(k => n.includes(k)); })
+        .slice(0, 40)
+        .map(m => ({
+          id: m.fixture.id,
+          heure: m.fixture.date,
+          ligue: m.league.name + " (" + m.league.country + ")",
+          domicile: m.teams.home.name,
+          exterieur: m.teams.away.name,
+          statut: m.fixture.status.short,
+          minute: m.fixture.status.elapsed,
+          buts: [m.goals.home, m.goals.away],
+          fin90: [m.score.fulltime.home, m.score.fulltime.away]
+        }));
+      return new Response(JSON.stringify({ date, trouves: matches.length, matchs: matches }), {
+        headers: { "content-type": "application/json; charset=UTF-8", "cache-control": "no-store" }
+      });
+    }
+
     if (url.pathname === "/api/fixtures") {
       const date = url.searchParams.get("date");
       const timezone = url.searchParams.get("timezone") || "Africa/Douala";
