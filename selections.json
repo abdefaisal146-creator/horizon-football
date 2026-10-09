@@ -1,300 +1,249 @@
 {
- "2026-10-04": [
-  {
-   "match": "Shooting Stars vs Nasarawa United",
-   "competition": "Nigéria - Premier League",
-   "heure": "16:00",
-   "ligne": 2.0,
-   "fin": [
-    0,
-    0
-   ]
-  },
-  {
-   "match": "Inter Lagos vs Katsina Utd",
-   "competition": "Nigéria - Premier League",
-   "heure": "16:00",
-   "ligne": 2.0,
-   "fin": [
-    1,
-    1
-   ]
-  },
-  {
-   "match": "KAC Kenitra vs US Yacoub El Mansour",
-   "competition": "Maroc - GNF 2",
-   "heure": "17:00",
-   "fin": [
-    0,
-    1
-   ]
-  },
-  {
-   "match": "CSD Amatitlan vs Coatepeque FC",
-   "competition": "Guatemala - Primera Division",
-   "heure": "18:00",
-   "ligne": 2.0,
-   "fin": [
-    0,
-    3
-   ]
-  },
-  {
-   "match": "Chacarita Juniors vs Patronato Parana",
-   "competition": "Argentine - Nacional B",
-   "heure": "19:30",
-   "ligne": 2.0,
-   "fin": [
-    1,
-    0
-   ]
-  },
-  {
-   "match": "CA Alvarado vs Defensores de Belgrano VR",
-   "competition": "Argentine - Torneo A",
-   "heure": "19:30",
-   "ligne": 2.0,
-   "fin": [
-    2,
-    0
-   ]
-  },
-  {
-   "match": "CA Guemes vs CA Colegiales",
-   "competition": "Argentine - Nacional B",
-   "heure": "21:00",
-   "ligne": 2.0,
-   "fin": [
-    0,
-    1
-   ]
-  },
-  {
-   "match": "Talleres Cordoba vs Belgrano",
-   "competition": "Argentine - Liga Profesional",
-   "heure": "21:00",
-   "fin": [
-    0,
-    1
-   ]
-  },
-  {
-   "match": "Argentinos Jrs vs Tigre",
-   "competition": "Argentine - Liga Profesional",
-   "heure": "23:15",
-   "ligne": 2.0,
-   "fin": [
-    2,
-    1
-   ]
-  },
-  {
-   "match": "Racing Club de Montevideo vs Penarol",
-   "competition": "Uruguay - Clausura",
-   "heure": "23:30",
-   "ligne": 2.0,
-   "fin": [
-    0,
-    1
-   ]
-  },
-  {
-   "match": "CA Independiente de la Chorrera vs CD Arabe Unido",
-   "competition": "Panama - LPF",
-   "fin": [
-    1,
-    1
-   ]
-  }
- ],
- "2026-10-05": [
-  {
-   "match": "Deportivo Paraguayo vs Club Mercedes",
-   "competition": "Argentine - Primera C Metropolitana",
-   "heure": "19:00",
-   "ligne": 1.75,
-   "id": 1500141,
-   "hcp": "+0.25",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "fin": [
-    1,
-    1
-   ]
-  },
-  {
-   "match": "Sportivo Barracas vs Leones de Rosario",
-   "competition": "Argentine - Primera C Metropolitana",
-   "heure": "19:00",
-   "ligne": 1.75,
-   "id": 1500192,
-   "hcp": "0.0",
-   "lc": "7.5",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "fin": [
-    0,
-    2
-   ]
-  },
-  {
-   "match": "El Porvenir vs Cañuelas FC",
-   "competition": "Argentine - Primera C Metropolitana",
-   "heure": "19:00",
-   "ligne": 1.75,
-   "id": 1500142,
-   "hcp": "+0.25",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "fin": [
-    1,
-    1
-   ]
-  },
-  {
-   "match": "Luján vs General Lamadrid",
-   "competition": "Argentine - Primera C Metropolitana",
-   "heure": "19:00",
-   "ligne": 2.0,
-   "id": 1500139,
-   "hcp": "-0.75",
-   "lc": "7.5",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "fin": [
-    1,
-    0
-   ]
-  }
- ],
- "2026-10-07": [
-  {
-   "match": "ES D'Agboville vs OFC Adiake",
-   "competition": "Côte d'Ivoire - Premier Division",
-   "heure": "16:30",
-   "ligne": 2.0,
-   "hcp": "-0.5",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "reporte": true
-  },
-  {
-   "match": "CS Constantine vs US Biskra",
-   "competition": "Algérie - 1re Division",
-   "heure": "18:00",
-   "ligne": 1.75,
-   "hcp": "-0.75",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75",
-   "fin": [
-    4,
-    0
-   ]
-  },
-  {
-   "match": "Ceramica Cleopatra vs El Masry",
-   "competition": "Égypte - Coupe de la Ligue",
-   "heure": "18:00",
-   "ligne": 2.0,
-   "hcp": "+0.25",
-   "lc": "8.5",
-   "lc2": "4.0",
-   "lb2": "0.75",
-   "fin": [
-    0,
-    1
-   ]
-  },
-  {
-   "match": "SOL FC Abobo vs Stade d'Abidjan",
-   "competition": "Côte d'Ivoire - Premier Division",
-   "heure": "19:00",
-   "ligne": 2.0,
-   "hcp": "+0.25",
-   "lc": "8.5",
-   "lc2": "4.0",
-   "lb2": "0.75",
-   "reporte": true
-  },
-  {
-   "match": "Estudiantes Rio Cuarto - Réserves vs Platense - Réserves",
-   "competition": "Argentine - Liga Profesional - Réserves",
-   "heure": "19:00",
-   "ligne": 2.0,
-   "hcp": "-0.5",
-   "lc": "8.5",
-   "lc2": "4.0",
-   "lb2": "0.75",
-   "fin": [
-    2,
-    2
-   ]
-  }
- ],
- "2026-10-08": [
-  {
-   "match": "Pamba SC vs Geita Gold",
-   "competition": "Tanzanie - Premier League",
-   "heure": "14:15",
-   "ligne": 2.0,
-   "hcp": "0.0",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  },
-  {
-   "match": "Namungo FC vs TRA United",
-   "competition": "Tanzanie - Premier League",
-   "heure": "16:30",
-   "ligne": 2.0,
-   "hcp": "+0.25",
-   "lc": "7.5",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  },
-  {
-   "match": "UTS Rabat vs RSB Berkane",
-   "competition": "Maroc - Botola Pro",
-   "heure": "17:00",
-   "ligne": 2.0,
-   "hcp": "+0.25",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  },
-  {
-   "match": "Independiente Juniors vs Nueve de Octubre",
-   "competition": "Équateur - LigaPro - Série B",
-   "heure": "18:00",
-   "ligne": 1.75,
-   "hcp": "-0.25",
-   "lc": "7.5",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  },
-  {
-   "match": "MAS Fes vs Raja Casablanca",
-   "competition": "Maroc - Botola Pro",
-   "heure": "21:00",
-   "ligne": 2.0,
-   "hcp": "0.0",
-   "lc": "7.5",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  },
-  {
-   "match": "CD Santo Domingo vs LDU Portoviejo",
-   "competition": "Équateur - LigaPro - Série B",
-   "heure": "21:30",
-   "ligne": 1.75,
-   "hcp": "0.0",
-   "lc": "8.0",
-   "lc2": "3.5",
-   "lb2": "0.75"
-  }
- ]
+  "2026-10-04": [
+    {
+      "match": "Shooting Stars vs Nasarawa United",
+      "competition": "Nigéria - Premier League",
+      "heure": "16:00",
+      "ligne": 2.0,
+      "fin": [0, 0]
+    },
+    {
+      "match": "Inter Lagos vs Katsina Utd",
+      "competition": "Nigéria - Premier League",
+      "heure": "16:00",
+      "ligne": 2.0,
+      "fin": [1, 1]
+    },
+    {
+      "match": "KAC Kenitra vs US Yacoub El Mansour",
+      "competition": "Maroc - GNF 2",
+      "heure": "17:00",
+      "fin": [0, 1]
+    },
+    {
+      "match": "CSD Amatitlan vs Coatepeque FC",
+      "competition": "Guatemala - Primera Division",
+      "heure": "18:00",
+      "ligne": 2.0,
+      "fin": [0, 3]
+    },
+    {
+      "match": "Chacarita Juniors vs Patronato Parana",
+      "competition": "Argentine - Nacional B",
+      "heure": "19:30",
+      "ligne": 2.0,
+      "fin": [1, 0]
+    },
+    {
+      "match": "CA Alvarado vs Defensores de Belgrano VR",
+      "competition": "Argentine - Torneo A",
+      "heure": "19:30",
+      "ligne": 2.0,
+      "fin": [2, 0]
+    },
+    {
+      "match": "CA Guemes vs CA Colegiales",
+      "competition": "Argentine - Nacional B",
+      "heure": "21:00",
+      "ligne": 2.0,
+      "fin": [0, 1]
+    },
+    {
+      "match": "Talleres Cordoba vs Belgrano",
+      "competition": "Argentine - Liga Profesional",
+      "heure": "21:00",
+      "fin": [0, 1]
+    },
+    {
+      "match": "Argentinos Jrs vs Tigre",
+      "competition": "Argentine - Liga Profesional",
+      "heure": "23:15",
+      "ligne": 2.0,
+      "fin": [2, 1]
+    },
+    {
+      "match": "Racing Club de Montevideo vs Penarol",
+      "competition": "Uruguay - Clausura",
+      "heure": "23:30",
+      "ligne": 2.0,
+      "fin": [0, 1]
+    },
+    {
+      "match": "CA Independiente de la Chorrera vs CD Arabe Unido",
+      "competition": "Panama - LPF",
+      "fin": [1, 1]
+    }
+  ],
+  "2026-10-05": [
+    {
+      "match": "Deportivo Paraguayo vs Club Mercedes",
+      "competition": "Argentine - Primera C Metropolitana",
+      "heure": "19:00",
+      "ligne": 1.75,
+      "id": 1500141,
+      "hcp": "+0.25",
+      "lc": "8.0",
+      "lc2": "3.5",
+      "lb2": "0.75",
+      "fin": [1, 1]
+    },
+    {
+      "match": "Sportivo Barracas vs Leones de Rosario",
+      "competition": "Argentine - Primera C Metropolitana",
+      "heure": "19:00",
+      "ligne": 1.75,
+      "id": 1500192,
+      "hcp": "0.0",
+      "lc": "7.5",
+      "lc2": "3.5",
+      "lb2": "0.75",
+      "fin": [0, 2]
+    },
+    {
+      "match": "El Porvenir vs Cañuelas FC",
+      "competition": "Argentine - Primera C Metropolitana",
+      "heure": "19:00",
+      "ligne": 1.75,
+      "id": 1500142,
+      "hcp": "+0.25",
+      "lc": "8.0",
+      "lc2": "3.5",
+      "lb2": "0.75",
+      "fin": [1, 1]
+    },
+    {
+      "match": "Luján vs General Lamadrid",
+      "competition": "Argentine - Primera C Metropolitana",
+      "heure": "19:00",
+      "ligne": 2.0,
+      "id": 1500139,
+      "hcp": "-0.75",
+      "lc": "7.5",
+      "lc2": "3.5",
+      "lb2": "0.75",
+      "fin": [1, 0]
+    }
+  ],
+  "2026-10-07": [
+    {
+      "match": "ES D'Agboville vs OFC Adiake",
+      "competition": "Côte d'Ivoire - Premier Division",
+      "heure": "16:30",
+      "ligne": 2.0,
+      "hcp": "-0.5",
+      "lc": "8.0",
+      "lc2": "3.5",
+      "lb2": "0.75",
+      "reporte": true
+    },
+    {
+      "match": "CS Constantine vs US Biskra",
+      "competition": "Algérie - 1re Division",
+      "heure": "18:00",
+      "ligne": 1.75,
+      "hcp": "-0.75",
+      "lc": "8.0",
+      "lc2": "3.5",
+      "lb2": "0.75",
+      "fin": [4, 0]
+    },
+    {
+      "match": "Ceramica Cleopatra vs El Masry",
+      "competition": "Égypte - Coupe de la Ligue",
+      "heure": "18:00",
+      "ligne": 2.0,
+      "hcp": "+0.25",
+      "lc": "8.5",
+      "lc2": "4.0",
+      "lb2": "0.75",
+      "fin": [0, 1]
+    },
+    {
+      "match": "SOL FC Abobo vs Stade d'Abidjan",
+      "competition": "Côte d'Ivoire - Premier Division",
+      "heure": "19:00",
+      "ligne": 2.0,
+      "hcp": "+0.25",
+      "lc": "8.5",
+      "lc2": "4.0",
+      "lb2": "0.75",
+      "reporte": true
+    },
+    {
+      "match": "Estudiantes Rio Cuarto - Réserves vs Platense - Réserves",
+      "competition": "Argentine - Liga Profesional - Réserves",
+      "heure": "19:00",
+      "ligne": 2.0,
+      "hcp": "-0.5",
+      "lc": "8.5",
+      "lc2": "4.0",
+      "lb2": "0.75",
+      "fin": [2, 2]
+    }
+  ],
+  "2026-10-08": [
+    {
+      "match": "Pamba SC vs Geita Gold",
+      "competition": "Tanzanie - Premier League",
+      "heure": "14:15",
+      "ligne": 2.0,
+      "hcp": "0.0",
+      "lc": "8.0",
+      "lc2": "3.5",
+      "lb2": "0.75"
+    },
+    {
+      "match": "Namungo FC vs TRA United",
+      "competition": "Tanzanie - Premier League",
+      "heure": "16:30",
+      "ligne": 2.0,
+      "hcp": "+0.25",
+      "lc": "7.5",
+      "lc2": "3.5",
+      "lb2": "0.75"
+    },
+    {
+      "match": "UTS Rabat vs RSB Berkane",
+      "competition": "Maroc - Botola Pro",
+      "heure": "17:00",
+      "ligne": 2.0,
+      "hcp": "+0.25",
+      "lc": "8.0",
+      "lc2": "3.5",
+      "lb2": "0.75",
+      "fin": [0, 0]
+    },
+    {
+      "match": "Independiente Juniors vs Nueve de Octubre",
+      "competition": "Équateur - LigaPro - Série B",
+      "heure": "18:00",
+      "ligne": 1.75,
+      "hcp": "-0.25",
+      "lc": "7.5",
+      "lc2": "3.5",
+      "lb2": "0.75"
+    },
+    {
+      "match": "MAS Fes vs Raja Casablanca",
+      "competition": "Maroc - Botola Pro",
+      "heure": "21:00",
+      "ligne": 2.0,
+      "hcp": "0.0",
+      "lc": "7.5",
+      "lc2": "3.5",
+      "lb2": "0.75",
+      "fin": [0, 0]
+    },
+    {
+      "match": "CD Santo Domingo vs LDU Portoviejo",
+      "competition": "Équateur - LigaPro - Série B",
+      "heure": "21:30",
+      "ligne": 1.75,
+      "hcp": "0.0",
+      "lc": "8.0",
+      "lc2": "3.5",
+      "lb2": "0.75",
+      "fin": [2, 2]
+    }
+  ]
 }
