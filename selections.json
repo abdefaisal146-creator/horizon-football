@@ -190,7 +190,8 @@
       "hcp": "0.0",
       "lc": "8.0",
       "lc2": "3.5",
-      "lb2": "0.75"
+      "lb2": "0.75",
+      "fin": [4, 0]
     },
     {
       "match": "Namungo FC vs TRA United",
@@ -200,7 +201,8 @@
       "hcp": "+0.25",
       "lc": "7.5",
       "lc2": "3.5",
-      "lb2": "0.75"
+      "lb2": "0.75",
+      "fin": [1, 0]
     },
     {
       "match": "UTS Rabat vs RSB Berkane",
@@ -221,7 +223,8 @@
       "hcp": "-0.25",
       "lc": "7.5",
       "lc2": "3.5",
-      "lb2": "0.75"
+      "lb2": "0.75",
+      "fin": [1, 0]
     },
     {
       "match": "MAS Fes vs Raja Casablanca",
@@ -244,6 +247,28 @@
       "lc2": "3.5",
       "lb2": "0.75",
       "fin": [2, 2]
+    }
+  ],
+  "2026-10-09": [
+    {
+      "match": "ASF Bobo Dioulasso vs Majestic FC",
+      "competition": "Burkina Faso - Championnat du Burkina Faso",
+      "heure": "16:30",
+      "ligne": 1.75,
+      "hcp": "-0.25",
+      "lc": "7.5",
+      "lc2": "3.5",
+      "lb2": "0.75"
+    },
+    {
+      "match": "Gorilla FC vs Rayon Sports",
+      "competition": "Rwanda - Premier League",
+      "heure": "À confirmer"
+    },
+    {
+      "match": "Juventud Antoniana vs Huracan Las Heras",
+      "competition": "Argentine - Torneo Federal A",
+      "heure": "À confirmer"
     }
   ]
 }
