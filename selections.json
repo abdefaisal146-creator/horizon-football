@@ -251,6 +251,46 @@
   ],
   "2026-10-09": [
     {
+      "match": "Ethio Electric FC vs Adama City",
+      "competition": "Éthiopie - Premier League",
+      "heure": "13:00",
+      "ligne": 1.75,
+      "hcp": "0.0",
+      "lc": "7.5",
+      "lc2": "3.5",
+      "lb2": "0.75"
+    },
+    {
+      "match": "Maleyet El Zayiat vs Baladiyet El Mahallah",
+      "competition": "Égypte - 2e Division",
+      "heure": "13:30",
+      "ligne": 1.75,
+      "hcp": "-0.25",
+      "lc": "8.5",
+      "lc2": "3.5",
+      "lb2": "0.75"
+    },
+    {
+      "match": "Halaba City vs Welwalo Adigrat",
+      "competition": "Éthiopie - Premier League",
+      "heure": "14:00",
+      "ligne": 1.75,
+      "hcp": "0.0",
+      "lc": "8.0",
+      "lc2": "3.5",
+      "lb2": "0.75"
+    },
+    {
+      "match": "NRB Beni Oulbene vs JS Djijel",
+      "competition": "Algérie - Division 2",
+      "heure": "15:00",
+      "ligne": 1.75,
+      "hcp": "-0.25",
+      "lc": "8.5",
+      "lc2": "4.0",
+      "lb2": "0.75"
+    },
+    {
       "match": "ASF Bobo Dioulasso vs Majestic FC",
       "competition": "Burkina Faso - Championnat du Burkina Faso",
       "heure": "16:30",
@@ -259,16 +299,6 @@
       "lc": "7.5",
       "lc2": "3.5",
       "lb2": "0.75"
-    },
-    {
-      "match": "Gorilla FC vs Rayon Sports",
-      "competition": "Rwanda - Premier League",
-      "heure": "À confirmer"
-    },
-    {
-      "match": "Juventud Antoniana vs Huracan Las Heras",
-      "competition": "Argentine - Torneo Federal A",
-      "heure": "À confirmer"
     }
   ]
 }
