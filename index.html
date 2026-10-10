@@ -425,6 +425,7 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
     } else {
       html += "<p class='muted'>Les statistiques détaillées des 10 derniers matchs arrivent bientôt dans l'analyse.</p>";
     }
+    html += "<div id='aiBox' style='margin-top:14px'><button class='analyse-btn' id='aiBtn'>🤖 Analyse IA (bêta)</button></div>";
     if (errs.length) html += "<h4>Remarques</h4><ul>" + errs.map(e => "<li class='muted'>" + esc(e) + "</li>").join("") + "</ul>";
     return html;
   }
@@ -446,6 +447,21 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
       const a = JSON.parse(await res.text());
       if (!res.ok) throw new Error(a.error || "Erreur d'analyse");
       body.innerHTML = render(a, home, away);
+      const aiBtn = body.querySelector("#aiBtn");
+      if (aiBtn) aiBtn.addEventListener("click", async () => {
+        const box = body.querySelector("#aiBox");
+        aiBtn.disabled = true; aiBtn.textContent = "Analyse en cours…";
+        try {
+          const c2 = new AbortController(); const t2 = setTimeout(() => c2.abort(), 25000);
+          const r2 = await fetch("/api/ai-analysis?id=" + encodeURIComponent(id), { signal: c2.signal });
+          clearTimeout(t2);
+          const d2 = await r2.json();
+          if (!r2.ok || !d2.summary) throw new Error(d2.disclaimer || "Analyse IA indisponible pour le moment.");
+          box.innerHTML = "<h4>🤖 Analyse IA (bêta)</h4><p>" + esc(d2.summary).replace(/\n/g, "<br>") + "</p><p class='muted' style='font-size:12px'>" + esc(d2.disclaimer || "") + "</p>";
+        } catch (e2) {
+          box.innerHTML = "<p class='muted'>" + esc(e2.name === "AbortError" ? "L'analyse IA prend trop de temps. Réessaie." : e2.message) + "</p>";
+        }
+      });
     } catch (e) {
       body.innerHTML = "<p><b>Erreur :</b> " + esc(e.name === "AbortError" ? "L'analyse prend trop de temps. Réessaie." : (e.message === "Failed to fetch" ? "Connexion impossible pour le moment. Réessaie dans un instant." : e.message)) + "</p>";
     }
