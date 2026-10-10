@@ -4,9 +4,6 @@ const BASE = "https://v3.football.api-sports.io";
 // les 10 derniers matchs de chaque équipe seront alors récupérés.
 const PLAN_PRO = false;
 const MSG_PLAN_GRATUIT = "10 derniers matchs indisponibles avec le plan gratuit";
-const AI_ANALYSIS_CACHE_TTL = 1800;
-const AI_ANALYSIS_MAX_PROMPT_CHARS = 3500;
-const AI_ANALYSIS_MAX_RESPONSE_CHARS = 1200;
 
 // Appel API-Football avec cache (ttl en secondes). On ne met en cache QUE les réponses sans erreur.
 async function apiGet(path, apiKey, ttl) {
@@ -61,130 +58,14 @@ function jsonResponse(data, status = 200) {
   });
 }
 
-function getClientIp(request) {
-  return (request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "anonymous").replace(/[^a-zA-Z0-9._:-]/g, "").slice(0, 64) || "anonymous";
-}
 
-function summarizeTeamLast10(team, label) {
-  const list = Array.isArray(team && team.last10) ? team.last10 : [];
-  if (!list.length) {
-    return `${label}: données indisponibles.`;
-  }
-  let conceded = 0;
-  let clean = 0;
-  let under = 0;
-  list.forEach(match => {
-    const home = match.teams && match.teams.home && team && match.teams.home.id === team.id;
-    const awayGoals = home ? (match.goals && match.goals.away != null ? match.goals.away : 0) : (match.goals && match.goals.home != null ? match.goals.home : 0);
-    const total = (match.goals && match.goals.home != null ? match.goals.home : 0) + (match.goals && match.goals.away != null ? match.goals.away : 0);
-    conceded += awayGoals;
-    if (awayGoals === 0) clean += 1;
-    if (total <= 2) under += 1;
-  });
-  const avgConceded = (conceded / list.length).toFixed(2);
-  return `${label}: ${list.length} derniers matchs — moyenne buts encaissés ${avgConceded}; clean sheets ${clean}/${list.length}; sous 2.5 ${under}/${list.length}.`;
-}
+const AI_ANALYSIS_CACHE_TTL = 1800;
+const AI_ANALYSIS_MAX_PROMPT_CHARS = 3500;
+const AI_ANALYSIS_MAX_RESPONSE_CHARS = 1200;
+const AI_DAILY_CAP = 40; // nombre maximum d'appels réels à l'IA par jour (protège ton quota)
 
-function summarizeH2H(list) {
-  const done = Array.isArray(list) ? list.filter(match => match.goals && match.goals.home != null && match.goals.away != null) : [];
-  if (!done.length) {
-    return "H2H: aucune confrontation précédente disponible.";
-  }
-  const under = done.filter(match => (match.goals.home || 0) + (match.goals.away || 0) <= 2).length;
-  return `H2H: ${done.length} confrontations — sous 2.5 ${under}/${done.length}.`;
-}
-
-function summarizeOdds(list) {
-  const entries = Array.isArray(list) ? list : [];
-  if (!entries.length) {
-    return "Cotes: données indisponibles.";
-  }
-  const chunk = entries.slice(0, 4);
-  const summary = chunk.map(entry => {
-    const bookmakers = Array.isArray(entry.bookmakers) ? entry.bookmakers : [];
-    if (!bookmakers.length) return null;
-    const found = bookmakers.map(bk => {
-      const bets = Array.isArray(bk.bets) ? bk.bets : [];
-      const market = bets.find(bet => /over\/under/i.test(bet.name) && !/half|1st|2nd|team|first|second/i.test(bet.name));
-      if (!market) return null;
-      const values = Array.isArray(market.values) ? market.values : [];
-      const under25 = values.find(v => /^under 2\.5$/i.test(String(v.value)));
-      return under25 ? `${bk.name}: Under 2.5 ${under25.odd}` : null;
-    }).filter(Boolean);
-    return found.length ? found.join(" • ") : null;
-  }).filter(Boolean).slice(0, 2);
-  return summary.length ? `Cotes: ${summary.join(" | ")}.` : "Cotes: données indisponibles.";
-}
-
-function buildAiPrompt(data) {
-  const fixture = data && data.fixture ? data.fixture : {};
-  const teams = data && data.teams ? data.teams : {};
-  const homeName = (fixture.teams && fixture.teams.home && fixture.teams.home.name) || "Équipe domicile";
-  const awayName = (fixture.teams && fixture.teams.away && fixture.teams.away.name) || "Équipe extérieure";
-  const homeSummary = summarizeTeamLast10(teams.home, `${homeName}`);
-  const awaySummary = summarizeTeamLast10(teams.away, `${awayName}`);
-  const h2hSummary = summarizeH2H(data && data.h2h ? data.h2h : []);
-  const oddsSummary = summarizeOdds(data && data.odds ? data.odds : []);
-  const missing = [];
-  if (!fixture || !fixture.fixture || !fixture.fixture.date) missing.push("date du match");
-  if (!fixture || !fixture.teams || !fixture.teams.home || !fixture.teams.away) missing.push("identité des équipes");
-  if (!teams || !teams.home || !teams.home.last10 || !teams.home.last10.length) missing.push("10 derniers matchs domicile");
-  if (!teams || !teams.away || !teams.away.last10 || !teams.away.last10.length) missing.push("10 derniers matchs extérieur");
-  if (!data || !Array.isArray(data.h2h) || !data.h2h.length) missing.push("face-à-face");
-  const prompt = [
-    "Tu es un analyste de football pour Horizon Football.",
-    "Analyse uniquement les données réelles fournies ci-dessous.",
-    "Ne jamais inventer de statistiques, de scores ou de prédictions garanties.",
-    "Signe clairement les données manquantes et reste précis et concis.",
-    "Le cadre de la méthode Horizon Football est TotalCorner → Under 2.5 → 10 derniers → avant-match, avec ligne de référence 2.0.",
-    "Le ton doit rester informatif, pas promissif.",
-    "",
-    `Match: ${homeName} vs ${awayName}`,
-    `Date: ${fixture && fixture.fixture && fixture.fixture.date ? fixture.fixture.date : "inconnue"}`,
-    `Compétition: ${fixture && fixture.league && fixture.league.name ? fixture.league.name : "inconnue"}`,
-    ``,
-    homeSummary,
-    awaySummary,
-    h2hSummary,
-    oddsSummary,
-    ``,
-    missing.length ? `Données manquantes: ${missing.join(", ")}.` : "Toutes les données statistiques de base disponibles pour cette analyse.",
-    ``,
-    "Rédige une explication courte et claire de la cohérence entre statistiques et cotes, en mentionnant explicitement si certaines données manquent. Ne jamais garantir le résultat."
-  ].join("\n");
-  return prompt.slice(0, AI_ANALYSIS_MAX_PROMPT_CHARS);
-}
-
-async function maybeCheckAiRateLimit(request, env) {
-  if (!env || !env.AI_RATE_LIMIT_KV) return true;
-  const ip = getClientIp(request);
-  const key = `agnes:${ip}`;
-  const current = Number(await env.AI_RATE_LIMIT_KV.get(key) || "0");
-  if (current >= 10) {
-    return false;
-  }
-  await env.AI_RATE_LIMIT_KV.put(key, String(current + 1), { expirationTtl: 86400 });
-  return true;
-}
-
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-
-    if (url.pathname === "/api/fixture") {
-      const id = url.searchParams.get("id");
-      if (!id) {
-        return Response.json({ error: "Missing fixture id" }, { status: 400 });
-      }
-      const apiKey = env.API_FOOTBALL_KEY;
-      if (!apiKey) {
-        return Response.json({ error: "API_FOOTBALL_KEY is not configured" }, { status: 500 });
-      }
-      const result = await apiGet(`/fixtures?id=${encodeURIComponent(id)}`, apiKey, 3600);
-      return jsonResponse(result.data, result.status);
-    }
-
-    if (url.pathname === "/api/analyze") {
+async function handleAnalyze(request, env) {
+  const url = new URL(request.url);
       const fixtureId = url.searchParams.get("id");
       if (!fixtureId) {
         return Response.json({ error: "Missing fixture id" }, { status: 400 });
@@ -207,26 +88,26 @@ export default {
             league: { id: 0, season: 0 }
           };
         } else {
-          const fixtureResult = await apiGet(
-            `/fixtures?id=${encodeURIComponent(fixtureId)}`,
-            apiKey,
-            3600
+        const fixtureResult = await apiGet(
+          `/fixtures?id=${encodeURIComponent(fixtureId)}`,
+          apiKey,
+          3600
+        );
+        const fixtureData = fixtureResult.data;
+        if (!fixtureData.response?.length) {
+          const rate = fixtureData.errors?.rateLimit || fixtureData.errors?.requests;
+          return Response.json(
+            {
+              error: rate
+                ? "Limite de requêtes API-Football atteinte, réessaie plus tard"
+                : "Match introuvable",
+              details: fixtureData.errors || {}
+            },
+            { status: rate ? 429 : 404 }
           );
-          const fixtureData = fixtureResult.data;
-          if (!fixtureData.response?.length) {
-            const rate = fixtureData.errors?.rateLimit || fixtureData.errors?.requests;
-            return Response.json(
-              {
-                error: rate
-                  ? "Limite de requêtes API-Football atteinte, réessaie plus tard"
-                  : "Match introuvable",
-                details: fixtureData.errors || {}
-              },
-              { status: rate ? 429 : 404 }
-            );
-          }
+        }
 
-          fixture = fixtureData.response[0];
+        fixture = fixtureData.response[0];
         }
         const homeId = fixture.teams.home.id;
         const awayId = fixture.teams.away.id;
@@ -298,129 +179,164 @@ export default {
       }
     }
 
-    if (url.pathname === "/api/ai-analysis") {
-      const fixtureId = url.searchParams.get("id");
-      if (!fixtureId || !/^\d+$/.test(fixtureId.trim())) {
-        return Response.json({ error: "Invalid fixture id" }, { status: 400 });
-      }
+function getClientIp(request) {
+  return (request.headers.get("cf-connecting-ip") || "anonymous").replace(/[^a-zA-Z0-9._:-]/g, "").slice(0, 64) || "anonymous";
+}
 
-      const agnesKey = env.AGNES_API_KEY;
-      if (!agnesKey) {
-        return Response.json({ error: "AI service is not configured" }, { status: 503 });
-      }
+function summarizeTeamLast10(team, label) {
+  const list = Array.isArray(team && team.last10) ? team.last10 : [];
+  if (!list.length) return `${label}: données indisponibles.`;
+  let conceded = 0, clean = 0, under = 0;
+  list.forEach(match => {
+    const home = match.teams && match.teams.home && match.teams.home.id === team.id;
+    const gh = match.goals && match.goals.home != null ? match.goals.home : 0;
+    const ga = match.goals && match.goals.away != null ? match.goals.away : 0;
+    const c = home ? ga : gh;
+    conceded += c;
+    if (c === 0) clean += 1;
+    if (gh + ga <= 2) under += 1;
+  });
+  return `${label}: ${list.length} derniers matchs, buts encaissés par match ${(conceded / list.length).toFixed(2)}, clean sheets ${clean}/${list.length}, sous 2.5 buts ${under}/${list.length}.`;
+}
 
-      const allowed = await maybeCheckAiRateLimit(request, env);
-      if (!allowed) {
-        return Response.json({ error: "AI quota exceeded" }, { status: 429 });
-      }
+function summarizeH2H(list) {
+  const done = Array.isArray(list) ? list.filter(m => m.goals && m.goals.home != null && m.goals.away != null) : [];
+  if (!done.length) return "H2H: aucune confrontation disponible.";
+  const under = done.filter(m => (m.goals.home || 0) + (m.goals.away || 0) <= 2).length;
+  return `H2H: ${done.length} confrontations, sous 2.5 buts ${under}/${done.length}.`;
+}
 
-      const cacheKey = new Request(`https://horizon-football-ai.local/analysis?id=${encodeURIComponent(fixtureId)}`);
-      const cached = await caches.default.match(cacheKey);
-      if (cached) {
-        return cached;
-      }
+function summarizeOdds(list) {
+  const found = [];
+  (Array.isArray(list) ? list : []).forEach(entry => (entry.bookmakers || []).forEach(bk => {
+    const bet = (bk.bets || []).find(b => /over\/under/i.test(b.name) && !/half|1st|2nd|team|first|second/i.test(b.name));
+    const u = bet && (bet.values || []).find(v => /^under 2\.5$/i.test(String(v.value)));
+    if (u) found.push(`${bk.name} ${u.odd}`);
+  }));
+  return found.length ? `Cotes Under 2.5: ${found.slice(0, 4).join(", ")}.` : "Cotes Under 2.5: indisponibles.";
+}
 
-      try {
-        const internalBase = new URL(request.url);
-        const analyzeUrl = new URL(`/api/analyze?id=${encodeURIComponent(fixtureId)}`, internalBase.origin).toString();
-        const analyzeResponse = await fetch(analyzeUrl, { cache: "no-store" });
-        const analyzeData = await analyzeResponse.json();
+function buildAiPrompt(data) {
+  const fx = data && data.fixture ? data.fixture : {};
+  const teams = data && data.teams ? data.teams : {};
+  const homeName = (teams.home && teams.home.name) || "Équipe domicile";
+  const awayName = (teams.away && teams.away.name) || "Équipe extérieure";
+  const missing = [];
+  if (!teams.home || !teams.home.last10 || !teams.home.last10.length) missing.push("10 derniers matchs domicile");
+  if (!teams.away || !teams.away.last10 || !teams.away.last10.length) missing.push("10 derniers matchs extérieur");
+  if (!Array.isArray(data && data.h2h) || !data.h2h.length) missing.push("face-à-face");
+  return [
+    "Données réelles du match (n'utilise rien d'autre) :",
+    `Match : ${homeName} vs ${awayName}`,
+    `Compétition : ${fx.league && fx.league.name ? fx.league.name : "inconnue"}`,
+    summarizeTeamLast10(teams.home, homeName),
+    summarizeTeamLast10(teams.away, awayName),
+    summarizeH2H(data && data.h2h),
+    summarizeOdds(data && data.odds),
+    missing.length ? `Données manquantes : ${missing.join(", ")}.` : "Aucune donnée de base manquante.",
+    "",
+    "Rédige en français, en 4 phrases maximum, un résumé prudent de la cohérence entre les statistiques disponibles et les cotes Under 2.5. Cite explicitement les données manquantes. N'invente aucun chiffre."
+  ].join("\n").slice(0, AI_ANALYSIS_MAX_PROMPT_CHARS);
+}
 
-        if (!analyzeResponse.ok) {
-          return Response.json({
-            error: analyzeData.error || "Match data unavailable",
-            disclaimer: "L'analyse IA est temporairement indisponible. Données du match non disponibles."
-          }, { status: analyzeResponse.status || 500 });
-        }
+// Plafond quotidien d'appels réels à l'IA (cache) + limite par visiteur si un KV est branché
+async function aiBudgetOk(request, env) {
+  if (env.AI_RATE_LIMIT_KV) {
+    const key = `agnes:${getClientIp(request)}`;
+    const current = Number((await env.AI_RATE_LIMIT_KV.get(key)) || "0");
+    if (current >= 10) return false;
+    await env.AI_RATE_LIMIT_KV.put(key, String(current + 1), { expirationTtl: 86400 });
+  }
+  const day = new Date().toISOString().slice(0, 10);
+  const key = new Request(`https://horizon-football-ai.local/budget?d=${day}`);
+  const hit = await caches.default.match(key);
+  const n = hit ? Number(await hit.text()) : 0;
+  if (n >= AI_DAILY_CAP) return false;
+  await caches.default.put(key, new Response(String(n + 1), { headers: { "cache-control": "public, max-age=86400" } }));
+  return true;
+}
 
-        const prompt = buildAiPrompt(analyzeData);
-        const requestBody = {
+async function handleAiAnalysis(request, env) {
+  const url = new URL(request.url);
+  const fixtureId = (url.searchParams.get("id") || "").trim();
+  if (!/^\d+$/.test(fixtureId)) {
+    return Response.json({ error: "Invalid fixture id" }, { status: 400 });
+  }
+  if (!env.AGNES_API_KEY) {
+    return Response.json({ error: "AI service is not configured", disclaimer: "L'analyse IA n'est pas encore disponible." }, { status: 503 });
+  }
+  const cacheKey = new Request(`https://horizon-football-ai.local/analysis?id=${fixtureId}`);
+  const cached = await caches.default.match(cacheKey);
+  if (cached) return cached;
+  const unavailable = status => Response.json({ error: "AI unavailable", disclaimer: "L'analyse IA est temporairement indisponible. Réessaie plus tard." }, { status });
+  try {
+    // appel direct de la fonction d'analyse (pas de requête vers soi-même)
+    const analysis = await handleAnalyze(new Request(`${url.origin}/api/analyze?id=${fixtureId}`), env);
+    if (!analysis.ok) return unavailable(analysis.status === 429 ? 429 : 502);
+    const data = await analysis.json();
+    if (!(await aiBudgetOk(request, env))) {
+      return Response.json({ error: "AI quota exceeded", disclaimer: "Le quota d'analyses IA du jour est atteint." }, { status: 429 });
+    }
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 12000);
+    let res;
+    try {
+      res = await fetch("https://apihub.agnes-ai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${env.AGNES_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
           model: "agnes-2.5-flash",
           messages: [
-            {
-              role: "system",
-              content: "Tu es un analyste football pour Horizon Football. Analyse uniquement les données réelles envoyées. Ne jamais inventer des statistiques, ne jamais promettre un gain, ne jamais modifier les résultats ou les sélections. Donne une explication claire et concise, avec mention explicite des données manquantes."
-            },
-            {
-              role: "user",
-              content: prompt
-            }
+            { role: "system", content: "Tu es un analyste football pour Horizon Football. Tu n'utilises que les données fournies. Tu n'inventes aucune statistique, tu ne promets jamais de gain et tu ne donnes aucun pronostic garanti. Ton ton est informatif." },
+            { role: "user", content: buildAiPrompt(data) }
           ],
-          temperature: 0.4,
-          max_tokens: 400,
+          temperature: 0.3,
+          max_tokens: 350,
           stream: false
-        };
+        }),
+        signal: controller.signal
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+    if (!res.ok) return unavailable(502);
+    const out = await res.json();
+    const text = out && out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content;
+    if (typeof text !== "string" || !text.trim()) return unavailable(502);
+    const response = new Response(JSON.stringify({
+      summary: text.replace(/\r\n/g, "\n").trim().slice(0, AI_ANALYSIS_MAX_RESPONSE_CHARS),
+      disclaimer: "Analyse informative générée par IA à partir des données disponibles. Aucun gain n'est garanti. Réservé aux majeurs."
+    }), { headers: { "content-type": "application/json; charset=UTF-8", "cache-control": `public, max-age=${AI_ANALYSIS_CACHE_TTL}` } });
+    await caches.default.put(cacheKey, response.clone());
+    return response;
+  } catch (e) {
+    return unavailable(504);
+  }
+}
 
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 12000);
-        let agnesResponse;
-        try {
-          agnesResponse = await fetch("https://apihub.agnes-ai.com/v1/chat/completions", {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${agnesKey}`,
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
-            body: JSON.stringify(requestBody),
-            signal: controller.signal
-          });
-        } finally {
-          clearTimeout(timeout);
-        }
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
 
-        let agnesData;
-        try {
-          agnesData = await agnesResponse.json();
-        } catch (error) {
-          return Response.json({
-            error: "AI response invalid",
-            disclaimer: "L'analyse IA est temporairement indisponible."
-          }, { status: 502 });
-        }
-
-        if (!agnesResponse.ok) {
-          const message = agnesData && agnesData.error && agnesData.error.message ? agnesData.error.message : "AI service unavailable";
-          return Response.json({
-            error: "AI service unavailable",
-            disclaimer: "L'analyse IA est temporairement indisponible.",
-            details: message
-          }, { status: 502 });
-        }
-
-        const aiText = agnesData && agnesData.choices && agnesData.choices[0] && agnesData.choices[0].message && agnesData.choices[0].message.content;
-        if (typeof aiText !== "string") {
-          return Response.json({
-            error: "AI response malformed",
-            disclaimer: "L'analyse IA est temporairement indisponible."
-          }, { status: 502 });
-        }
-
-        const safeSummary = aiText.replace(/\r\n/g, "\n").slice(0, AI_ANALYSIS_MAX_RESPONSE_CHARS).trim();
-        const payload = {
-          summary: safeSummary,
-          missingData: (analyzeData && analyzeData.apiErrors) ? Object.keys(analyzeData.apiErrors).filter(key => analyzeData.apiErrors[key] && Object.keys(analyzeData.apiErrors[key]).length) : [],
-          disclaimer: "Analyse informative inspirée des statistiques réelles disponibles. Aucune garantie de résultat. Réservé aux majeurs.",
-          usage: agnesData && agnesData.usage ? agnesData.usage : null,
-          model: agnesData && agnesData.model ? agnesData.model : "agnes-2.5-flash"
-        };
-
-        const output = new Response(JSON.stringify(payload), {
-          status: 200,
-          headers: {
-            "content-type": "application/json; charset=UTF-8",
-            "cache-control": `public, max-age=${AI_ANALYSIS_CACHE_TTL}`
-          }
-        });
-        await caches.default.put(cacheKey, output.clone());
-        return output;
-      } catch (error) {
-        return Response.json({
-          error: "AI analysis failed",
-          disclaimer: "L'analyse IA est temporairement indisponible.",
-          details: error && error.message ? error.message : "Unknown error"
-        }, { status: 500 });
+    if (url.pathname === "/api/fixture") {
+      const id = url.searchParams.get("id");
+      if (!id) {
+        return Response.json({ error: "Missing fixture id" }, { status: 400 });
       }
+      const apiKey = env.API_FOOTBALL_KEY;
+      if (!apiKey) {
+        return Response.json({ error: "API_FOOTBALL_KEY is not configured" }, { status: 500 });
+      }
+      const result = await apiGet(`/fixtures?id=${encodeURIComponent(id)}`, apiKey, 3600);
+      return jsonResponse(result.data, result.status);
+    }
+
+    if (url.pathname === "/api/analyze") {
+      return handleAnalyze(request, env);
+    }
+
+    if (url.pathname === "/api/ai-analysis") {
+      return handleAiAnalysis(request, env);
     }
 
     if (url.pathname === "/api/live") {
