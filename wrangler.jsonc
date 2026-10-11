@@ -6,11 +6,5 @@
   "assets": {
     "directory": "./",
     "binding": "ASSETS"
-  },
-  "hyperdrive": [
-    {
-      "binding": "HYPERDRIVE",
-      "id": "9868afb8f5ae44c89632fbb5ccdf700a"
-    }
-  ]
+  }
 }
