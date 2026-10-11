@@ -402,7 +402,11 @@
    "hcp": "-0.25",
    "lc": "7.5",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    1,
+    1
+   ]
   },
   {
    "match": "Kawkab Marrakech vs Ittihad Tanger",
@@ -412,7 +416,11 @@
    "hcp": "-0.25",
    "lc": "7.5",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    2,
+    1
+   ]
   },
   {
    "match": "CA Colegiales vs Tristan Suarez",
@@ -422,7 +430,11 @@
    "hcp": "0.0",
    "lc": "8.5",
    "lc2": "4.0",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    0,
+    0
+   ]
   },
   {
    "match": "Almagro vs Chacarita Juniors",
@@ -432,7 +444,11 @@
    "hcp": "0.0",
    "lc": "8.5",
    "lc2": "4.0",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    2,
+    1
+   ]
   },
   {
    "match": "Barracas Central vs Huracan",
@@ -442,7 +458,63 @@
    "hcp": "0.0",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.5"
+   "lb2": "0.5",
+   "fin": [
+    2,
+    0
+   ]
+  }
+ ],
+ "2026-10-11": [
+  {
+   "match": "JS Omrane vs AS Marsa",
+   "competition": "Tunisie - League 1",
+   "heure": "14:30",
+   "ligne": 1.75,
+   "hcp": "-0.25",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "CA Costa Brava vs Club Villa Mitre",
+   "competition": "Argentine - Torneo A",
+   "heure": "19:00",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "CA Atlanta vs San Martin Tucuman",
+   "competition": "Argentine - Nacional B",
+   "heure": "19:00",
+   "ligne": 1.75,
+   "hcp": "-0.25",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "CA Estudiantes Caseros vs CD Moron",
+   "competition": "Argentine - Nacional B",
+   "heure": "19:30",
+   "ligne": 1.75,
+   "hcp": "-0.25",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Platense vs Argentinos Jrs",
+   "competition": "Argentine - Liga Profesional",
+   "heure": "21:00",
+   "ligne": 1.75,
+   "hcp": "+0.25",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
   }
  ]
 }
