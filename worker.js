@@ -15,19 +15,21 @@ async function apiGet(path, apiKey, ttl) {
   let response = await fetch(`${BASE}${path}`, {
     headers: { "x-apisports-key": apiKey }
   });
-  let data = await response.json();
+  let text = await response.text();
+  let data = JSON.parse(text);
   // limite par minute : une seule nouvelle tentative après une courte pause
   if (data.errors && (data.errors.rateLimit || data.errors.requests) && !data.errors.requests) {
     await new Promise(r => setTimeout(r, 1500));
     response = await fetch(`${BASE}${path}`, { headers: { "x-apisports-key": apiKey } });
-    data = await response.json();
+    text = await response.text();
+    data = JSON.parse(text);
   }
   const hasErrors = data.errors && Object.keys(data.errors).length > 0;
   if (response.ok && !hasErrors) {
     const seconds = typeof ttl === "function" ? ttl(data) : ttl;
     await caches.default.put(
       cacheKey,
-      new Response(JSON.stringify(data), {
+      new Response(text, {
         headers: {
           "content-type": "application/json",
           "cache-control": `public, max-age=${seconds}`
@@ -151,7 +153,7 @@ async function handleAnalyze(request, env) {
             away: { id: awayId, name: fixture.teams.away.name, last10: awayLast10 }
           },
           h2h: h2hLast10,
-          odds: oddsResult.data.response || [],
+          odds: compactOdds(oddsResult.data.response),
           league: { id: leagueId, season },
           plan: PLAN_PRO ? "pro" : "gratuit",
           apiErrors: {
@@ -178,6 +180,19 @@ async function handleAnalyze(request, env) {
         );
       }
     }
+
+function compactOdds(list) {
+  const ok = v => /^(under|over) 2(\.0|\.5)?$/i.test(String(v.value));
+  return (Array.isArray(list) ? list : []).map(entry => ({
+    bookmakers: (entry.bookmakers || []).map(bk => ({
+      name: bk.name,
+      bets: (bk.bets || [])
+        .filter(b => /over\/under/i.test(b.name) && !/half|1st|2nd|team|first|second/i.test(b.name))
+        .map(b => ({ name: b.name, values: (b.values || []).filter(ok) }))
+        .filter(b => b.values.length)
+    })).filter(bk => bk.bets.length)
+  })).filter(e => e.bookmakers.length);
+}
 
 function getClientIp(request) {
   return (request.headers.get("cf-connecting-ip") || "anonymous").replace(/[^a-zA-Z0-9._:-]/g, "").slice(0, 64) || "anonymous";
@@ -268,11 +283,11 @@ async function handleAiAnalysis(request, env) {
   const cacheKey = new Request(`https://horizon-football-ai.local/analysis?id=${fixtureId}`);
   const cached = await caches.default.match(cacheKey);
   if (cached) return cached;
-  const unavailable = status => Response.json({ error: "AI unavailable", disclaimer: "L'analyse IA est temporairement indisponible. Réessaie plus tard." }, { status });
+  const unavailable = (status, reason) => Response.json({ error: "AI unavailable", reason: reason || "unknown", disclaimer: "L'analyse IA est temporairement indisponible. Réessaie plus tard." }, { status });
   try {
     // appel direct de la fonction d'analyse (pas de requête vers soi-même)
     const analysis = await handleAnalyze(new Request(`${url.origin}/api/analyze?id=${fixtureId}`), env);
-    if (!analysis.ok) return unavailable(analysis.status === 429 ? 429 : 502);
+    if (!analysis.ok) return unavailable(analysis.status === 429 ? 429 : 502, "analysis_" + analysis.status);
     const data = await analysis.json();
     if (!(await aiBudgetOk(request, env))) {
       return Response.json({ error: "AI quota exceeded", disclaimer: "Le quota d'analyses IA du jour est atteint." }, { status: 429 });
@@ -299,10 +314,10 @@ async function handleAiAnalysis(request, env) {
     } finally {
       clearTimeout(timer);
     }
-    if (!res.ok) return unavailable(502);
+    if (!res.ok) return unavailable(502, "agnes_http_" + res.status);
     const out = await res.json();
     const text = out && out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content;
-    if (typeof text !== "string" || !text.trim()) return unavailable(502);
+    if (typeof text !== "string" || !text.trim()) return unavailable(502, "agnes_empty_text");
     const response = new Response(JSON.stringify({
       summary: text.replace(/\r\n/g, "\n").trim().slice(0, AI_ANALYSIS_MAX_RESPONSE_CHARS),
       disclaimer: "Analyse informative générée par IA à partir des données disponibles. Aucun gain n'est garanti. Réservé aux majeurs."
@@ -310,7 +325,7 @@ async function handleAiAnalysis(request, env) {
     await caches.default.put(cacheKey, response.clone());
     return response;
   } catch (e) {
-    return unavailable(504);
+    return unavailable(504, "exception: " + String((e && e.message) || e).slice(0, 80));
   }
 }
 
@@ -336,7 +351,11 @@ export default {
     }
 
     if (url.pathname === "/api/ai-analysis") {
-      return handleAiAnalysis(request, env);
+      try {
+        return await handleAiAnalysis(request, env);
+      } catch (e) {
+        return Response.json({ error: "AI error", reason: "router: " + String((e && e.message) || e).slice(0, 80), disclaimer: "L'analyse IA est temporairement indisponible. Réessaie plus tard." }, { status: 500 });
+      }
     }
 
     if (url.pathname === "/api/live") {
