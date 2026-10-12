@@ -455,8 +455,9 @@ footer{border-top:1px solid var(--line);padding:20px 16px;text-align:center;colo
           const c2 = new AbortController(); const t2 = setTimeout(() => c2.abort(), 25000);
           const r2 = await fetch("/api/ai-analysis?id=" + encodeURIComponent(id), { signal: c2.signal });
           clearTimeout(t2);
-          const d2 = await r2.json();
-          if (!r2.ok || !d2.summary) throw new Error(d2.disclaimer || "Analyse IA indisponible pour le moment.");
+          let d2 = null;
+          try { d2 = JSON.parse(await r2.text()); } catch (pe) {}
+          if (!r2.ok || !d2 || !d2.summary) throw new Error(((d2 && d2.disclaimer) || "L'analyse IA n'est pas disponible pour le moment.") + (d2 && d2.reason ? " [" + d2.reason + "]" : (r2.ok ? "" : " [http " + r2.status + "]")));
           box.innerHTML = "<h4>🤖 Analyse IA (bêta)</h4><p>" + esc(d2.summary).replace(/\n/g, "<br>") + "</p><p class='muted' style='font-size:12px'>" + esc(d2.disclaimer || "") + "</p>";
         } catch (e2) {
           box.innerHTML = "<p class='muted'>" + esc(e2.name === "AbortError" ? "L'analyse IA prend trop de temps. Réessaie." : e2.message) + "</p>";
