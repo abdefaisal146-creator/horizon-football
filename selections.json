@@ -546,7 +546,11 @@
    "hcp": "-0.25",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    2,
+    1
+   ]
   },
   {
    "match": "USM Khenchela vs CS Constantine",
@@ -556,7 +560,11 @@
    "hcp": "0.0",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    2,
+    0
+   ]
   },
   {
    "match": "Smouha vs Ghazl El Mahallah",
@@ -566,7 +574,11 @@
    "hcp": "-0.25",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.5"
+   "lb2": "0.5",
+   "fin": [
+    1,
+    0
+   ]
   },
   {
    "match": "Club Mercedes vs CA Lugano",
@@ -576,6 +588,48 @@
    "hcp": "0.0",
    "lc": "8.0",
    "lc2": "3.5",
+   "lb2": "0.75",
+   "fin": [
+    1,
+    0
+   ]
+  }
+ ],
+ "2026-10-13": [
+  {
+   "match": "US Biskra vs MC Oran",
+   "competition": "Algérie - 1re Division",
+   "heure": "15:00",
+   "ligne": 1.75,
+   "hcp": "-0.25",
+   "lb2": "0.75"
+  },
+  {
+   "match": "CR Beni Thour vs IRB Nezla",
+   "competition": "Algérie - Division 2",
+   "heure": "15:00",
+   "ligne": 2.0,
+   "hcp": "0.0",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "NA Hussein Dey vs MC El Bayadh",
+   "competition": "Algérie - Division 2",
+   "heure": "15:00",
+   "ligne": 1.75,
+   "hcp": "-0.5",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Township Rollers vs Orapa United",
+   "competition": "Botswana - Premier League",
+   "heure": "18:00",
+   "ligne": 1.75,
+   "hcp": "-0.25",
    "lb2": "0.75"
   }
  ]
