@@ -602,7 +602,11 @@
    "heure": "15:00",
    "ligne": 1.75,
    "hcp": "-0.25",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    0,
+    1
+   ]
   },
   {
    "match": "CR Beni Thour vs IRB Nezla",
@@ -612,7 +616,11 @@
    "hcp": "0.0",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    2,
+    1
+   ]
   },
   {
    "match": "NA Hussein Dey vs MC El Bayadh",
@@ -622,7 +630,11 @@
    "hcp": "-0.5",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    0,
+    0
+   ]
   },
   {
    "match": "Township Rollers vs Orapa United",
@@ -630,7 +642,11 @@
    "heure": "18:00",
    "ligne": 1.75,
    "hcp": "-0.25",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    1,
+    1
+   ]
   }
  ]
 }
