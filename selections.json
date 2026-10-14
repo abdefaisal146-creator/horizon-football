@@ -648,5 +648,57 @@
     1
    ]
   }
+ ],
+ "2026-10-14": [
+  {
+   "match": "Amagaju vs Mukura",
+   "competition": "Rwanda - Ligue nationale",
+   "heure": "14:00",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lc": "8.5",
+   "lc2": "4.0",
+   "lb2": "0.75"
+  },
+  {
+   "match": "FADEP Mendoza vs Sportivo Atenas",
+   "competition": "Argentine - Torneo A",
+   "heure": "15:00",
+   "ligne": 1.75,
+   "hcp": "-0.25",
+   "lc": "8.5",
+   "lc2": "4.0",
+   "lb2": "0.75"
+  },
+  {
+   "match": "San Lorenzo vs Deportivo Riestra",
+   "competition": "Argentine - Liga Profesional",
+   "heure": "18:45",
+   "ligne": 1.75,
+   "hcp": "-0.25",
+   "lc": "8.5",
+   "lc2": "4.0",
+   "lb2": "0.75"
+  },
+  {
+   "match": "CA Atlanta vs San Martin Tucuman",
+   "competition": "Argentine - Nacional B",
+   "heure": "19:00",
+   "ligne": 1.75,
+   "hcp": "-0.25",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "CA Costa Brava vs Club Villa Mitre",
+   "competition": "Argentine - Torneo A",
+   "heure": "19:00",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  }
  ]
 }
