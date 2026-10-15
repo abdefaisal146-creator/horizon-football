@@ -658,7 +658,11 @@
    "hcp": "0.0",
    "lc": "8.5",
    "lc2": "4.0",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    1,
+    2
+   ]
   },
   {
    "match": "FADEP Mendoza vs Sportivo Atenas",
@@ -668,7 +672,11 @@
    "hcp": "-0.25",
    "lc": "8.5",
    "lc2": "4.0",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    2,
+    0
+   ]
   },
   {
    "match": "San Lorenzo vs Deportivo Riestra",
@@ -678,7 +686,11 @@
    "hcp": "-0.25",
    "lc": "8.5",
    "lc2": "4.0",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    1,
+    0
+   ]
   },
   {
    "match": "CA Atlanta vs San Martin Tucuman",
@@ -688,7 +700,11 @@
    "hcp": "-0.25",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    1,
+    0
+   ]
   },
   {
    "match": "CA Costa Brava vs Club Villa Mitre",
@@ -698,7 +714,11 @@
    "hcp": "0.0",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    1,
+    1
+   ]
   }
  ]
 }
