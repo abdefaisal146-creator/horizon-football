@@ -250,7 +250,7 @@ function buildAiPrompt(data) {
     summarizeOdds(data && data.odds),
     missing.length ? `Données manquantes : ${missing.join(", ")}.` : "Aucune donnée de base manquante.",
     "",
-    "Rédige en français, en 4 phrases maximum, un résumé prudent de la cohérence entre les statistiques disponibles et les cotes Under 2.5. Cite explicitement les données manquantes. N'invente aucun chiffre."
+    "Rédige en français, en 3 phrases courtes (450 caractères au maximum), un résumé prudent de la cohérence entre les statistiques disponibles et les cotes Under 2.5. Cite les données manquantes en une seule phrase. N'invente aucun chiffre."
   ].join("\n").slice(0, AI_ANALYSIS_MAX_PROMPT_CHARS);
 }
 
@@ -306,7 +306,7 @@ async function handleAiAnalysis(request, env) {
             { role: "user", content: buildAiPrompt(data) }
           ],
           temperature: 0.3,
-          max_tokens: 350,
+          max_tokens: 700,
           stream: false
         }),
         signal: controller.signal
@@ -316,8 +316,13 @@ async function handleAiAnalysis(request, env) {
     }
     if (!res.ok) return unavailable(502, "agnes_http_" + res.status);
     const out = await res.json();
-    const text = out && out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content;
+    const choice = out && out.choices && out.choices[0];
+    let text = choice && choice.message && choice.message.content;
     if (typeof text !== "string" || !text.trim()) return unavailable(502, "agnes_empty_text");
+    if (choice.finish_reason === "length" || !/[.!?…]\s*$/.test(text.trim())) {
+      const last = Math.max(text.lastIndexOf("."), text.lastIndexOf("!"), text.lastIndexOf("?"));
+      if (last > 80) text = text.slice(0, last + 1);
+    }
     const response = new Response(JSON.stringify({
       summary: text.replace(/\r\n/g, "\n").trim().slice(0, AI_ANALYSIS_MAX_RESPONSE_CHARS),
       disclaimer: "Analyse informative générée par IA à partir des données disponibles. Aucun gain n'est garanti. Réservé aux majeurs."
