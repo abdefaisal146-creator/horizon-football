@@ -720,5 +720,67 @@
     1
    ]
   }
+ ],
+ "2026-10-16": [
+  {
+   "match": "Ethio Electric FC vs Negelle Arsi",
+   "competition": "Éthiopie - Premier League",
+   "heure": "13:00",
+   "ligne": 1.5,
+   "hcp": "0.0",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.5"
+  },
+  {
+   "match": "Halaba City vs Bahir Dar Kenema FC",
+   "competition": "Éthiopie - Premier League",
+   "heure": "13:00",
+   "ligne": 1.75,
+   "hcp": "+0.25",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Pharco FC vs Maleyet El Zayiat",
+   "competition": "Égypte - 2e Division",
+   "heure": "13:30",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Kamuzu Barracks vs Mitundu Baptist FC",
+   "competition": "Malawi - Super League",
+   "heure": "13:30",
+   "ligne": 1.75,
+   "hcp": "-0.25",
+   "lc": "8.5",
+   "lc2": "4.0",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Adama City vs Shaggar City",
+   "competition": "Éthiopie - Premier League",
+   "heure": "16:00",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Gimnasia y Tiro vs CA Atlanta",
+   "competition": "Argentine - Nacional B",
+   "heure": "02:00",
+   "ligne": 1.75,
+   "hcp": "-0.25",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  }
  ]
 }
