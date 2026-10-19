@@ -809,6 +809,20 @@
  ],
  "2026-10-17": [
   {
+   "match": "CIVO United vs Dedza Dynamos",
+   "competition": "Malawi - Super League",
+   "heure": "14:00",
+   "ligne": 1.75,
+   "hcp": "-0.5",
+   "lc": "7.5",
+   "lc2": "3.5",
+   "lb2": "0.75",
+   "fin": [
+    1,
+    1
+   ]
+  },
+  {
    "match": "ES Hammam Sousse vs US Ben Guerdane",
    "competition": "Tunisie - League 1",
    "heure": "14:30",
@@ -816,7 +830,25 @@
    "hcp": "0.0",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    0,
+    2
+   ]
+  },
+  {
+   "match": "Stade Marocain Du Rabat vs Chabab Atlas Khenifra",
+   "competition": "Maroc - GNF 2",
+   "heure": "16:00",
+   "ligne": 1.75,
+   "hcp": "-0.5",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75",
+   "fin": [
+    2,
+    1
+   ]
   },
   {
    "match": "Berazategui vs Lujan",
@@ -826,7 +858,11 @@
    "hcp": "-0.25",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    0,
+    0
+   ]
   },
   {
    "match": "Victoriano Arenas vs Deportivo Espanol",
@@ -836,7 +872,11 @@
    "hcp": "+0.25",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.5"
+   "lb2": "0.5",
+   "fin": [
+    0,
+    0
+   ]
   },
   {
    "match": "General Lamadrid vs Estrella del Sur Alejandro Korn",
@@ -846,7 +886,105 @@
    "hcp": "0.0",
    "lc": "7.5",
    "lc2": "3.5",
+   "lb2": "0.75",
+   "fin": [
+    1,
+    1
+   ]
+  }
+ ],
+ "2026-10-18": [
+  {
+   "match": "RC Kadiogo vs CFFEB",
+   "competition": "Burkina Faso - Championnat du Burkina Faso",
+   "heure": "04:30",
+   "ligne": 1.75,
+   "hcp": "-0.25",
+   "lc": "7.5",
+   "lc2": "3.5",
+   "lb2": "0.75",
+   "fin": [
+    0,
+    5
+   ]
+  },
+  {
+   "match": "Amitie FC vs Dakar Universite Club",
+   "competition": "Sénégal - Ligue 2",
+   "heure": "06:00",
+   "ligne": 1.5,
+   "hcp": "0.0",
+   "lb2": "0.5",
+   "fin": [
+    2,
+    0
+   ]
+  },
+  {
+   "match": "Widad Temara vs Kawkab Marrakech",
+   "competition": "Maroc - Botola Pro",
+   "heure": "07:00",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lc": "7.5",
+   "lc2": "3.5",
+   "lb2": "0.75",
+   "fin": [
+    0,
+    1
+   ]
+  },
+  {
+   "match": "Burgos vs Sabadell",
+   "competition": "Espagne - LaLiga2",
+   "heure": "08:00",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lc": "8.5",
+   "lc2": "4.0",
+   "lb2": "0.75",
+   "fin": [
+    1,
+    0
+   ]
+  }
+ ],
+ "2026-10-19": [
+  {
+   "match": "ES D'Agboville vs FC Mouna",
+   "competition": "Côte d'Ivoire - Premier Division",
+   "heure": "16:30",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lc": "8.0",
+   "lc2": "3.5",
    "lb2": "0.75"
+  },
+  {
+   "match": "Oslo FA vs AS Camb",
+   "competition": "Sénégal - Ligue 2",
+   "heure": "18:00",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Teranga SC vs SONACOS",
+   "competition": "Sénégal - Ligue 2",
+   "heure": "18:00",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lb2": "0.75"
+  },
+  {
+   "match": "CA San Telmo vs Defensores de Belgrano",
+   "competition": "Argentine - Nacional B",
+   "heure": "19:30",
+   "ligne": 1.5,
+   "hcp": "0.0",
+   "lc": "8.5",
+   "lc2": "4.0",
+   "lb2": "0.5"
   }
  ]
 }
