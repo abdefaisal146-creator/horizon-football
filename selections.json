@@ -986,5 +986,37 @@
    "lc2": "4.0",
    "lb2": "0.5"
   }
+ ],
+ "2026-10-23": [
+  {
+   "match": "El Entag El Harby vs El Mansoura",
+   "competition": "Égypte - 2e Division",
+   "heure": "13:30",
+   "ligne": 2.0,
+   "hcp": "0.0",
+   "lc": "7.5",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "US Ben Guerdane vs Stade Tunisien",
+   "competition": "Tunisie - League 1",
+   "heure": "14:30",
+   "ligne": 1.75,
+   "hcp": "0.0",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "AS Marsa vs CS Hammam Lif",
+   "competition": "Tunisie - League 1",
+   "heure": "14:30",
+   "ligne": 1.75,
+   "hcp": "-0.5",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  }
  ]
 }
