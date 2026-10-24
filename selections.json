@@ -996,7 +996,11 @@
    "hcp": "0.0",
    "lc": "7.5",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    1,
+    0
+   ]
   },
   {
    "match": "US Ben Guerdane vs Stade Tunisien",
@@ -1006,7 +1010,11 @@
    "hcp": "0.0",
    "lc": "8.0",
    "lc2": "3.5",
-   "lb2": "0.75"
+   "lb2": "0.75",
+   "fin": [
+    0,
+    0
+   ]
   },
   {
    "match": "AS Marsa vs CS Hammam Lif",
@@ -1014,6 +1022,52 @@
    "heure": "14:30",
    "ligne": 1.75,
    "hcp": "-0.5",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75",
+   "fin": [
+    1,
+    1
+   ]
+  }
+ ],
+ "2026-10-24": [
+  {
+   "match": "ESM Kolea vs GC Mascara",
+   "competition": "Algérie - Division 2",
+   "heure": "15:00",
+   "ligne": 2.0,
+   "hcp": "0.0",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "CA Batna vs US Chaouia",
+   "competition": "Algérie - Division 2",
+   "heure": "15:00",
+   "ligne": 1.75,
+   "hcp": "-0.5",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "Aigle Royal du Moungo vs APEJES Academy",
+   "competition": "Cameroun - Elite One",
+   "heure": "15:30",
+   "ligne": 2.0,
+   "hcp": "0.0",
+   "lc": "8.0",
+   "lc2": "3.5",
+   "lb2": "0.75"
+  },
+  {
+   "match": "AS Dakar Sacre Coeur vs US de Goree",
+   "competition": "Sénégal - Premier League",
+   "heure": "17:30",
+   "ligne": 1.75,
+   "hcp": "0.0",
    "lc": "8.0",
    "lc2": "3.5",
    "lb2": "0.75"
